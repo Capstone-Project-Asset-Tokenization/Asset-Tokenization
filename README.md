@@ -1,7 +1,7 @@
 ### Asset Tokenization Platform
 
 ## Introduction
-The "Asset Tokenization Platform" is designed to revolutionize the management, trading, and leveraging of assets. This project focuses on enabling the digitization of tangible and intangible assets through blockchain-based tokens, offering a transformative approach to asset ownership and investment.
+The ```Asset Tokenization Platform``` is designed to revolutionize the management, trading, and leveraging of assets. This project focuses on enabling the digitization of tangible and intangible assets through blockchain-based tokens, offering a transformative approach to asset ownership and investment.
 
 ## Scope
 This platform aims to provide a secure and user-friendly environment for users to create, tokenize, and manage assets. It facilitates the trading of asset-backed tokens on a decentralized marketplace, integrating blockchain technology and smart contracts for a comprehensive solution in asset tokenization.
