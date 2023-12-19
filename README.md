@@ -9,7 +9,7 @@ This platform aims to provide a secure and user-friendly environment for users t
 ## Complexity and Technical Challenges
 The project presents significant challenges due to its multidisciplinary nature, including:
 - **Blockchain Integration**: Implementing Ethereum blockchain technology to record asset ownership.
-- **Smart Contract Development**: Crafting smart contracts for asset tokenization processes.
+- **Smart Contract Development**: Crafting smart contracts using Solidity for asset tokenization.
 - **User Interface**: Creating an intuitive interface for easy asset tokenization.
 - **Regulatory Compliance**: Ensuring adherence to legal standards in asset tokenization.
 - **Interoperability**: Achieving compatibility with various blockchain networks and standards.
@@ -56,13 +56,13 @@ The platform introduces innovations in asset digitization, offering values like:
 1. Start Ganache for a personal Ethereum blockchain.
 2. Deploy smart contracts:
    ```bash
-   truffle migrate
+   npm run migrate
    ```
-3. Start the React application:
+1. Start the React application:
    ```bash
    npm run dev
    ```
-4. Access the application at http://localhost:3000/.
+1. Access the application at http://localhost:3000/.
 
 ## Getting Started
 To get started with development, you can follow these steps:
