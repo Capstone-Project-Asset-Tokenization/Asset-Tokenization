@@ -15,7 +15,7 @@ contract AssetTokenization {
     event AssetRegistered(string assetId, address owner);
     event AssetTokenized(string assetId, address owner);
 
-    constructor() public {
+    constructor(){
     }
 
     // Function to register an asset
