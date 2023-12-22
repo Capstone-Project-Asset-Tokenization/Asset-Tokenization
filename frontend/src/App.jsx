@@ -8,9 +8,9 @@ function App() {
 
   return (
     <>
-      <div className='m-2 w-2 bg:yello'>
-        Hello
-       </div>
+      <div className="container mx-auto p-4">
+      <h1 className="text-3xl font-bold mb-4">Hello, Tailwind CSS!</h1>
+    </div>
     </>
   )
 }
