@@ -1,0 +1,10 @@
+{
+    "recommendations": [
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint",
+    "bradlc.vscode-tailwindcss",
+    "eamodio.gitlens",
+    "juanblanco.solidity",     
+    "tintinweb.vscode-solidity-auditor"
+  ]
+}
