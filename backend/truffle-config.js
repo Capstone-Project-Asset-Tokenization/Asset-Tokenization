@@ -66,7 +66,7 @@ module.exports = {
     //
     development: {
       host: "127.0.0.1", // Localhost (default: none)
-      port: 7545, // change this to 7545 Ganache GUI port
+      port: 8545, // change this to 7545 Ganache GUI port
       network_id: "*", // Any network (default: none)
     },
     //
