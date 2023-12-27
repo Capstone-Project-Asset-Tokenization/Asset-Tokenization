@@ -6,6 +6,7 @@ on:
       - opened
       - synchronize
 
+
 jobs:
   label:
     runs-on: ubuntu-latest

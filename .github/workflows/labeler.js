@@ -7,7 +7,6 @@ async function run() {
     const token = process.env.GITHUB_TOKEN;
     const octokit = new github.GitHub(token);
     const context = github.context;
-
     const prNumber = context.payload.pull_request.number;
 
     // Get the list of changed files in the PR
