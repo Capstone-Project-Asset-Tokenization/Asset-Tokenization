@@ -1,6 +1,5 @@
 const core = require("@actions/core");
 const github = require("@actions/github");
-const exec = require("@actions/exec");
 
 async function run() {
   try {
@@ -10,41 +9,34 @@ async function run() {
     const prNumber = context.payload.pull_request.number;
 
     // Get the list of changed files in the PR
-    await exec.exec("git", [
-      "fetch",
-      "origin",
-      `pull/${prNumber}/head:pr/${prNumber}`,
-    ]);
-    const response = await exec.exec(
-      "git",
-      ["diff", "--name-only", `origin/pr/${prNumber}^..origin/pr/${prNumber}`],
-      {
-        listeners: {
-          stdout: (data) => {
-            const changedFiles = data.toString().split("\n").filter(Boolean);
+    const { data: files } = await octokit.pulls.listFiles({
+      owner: context.repo.owner,
+      repo: context.repo.repo,
+      pull_number: prNumber,
+    });
 
-            // Add labels based on the changed files
-            if (changedFiles.some((file) => file.startsWith("backend/"))) {
-              octokit.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                labels: ["backend"],
-              });
-            }
+    // Check if any file path starts with "backend/" or "frontend/"
+    const hasBackendChanges = files.some((file) => file.filename.startsWith("backend/"));
+    const hasFrontendChanges = files.some((file) => file.filename.startsWith("frontend/"));
 
-            if (changedFiles.some((file) => file.startsWith("frontend/"))) {
-              octokit.issues.addLabels({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: prNumber,
-                labels: ["frontend"],
-              });
-            }
-          },
-        },
-      }
-    );
+    // Add labels based on the changed files
+    if (hasBackendChanges) {
+      await octokit.issues.addLabels({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        issue_number: prNumber,
+        labels: ["backend"],
+      });
+    }
+
+    if (hasFrontendChanges) {
+      await octokit.issues.addLabels({
+        owner: context.repo.owner,
+        repo: context.repo.repo,
+        issue_number: prNumber,
+        labels: ["frontend"],
+      });
+    }
   } catch (error) {
     core.setFailed(error.message);
   }
