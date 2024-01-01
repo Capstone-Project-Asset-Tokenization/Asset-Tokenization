@@ -9,7 +9,8 @@ contract AssetTokenization is ERC721 {
         bool isTokenized; // Indicates if the asset is tokenized
         string assetType; // Type of the asset
         address owner; // Owner of the asset
-        // TODO: Add more fields
+        bool isVerified; // Indicates if the asset is verified
+        //TODO: Add additional fields for the asset
     }
 
     struct Escrow {
@@ -22,6 +23,7 @@ contract AssetTokenization is ERC721 {
         bool isSuccessful; // Indicates if the escrow was successful
         uint256 escrowId; // Unique identifier for the escrow
     }
+    
     mapping(uint256 => Escrow) public escrows;
     mapping(string => Asset) public assets;
     mapping(uint256 => string) private tokenToAssetId;
@@ -39,10 +41,13 @@ contract AssetTokenization is ERC721 {
     constructor() ERC721("AssetToken", "AST") {
         nextTokenId = 1;
     }
+
     modifier onlyAssetOwner(string memory assetId) {
         require(assets[assetId].owner == msg.sender, "Caller is not the asset owner");
         _;
     }
+
+    // Function to register an asset
     function registerAsset(string memory assetId, string memory assetType, address assetOwner) public {
         require(assets[assetId].owner == address(0), "Asset already registered");
         uint256 currentTokenId = nextTokenId++; // Assign and then increment tokenId
@@ -60,17 +65,12 @@ contract AssetTokenization is ERC721 {
         emit AssetTokenized(assetId, assetOwner);
     }
 
-    // function transferAsset(string memory assetId, address from, address to) public {
-    //     require(assets[assetId].isTokenized, "Asset is not tokenized");
-    //     require(assets[assetId].owner == from, "Only the owner can transfer the asset");
-    //     _transfer(from, to, assets[assetId].tokenId);
-    // }
-
     function getAssetOwner(string memory assetId) public view returns (address) {
         require(assets[assetId].isTokenized, "Asset is not tokenized");
         return ownerOf(assets[assetId].tokenId);
     }
 
+    // Function to check if an asset is tokenized
     function isAssetTokenized(string memory assetId) public view returns (bool) {
         return assets[assetId].isTokenized;
     }
@@ -101,10 +101,25 @@ contract AssetTokenization is ERC721 {
         require(msg.sender == escrow.seller || msg.sender == escrow.buyer, "Only involved parties can cancel the escrow");
         require(!escrow.isSuccessful, "Escrow already completed");
 
-        // Refund logic goes here (if applicable)
+        //TODO Refund logic goes here (if applicable)
 
         delete escrows[escrowId]; // Remove the escrow from storage
         emit EscrowCancelled(escrow.assetId, escrow.seller, escrow.buyer, escrowId);
     }
 
+
+    // Function to verify an asset
+    function verifyAsset(string memory assetId) public {
+        require(
+            assets[assetId].owner == msg.sender,
+            "Only the owner can verify the asset"
+        );
+        require(!assets[assetId].isVerified, "Asset is already verified");
+        assets[assetId].isVerified = true;
+    }
+
+    // Function to check if an asset is verified
+    function isAssetVerified(string memory assetId) public view returns (bool) {
+        return assets[assetId].isVerified;
+    }
 }
