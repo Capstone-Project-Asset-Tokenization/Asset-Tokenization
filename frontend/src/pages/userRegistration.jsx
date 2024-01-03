@@ -2,6 +2,7 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import signUpImage from '../assets/sign_in_image.png'
 
 const RegistrationSchema = Yup.object().shape({
   fullName: Yup.string()
@@ -23,8 +24,8 @@ const Registration = () => {
 
   const handleSubmit = async (values, { setSubmitting }) => {
     try {
-      const response = await axios.post('http://localhost:3000/register', values);
-      console.log(response.data);
+    //   const response = await axios.post('http://localhost:3000/register', values);
+      console.log(values);
       // TODO:
       // handle success
       // Redirect to login or another page
@@ -49,53 +50,93 @@ const Registration = () => {
   };
 
   return (
-    <div>
-      <h2>Registration</h2>
-      <Formik
-        initialValues={{
-          fullName: '',
-          email: '',
-          password: '',
-          confirmPassword: '',
-          legalIdNo: ''
-        }}
-        validationSchema={RegistrationSchema}
-        onSubmit={handleSubmit}
-      >
-        {({ isSubmitting }) => (
-          <Form>
-            <div>
-              {/* <label>Full Name:</label> */}
-              <Field type="text" name="fullName" placeholder="Full Name" />
-              <ErrorMessage name="fullName" component="div" />
-            </div>
-            <div>
-              {/* <label>Email:</label> */}
-              <Field type="email" name="email" placeholder="Email Address" />
-              <ErrorMessage name="email" component="div" />
-            </div>
-            <div>
-              {/* <label>Password:</label> */}
-              <Field type="password" name="password" placeholder="Password" />
-              <ErrorMessage name="password" component="div" />
-            </div>
-            <div>
-              {/* <label>Confirm Password:</label> */}
-              <Field type="password" name="confirmPassword" placeholder="Confirm Password" />
-              <ErrorMessage name="confirmPassword" component="div" />
-            </div>
-            <div>
-              {/* <label>Legal ID No.:</label> */}
-              <Field type="text" name="legalIdNo" placeholder="Legal ID No" />
-              <ErrorMessage name="legalIdNo" component="div" />
-            </div>
-            <button type="submit" disabled={isSubmitting}>
-              Register
-            </button>
-          </Form>
-        )}
-      </Formik>
-    </div>
+    <div className="flex h-screen bg-[#2B2B2B]">
+		{/* Image Section */}
+		<div className="w-1/2 bg-contain bg-center bg-no-repeat" style={{ backgroundImage: `url(${signUpImage})` }}></div>
+
+		{/* Form Section */}
+		<div className="flex items-center justify-center w-1/2">
+			<div className="w-full max-w-md px-6 py-8">
+				<h2 className="font-sans font-semibold text-white text-5xl mb-8">Create Account</h2>
+				<p className="font-sans text-white text-xl mb-6">
+					Welcome! enter your details and start creating, collecting and selling NFTs.
+				</p>
+				<Formik
+					initialValues={{
+					fullName: '',
+					email: '',
+					password: '',
+					confirmPassword: '',
+					legalIdNo: ''
+					}}
+					validationSchema={RegistrationSchema}
+					onSubmit={handleSubmit}
+				>
+					{({ isSubmitting }) => (
+					<Form className="bg-transparent">
+						<div className="mb-4">
+						<Field 
+							type="text" 
+							name="fullName" 
+							placeholder="Full Name" 
+							className="appearance-none bg-transparent border border-[#494949] rounded-2xl w-full py-2 px-3 text-white leading-tight focus:outline-none focus:border-blue-500" 
+						/>
+						<ErrorMessage name="fullName" component="div" className="text-red-500 text-xs italic" />
+						</div>
+
+						<div className="mb-4">
+						<Field 
+							type="email" 
+							name="email" 
+							placeholder="Email Address" 
+							className="appearance-none bg-transparent border border-[#494949] rounded-2xl w-full py-2 px-3 text-white leading-tight focus:outline-none focus:border-blue-500" 
+						/>
+						<ErrorMessage name="email" component="div" className="text-red-500 text-xs italic" />
+						</div>
+
+						<div className="mb-4">
+						<Field 
+							type="password" 
+							name="password" 
+							placeholder="Password" 
+							className="appearance-none bg-transparent border border-[#494949] rounded-2xl w-full py-2 px-3 text-white leading-tight focus:outline-none focus:border-blue-500" 
+						/>
+						<ErrorMessage name="password" component="div" className="text-red-500 text-xs italic" />
+						</div>
+
+						<div className="mb-4">
+						<Field 
+							type="password" 
+							name="confirmPassword" 
+							placeholder="Confirm Password" 
+							className="appearance-none bg-transparent border border-[#494949] rounded-2xl w-full py-2 px-3 text-white leading-tight focus:outline-none focus:border-blue-500" 
+						/>
+						<ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-xs italic" />
+						</div>
+
+						<div className="mb-6">
+						<Field 
+							type="text" 
+							name="legalIdNo" 
+							placeholder="Legal ID No" 
+							className="appearance-none bg-transparent border border-[#494949] rounded-2xl w-full py-2 px-3 text-white leading-tight focus:outline-none focus:border-blue-500" 
+						/>
+						<ErrorMessage name="legalIdNo" component="div" className="text-red-500 text-xs italic" />
+						</div>
+
+						<button 
+						type="submit" 
+						disabled={isSubmitting}
+						className="w-full bg-[#A259FF] hover:bg-[#b06af9] text-white font-bold py-2 px-4 rounded-2xl focus:outline-none focus:shadow-outline"
+						>
+						Register
+						</button>
+					</Form>
+					)}
+				</Formik>
+			</div>
+		</div>
+	</div>
   );
 };
 
