@@ -1,15 +1,27 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-// Async thunk for fetching assets
+import fakeData from '../../../public/fakeData.json'; // Adjust the path as necessary
+
 export const fetchAssets = createAsyncThunk(
   'assets/fetchAssets',
   async () => {
-    // Replace this with your actual API call to the Ethereum endpoint
-    const response = await fetch('your-ethereum-api-endpoint');
-    const data = await response.json();
-    return data; // This will be the payload
+    // Simulating an async call
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    return fakeData; // Directly return the imported data
   }
 );
+
+
+// // Async thunk for fetching assets
+// export const fetchAssets = createAsyncThunk(
+//   'assets/fetchAssets',
+//   async () => {
+//     // Replace this with your actual API call to the Ethereum endpoint
+//     const response = await fetch('your-ethereum-api-endpoint');
+//     const data = await response.json();
+//     return data; // This will be the payload
+//   }
+// );
 
 const assetsSlice = createSlice({
   name: 'assets',
@@ -31,10 +43,10 @@ const assetsSlice = createSlice({
           const { name, category, minPrice, maxPrice } = state.searchCriteria;
   
           if (name) {
-            filtered = filtered.filter(asset => asset.name.includes(name));
+            filtered = filtered.filter(asset => asset.name.toLowerCase().includes(name.toLowerCase()));
           }
           if (category) {
-            filtered = filtered.filter(asset => asset.category === category);
+            filtered = filtered.filter(asset => asset.category.toLowerCase() === category.toLowerCase());
           }
           if (minPrice) {
             filtered = filtered.filter(asset => asset.price >= minPrice);
@@ -50,18 +62,19 @@ const assetsSlice = createSlice({
         }
       },
   },
-  extraReducers: {
-    [fetchAssets.pending]: (state) => {
-      state.isLoading = true;
-    },
-    [fetchAssets.fulfilled]: (state, action) => {
-      state.assets = action.payload;
-      state.isLoading = false;
-    },
-    [fetchAssets.rejected]: (state, action) => {
-      state.isLoading = false;
-      state.error = action.error.message;
-    },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchAssets.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(fetchAssets.fulfilled, (state, action) => {
+        state.assets = action.payload;
+        state.isLoading = false;
+      })
+      .addCase(fetchAssets.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.error.message;
+      });
   },
 });
 

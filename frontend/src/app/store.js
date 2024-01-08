@@ -1,5 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit'
 
+import assetsReducer from "../features/marketPlace/assetsSlice"
+
 export default configureStore({
-  reducer: {}
+  reducer: {
+    assets: assetsReducer,
+  },
 })

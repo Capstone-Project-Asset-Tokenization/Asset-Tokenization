@@ -1,0 +1,16 @@
+[
+    {
+      "id": 1,
+      "name": "Asset 1",
+      "category": "Art",
+      "price": 1000
+    },
+    {
+      "id": 2,
+      "name": "Asset 2",
+      "category": "Real Estate",
+      "price": 5000
+    }
+    
+  ]
+  
