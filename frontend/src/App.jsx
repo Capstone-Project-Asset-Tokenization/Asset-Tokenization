@@ -24,10 +24,10 @@ const router = createBrowserRouter(
 
 function App({ routes }) {
   return (
-    <>
+    <div className="bg-[#2B2B2B]">
       <Navbar />
       <RouterProvider router={router} />
-    </>
+    </div>
   );
 }
 

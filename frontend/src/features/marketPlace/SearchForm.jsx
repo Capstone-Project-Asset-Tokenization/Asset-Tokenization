@@ -29,37 +29,43 @@ const SearchForm = () => {
   
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        name="name"
-        value={formData.name}
-        onChange={handleChange}
-        placeholder="Asset Name"
-      />
-      <input
-        type="text"
-        name="category"
-        value={formData.category}
-        onChange={handleChange}
-        placeholder="Category"
-      />
-      <input
-        type="number"
-        name="minPrice"
-        value={formData.minPrice}
-        onChange={handleChange}
-        placeholder="Min Price (ETH)"
-      />
-      <input
-        type="number"
-        name="maxPrice"
-        value={formData.maxPrice}
-        onChange={handleChange}
-        placeholder="Max Price (ETH)"
-      />
-      <button type="submit">Search</button>
-    </form>
+    <div className="bg-[#2B2B2B] p-6">
+      <form onSubmit={handleSubmit} className="flex flex-wrap gap-4">
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          placeholder="Search your favourite assets"
+          className="border border-[#858584] bg-transparent placeholder-[#858584] text-white p-3 w-1/3 rounded-lg"
+        />
+        <input
+          type="text"
+          name="category"
+          value={formData.category}
+          onChange={handleChange}
+          placeholder="Category"
+          className="border border-[#858584] bg-transparent placeholder-[#858584] text-white p-2 rounded-lg"
+        />
+        <input
+          type="number"
+          name="minPrice"
+          value={formData.minPrice}
+          onChange={handleChange}
+          placeholder="Min Price (ETH)"
+          className="border border-[#858584] bg-transparent placeholder-[#858584] text-white p-2 rounded-lg"
+        />
+        <input
+          type="number"
+          name="maxPrice"
+          value={formData.maxPrice}
+          onChange={handleChange}
+          placeholder="Max Price (ETH)"
+          className="border border-[#858584] bg-transparent placeholder-[#858584] text-white p-2 rounded-lg"
+        />
+        <button type="submit" className="bg-[#A259FF] hover:bg-[#b06af9] text-white p-3 rounded-lg">Search</button>
+      </form>
+    </div>
   );
 };
 

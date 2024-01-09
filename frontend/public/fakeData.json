@@ -1,14 +1,37 @@
 [
     {
       "id": 1,
-      "name": "Asset 1",
+      "name": "Hand Art Work",
       "category": "Art",
+      "ownername": "Petros Beyene",
       "price": 1000
+    },
+    {
+      "id": 2,
+      "name": "Noah Real Estate",
+      "category": "Real Estate",
+      "ownername": "Kennedy Forbes",
+      "price": 5000
     },
     {
       "id": 2,
       "name": "Asset 2",
       "category": "Real Estate",
+      "ownername": "Kennedy Forbes",
+      "price": 5000
+    },
+    {
+      "id": 2,
+      "name": "Asset 2",
+      "category": "Real Estate",
+      "ownername": "Kennedy Forbes",
+      "price": 5000
+    },
+    {
+      "id": 2,
+      "name": "Asset 2",
+      "category": "Real Estate",
+      "ownername": "Kennedy Forbes Kennedy Forbes",
       "price": 5000
     }
     
