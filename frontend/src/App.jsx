@@ -26,10 +26,10 @@ const router = createBrowserRouter(
 
 function App({ routes }) {
   return (
-    <>
+    <div className="">
       <Navbar />
       <RouterProvider router={router} />
-    </>
+    </div>
   );
 }
 
