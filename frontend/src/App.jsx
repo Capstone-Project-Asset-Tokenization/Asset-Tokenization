@@ -9,6 +9,8 @@ import LandingPage from "./pages/LandingPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Navbar from "./components/layout/Navbar";
 import AssetRegistration from "./pages/AssetRegistration";
+import UserRegistration from "./pages/userRegistration";
+import Login from "./pages/Login";
 import AssetMarketPlace from "./features/marketPlace/AssetMarketPlace";
 // import Footer from "./components/layout/Footer";
 
@@ -17,6 +19,8 @@ const router = createBrowserRouter(
     <Route>
       <Route index element={<LandingPage />} />
       <Route path="/asset-registration" element={<AssetRegistration />} />
+      <Route path="/signup" element={<UserRegistration />} />
+      <Route path="/signin" element={<Login />} />
       <Route path="/asset-marketplace" element={<AssetMarketPlace /> } />
     </Route>
   )
