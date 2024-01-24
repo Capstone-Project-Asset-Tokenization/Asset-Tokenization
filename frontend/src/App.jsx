@@ -8,10 +8,10 @@ import {
 import LandingPage from "./pages/LandingPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Navbar from "./components/layout/Navbar";
-import AssetRegistration from "./pages/AssetRegistration";
-import UserRegistration from "./pages/userRegistration";
-import Login from "./pages/Login";
-import AssetMarketPlace from "./features/marketPlace/AssetMarketPlace";
+import AssetRegistration from "./features/assetRegistration/Pages/AssetRegistration";
+import UserRegistration from "./features/authentication/Pages/userRegistration";
+import Login from "./features/authentication/Pages/Login";
+import AssetMarketPlace from "./features/marketPlace/Pages/AssetMarketPlace";
 // import Footer from "./components/layout/Footer";
 
 const router = createBrowserRouter(

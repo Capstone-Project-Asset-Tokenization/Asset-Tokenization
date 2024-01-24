@@ -2,7 +2,7 @@ import React from 'react';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
-import signUpImage from '../assets/sign_in_image.png'
+import signUpImage from '../../../assets/sign_in_image.png'
 
 const RegistrationSchema = Yup.object().shape({
   fullName: Yup.string()

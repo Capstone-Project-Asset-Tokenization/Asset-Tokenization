@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { setSearchCriteria, filterAssets } from './assetsSlice'
+import { setSearchCriteria, filterAssets } from '../assetsSlice'
 const SearchForm = () => {
   const [formData, setFormData] = useState({
     name: '',

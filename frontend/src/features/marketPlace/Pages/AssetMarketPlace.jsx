@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import AssetCard from '../../components/common/Card/AssetCard';
-import { fetchAssets } from './assetsSlice';
-import SearchForm from './SearchForm';
-import assetImage from '../../assets/Image Placeholder.svg';
+import AssetCard from '../Components/AssetCard';
+import { fetchAssets } from '../assetsSlice';
+import SearchForm from '../Components/SearchForm';
+import assetImage from '../../../assets/Image Placeholder.svg';
 
 const Marketplace = () => {
 	const dispatch = useDispatch();
@@ -13,11 +13,11 @@ const Marketplace = () => {
 	  dispatch(fetchAssets());
 	}, [dispatch]);
 
-	// useEffect(() => {
-	// 	console.log(assets)
-	// 	console.log(filteredAssets)
-	// 	console.log(searchCriteria)
-  	// }, [assets, filteredAssets])
+	useEffect(() => {
+		console.log(assets)
+		console.log(filteredAssets)
+		console.log(searchCriteria)
+  	}, [assets, filteredAssets])
   
 	const displayedAssets = Object.keys(searchCriteria).length === 0 ? assets : filteredAssets;
   
