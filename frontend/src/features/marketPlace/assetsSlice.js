@@ -1,27 +1,28 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
-import fakeData from '../../../public/fakeData.json'; // Adjust the path as necessary
+// import fakeData from '../../../public/fakeData.json';
 
-export const fetchAssets = createAsyncThunk(
-  'assets/fetchAssets',
-  async () => {
-    // Simulating an async call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return fakeData; // Directly return the imported data
-  }
-);
-
-
-// // Async thunk for fetching assets
 // export const fetchAssets = createAsyncThunk(
 //   'assets/fetchAssets',
 //   async () => {
-//     // Replace this with your actual API call to the Ethereum endpoint
-//     const response = await fetch('your-ethereum-api-endpoint');
-//     const data = await response.json();
-//     return data; // This will be the payload
+//     // Simulating an async call
+//     await new Promise(resolve => setTimeout(resolve, 1000));
+//     return fakeData; // Directly return the imported data
 //   }
 // );
+
+
+// Async thunk for fetching assets
+export const fetchAssets = createAsyncThunk(
+  'assets/fetchAssets',
+  async () => {
+    // TODO:
+    // Replace this with our actual API call to the Ethereum endpoint
+    const response = await fetch('your-ethereum-api-endpoint');
+    const data = await response.json();
+    return data; // This will be the payload
+  }
+);
 
 const assetsSlice = createSlice({
   name: 'assets',
