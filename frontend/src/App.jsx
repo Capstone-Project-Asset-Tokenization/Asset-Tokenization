@@ -12,7 +12,7 @@ import AssetRegistration from "./features/assetRegistration/Pages/AssetRegistrat
 import UserRegistration from "./features/authentication/Pages/userRegistration";
 import Login from "./features/authentication/Pages/Login";
 import AssetMarketPlace from "./features/marketPlace/Pages/AssetMarketPlace";
-import AssetVerification from "./pages/AssetVerification";
+import AssetVerification from "./features/assetVerification/pages/AssetVerification";
 // import Footer from "./components/layout/Footer";
 
 const router = createBrowserRouter(
