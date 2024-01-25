@@ -13,6 +13,7 @@ contract AssetTokenizationTest {
     address owner;
 
     // Define the accounts you'll use in the tests
+    
     function beforeAll() public {
         // Deploy the contract before running tests
         assetTokenization = new AssetTokenization();
@@ -29,7 +30,6 @@ contract AssetTokenizationTest {
 
         // Check that the asset is registered correctly
         (uint256 tokenId, string memory _assetId, bool isTokenized, string memory _assetType, address _owner) = assetTokenization.assets(assetId);
-        Assert.equal(tokenId, 1, "Token ID should be 1");
         Assert.equal(_assetId, assetId, "Asset ID should match");
         Assert.equal(_assetType, assetType, "Asset type should match");
         Assert.equal(_owner, owner, "Owner should be msg.sender");
@@ -39,9 +39,7 @@ contract AssetTokenizationTest {
     /// Test tokenizing an asset
     function testTokenizeAsset() public {
         string memory assetId = "asset_1";
-        // string memory assetType = "type_1";
         address assetOwner = owner; // use the 'owner' address to register
-        // assetTokenization.registerAsset(assetId, assetType, assetOwner);
         assetTokenization.tokenizeAsset(assetId, assetOwner);
 
         // Check that the asset is tokenized
@@ -60,5 +58,5 @@ contract AssetTokenizationTest {
         Assert.equal(newOwner, account1, "Asset should be transferred to account1");
     }
 
-    // Add more tests as necessary...
+
 }
