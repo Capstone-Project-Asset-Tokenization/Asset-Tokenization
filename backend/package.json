@@ -1,19 +1,11 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "A decentralized application for asset tokenization on Ethereum",
-  "main": "truffle-config.js",
-  "directories": {
-    "test": "test"
-  },
+  "description": "'A mini backend to support the asset tokenization '",
+  "main": "server.js",
   "scripts": {
-    "compile": "truffle compile",
-    "migrate": "truffle migrate",
-    "test": "truffle test",
-    "contract": "truffle create contract",
-    "console": "truffle console",
-    "migrate:reset": "truffle migrate --reset",
-    "migration": "truffle create migration"
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",

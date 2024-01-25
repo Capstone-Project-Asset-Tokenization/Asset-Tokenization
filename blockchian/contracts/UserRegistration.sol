@@ -27,8 +27,6 @@ contract UserRegistration {
     event UserDeleted(uint256 userId, string legalIdNo);
     event UserSuspended(uint256 userId, string legalIdNo);
 
-
-  modify 
     function registerUser(string memory _fullName, string memory _password, string memory _email, string memory _userType, string memory _legalIdNo) public {
         require(userIdsByLegalIdNo[_legalIdNo] == 0, "User with this legal ID already exists.");
 
