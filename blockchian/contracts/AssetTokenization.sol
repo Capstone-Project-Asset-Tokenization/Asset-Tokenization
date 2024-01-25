@@ -1,71 +1,65 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.4.22 <0.9.0;
+pragma solidity >=0.7.0 <0.9.0;
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
-contract AssetTokenization {
+contract AssetTokenization is ERC721 {
     struct Asset {
-        string assetId; // Unique identifier for the asset (e.g., VIN for cars, property ID for houses)
+        uint256 tokenId; // Unique token identifier
+        string assetId; // Unique identifier for the asset
+        bool isTokenized; // Indicates if the asset is tokenized
+        string assetType; // Type of the asset
         address owner; // Owner of the asset
-        bool isTokenized; // Indicates if the asset is already tokenized
-        string assetType; // Type of the asset (e.g., house, car, land)
-        bool isVerified; // Indicates if the asset is verified
-        //TODO: Add additional fields for the asset
+        // TODO: Add more fields
     }
-    // Mapping from assetId to Asset
+
+
     mapping(string => Asset) public assets;
+    mapping(uint256 => string) private tokenToAssetId;
+    uint256 private nextTokenId;
 
     event AssetRegistered(string assetId, address owner);
     event AssetTokenized(string assetId, address owner);
 
-    constructor() {}
-
-    // Function to register an asset
-    function registerAsset(
-        string memory assetId,
-        address owner,
-        string memory assetType
-    ) public {
-        require(
-            assets[assetId].owner == address(0),
-            "Asset already registered"
-        );
-        assets[assetId] = Asset(assetId, owner, false, assetType, false);
-        emit AssetRegistered(assetId, owner);
+    constructor() ERC721("AssetToken", "AST") {
+        nextTokenId = 1;
     }
 
-    // Function to tokenize an asset
-    function tokenizeAsset(string memory assetId) public {
-        require(
-            assets[assetId].owner == msg.sender,
-            "Only the owner can tokenize the asset"
-        );
+    function registerAsset(string memory assetId, string memory assetType, address assetOwner) public {
+        require(assets[assetId].owner == address(0), "Asset already registered");
+        
+        uint256 currentTokenId = nextTokenId++; // Assign and then increment tokenId
+        Asset memory newAsset = Asset(currentTokenId, assetId, false, assetType, assetOwner);
+        
+        assets[assetId] = newAsset;
+        tokenToAssetId[currentTokenId] = assetId;
+
+        emit AssetRegistered(assetId, assetOwner);
+    }
+ 
+
+
+    function tokenizeAsset(string memory assetId, address assetOwner) public {
+        require(assets[assetId].owner == assetOwner, "Only the owner can tokenize the asset");
         require(!assets[assetId].isTokenized, "Asset is already tokenized");
         assets[assetId].isTokenized = true;
-        //TODO: Add logic to tokenize the asset
-
-        emit AssetTokenized(assetId, msg.sender);
+        _mint(assetOwner, assets[assetId].tokenId);
+        emit AssetTokenized(assetId, assetOwner);
     }
 
-    // Function to check if an asset is tokenized
-    function isAssetTokenized(
-        string memory assetId
-    ) public view returns (bool) {
+    function transferAsset(string memory assetId, address from, address to) public {
+        require(assets[assetId].isTokenized, "Asset is not tokenized");
+        require(assets[assetId].owner == from, "Only the owner can transfer the asset");
+        _transfer(from, to, assets[assetId].tokenId);
+    }
+
+    function getAssetOwner(string memory assetId) public view returns (address) {
+        require(assets[assetId].isTokenized, "Asset is not tokenized");
+        return ownerOf(assets[assetId].tokenId);
+    }
+
+    function isAssetTokenized(string memory assetId) public view returns (bool) {
         return assets[assetId].isTokenized;
     }
 
-    // Function to verify an asset
-    function verifyAsset(string memory assetId) public {
-        require(
-            assets[assetId].owner == msg.sender,
-            "Only the owner can verify the asset"
-        );
-        require(!assets[assetId].isVerified, "Asset is already verified");
-        assets[assetId].isVerified = true;
-    }
 
-    // Function to check if an asset is verified
-    function isAssetVerified(string memory assetId) public view returns (bool) {
-        return assets[assetId].isVerified;
-    }
-
-    
 }
