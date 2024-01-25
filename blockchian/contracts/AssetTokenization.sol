@@ -12,6 +12,7 @@ contract AssetTokenization is ERC721 {
         // TODO: Add more fields
     }
 
+
     mapping(string => Asset) public assets;
     mapping(uint256 => string) private tokenToAssetId;
     uint256 private nextTokenId;
