@@ -13,6 +13,7 @@ contract AssetTokenizationTest {
     address owner;
 
     // Define the accounts you'll use in the tests
+    
     function beforeAll() public {
         // Deploy the contract before running tests
         assetTokenization = new AssetTokenization();
@@ -42,6 +43,7 @@ contract AssetTokenizationTest {
         // string memory assetType = "type_1";
         address assetOwner = owner; // use the 'owner' address to register
         // assetTokenization.registerAsset(assetId, assetType, assetOwner);
+        address assetOwner = owner; // use the 'owner' address to register
         assetTokenization.tokenizeAsset(assetId, assetOwner);
 
         // Check that the asset is tokenized

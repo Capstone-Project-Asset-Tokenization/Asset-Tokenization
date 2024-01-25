@@ -25,6 +25,10 @@ contract AssetTokenization is ERC721 {
     }
     
     mapping(uint256 => Escrow) public escrows;
+        // TODO: Add more fields
+    }
+
+
     mapping(string => Asset) public assets;
     mapping(uint256 => string) private tokenToAssetId;
     using SafeMath for uint256;
@@ -122,4 +126,5 @@ contract AssetTokenization is ERC721 {
     function isAssetVerified(string memory assetId) public view returns (bool) {
         return assets[assetId].isVerified;
     }
+
 }
