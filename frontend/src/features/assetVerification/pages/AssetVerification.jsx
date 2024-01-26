@@ -106,7 +106,7 @@ function AssetVerification() {
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex items-center">
-                                                <a href="#" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">See Detail</a>
+                                                <a href="/asset-verification-detail" class="font-medium text-blue-600 dark:text-blue-500 hover:underline">See Detail</a>
                                             </div>
                                         </td>
                                         <td class="px-6 py-4">

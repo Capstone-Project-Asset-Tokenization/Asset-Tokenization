@@ -13,6 +13,7 @@ import UserRegistration from "./features/authentication/Pages/userRegistration";
 import Login from "./features/authentication/Pages/Login";
 import AssetMarketPlace from "./features/marketPlace/Pages/AssetMarketPlace";
 import AssetVerification from "./features/assetVerification/pages/AssetVerification";
+import AssetDetail from "./features/assetVerification/pages/assetDetail";
 // import Footer from "./components/layout/Footer";
 
 const router = createBrowserRouter(
@@ -21,6 +22,8 @@ const router = createBrowserRouter(
       <Route index element={<LandingPage />} />
       <Route path="/asset-registration" element={<AssetRegistration />} />
       <Route path="/asset-verification" element={<AssetVerification />} />
+      <Route path="/asset-verification-detail" element={<AssetDetail />} />
+
       <Route path="/signup" element={<UserRegistration />} />
       <Route path="/signin" element={<Login />} />
       <Route path="/asset-marketplace" element={<AssetMarketPlace /> } />
