@@ -1,29 +1,28 @@
 {
   "name": "backend",
   "version": "1.0.0",
-  "description": "A decentralized application for asset tokenization on Ethereum",
-  "main": "truffle-config.js",
-  "directories": {
-    "test": "test"
-  },
+  "description": "'A mini backend to support the asset tokenization '",
+  "main": "server.js",
   "scripts": {
-    "compile": "truffle compile",
-    "migrate": "truffle migrate",
-    "test": "truffle test",
-    "contract": "truffle create contract",
-    "console": "truffle console",
-    "migrate:reset": "truffle migrate --reset",
-    "migration": "truffle create migration"
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@openzeppelin/contracts": "4.9",
     "web3": "^1.0.0-beta.37"
   },
   "devDependencies": {
-    "truffle": "^5.0.2",
-    "truffle-contract": "^4.0.31",
-    "solc": "^0.8.0"
+    "solc": "0.8.19",
+    "truffle": "5.11.5",
+    "truffle-contract": "4.0.31"
   },
-  "keywords": ["ethereum", "blockchain", "dapp", "truffle", "tokenization"]
+  "keywords": [
+    "ethereum",
+    "blockchain",
+    "dapp",
+    "truffle",
+    "tokenization"
+  ]
 }
