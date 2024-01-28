@@ -50,14 +50,14 @@ const Registration = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#2B2B2B]">
+    <div className="flex flex-col md:flex-row h-screen bg-[#2B2B2B]">
 		{/* Image Section */}
-		<div className="w-1/2 bg-contain bg-center bg-no-repeat" style={{ backgroundImage: `url(${signUpImage})` }}></div>
+		<div className="hidden md:block md:w-1/2 bg-contain bg-center bg-no-repeat" style={{ backgroundImage: `url(${signUpImage})` }}></div>
 
 		{/* Form Section */}
-		<div className="flex items-center justify-center w-1/2">
-			<div className="w-full max-w-md px-6 py-8">
-				<h2 className="font-sans font-semibold text-white text-5xl mb-8">Create Account</h2>
+		<div className="flex p-5 md:p-0 w-full h-full md:w-1/2 justify-center">
+			<div className="w-full max-w-md px-6 py-8 my-auto">
+				<h2 className="font-sans font-semibold text-white text-4xl md:text-5xl mb-4 md:mb-8">Create Account</h2>
 				<p className="font-sans text-white text-xl mb-6">
 					Welcome! enter your details and start creating, collecting and selling NFTs.
 				</p>
