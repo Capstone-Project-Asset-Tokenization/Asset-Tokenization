@@ -34,14 +34,14 @@ const Login = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#2B2B2B]">
-		{/* Image Section */}
-		<div className="w-1/2 bg-contain bg-center bg-no-repeat" style={{ backgroundImage: `url(${signInImage})` }}></div>
+    <div className="flex flex-col md:flex-row h-screen bg-[#2B2B2B]">
+		{/* Image Section - hidden on small screens */}
+		<div className="hidden md:block md:w-1/2 bg-contain bg-center bg-no-repeat" style={{ backgroundImage: `url(${signInImage})` }}></div>
 
 		{/* Form Section */}
-		<div className="flex items-center justify-center w-1/2">
-			<div className="w-full max-w-xs">
-			<h2 className="font-sans font-semibold text-white text-6xl mb-8">Sign In</h2>
+		<div className="flex p-5 md:p-0 w-full h-full md:w-1/2 justify-center">
+			<div className="w-full max-w-xs my-auto">
+			<h2 className="font-sans font-semibold text-white text-4xl mb-4 md:mb-8 md:text-6xl">Sign In</h2>
 			<p className="font-sans text-white text-xl">Welcome back!</p>
 			<Formik
 				initialValues={{ usernameOrEmail: '', password: '' }}
