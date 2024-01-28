@@ -6,7 +6,7 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
-import NotFoundPage from "./pages/NotFoundPage";
+import NotFoundPage from "./pages/notFoundPage";
 import Navbar from "./components/layout/Navbar";
 import AssetRegistration from "./features/assetRegistration/Pages/AssetRegistration";
 import UserRegistration from "./features/authentication/Pages/userRegistration";
@@ -26,12 +26,13 @@ const router = createBrowserRouter(
 
       <Route path="/signup" element={<UserRegistration />} />
       <Route path="/signin" element={<Login />} />
-      <Route path="/asset-marketplace" element={<AssetMarketPlace /> } />
+      <Route path="/asset-marketplace" element={<AssetMarketPlace /> } />"
+      <Route path="*" element={<NotFoundPage />} />
     </Route>
   )
 );
 
-function App({ routes }) {
+function App() {
   return (
     <div className="bg-[#2B2B2B]">
       <Navbar />
