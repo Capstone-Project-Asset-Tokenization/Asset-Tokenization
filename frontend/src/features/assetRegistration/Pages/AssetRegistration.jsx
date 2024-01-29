@@ -124,7 +124,7 @@ const AssetRegistration = () => {
                     value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
-                    <option value="LAND">LAND</option>
+                    <option value="LAND">SHARE</option>
                     <option value="REAL_ESTATE">REAL ESTATE</option>
                     <option value="ART_WORKS">ART-WORKS</option>
                   </select>
