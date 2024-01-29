@@ -39,7 +39,7 @@ const LandingPage = () => {
         </div>
         <div className="basis-1/2 justify-center items-center">
           <img
-            className="mx-auto"
+            className="mx-auto animated-element"
             src="../src/assets/landing_clip.png"
             alt="clip image"
           />
