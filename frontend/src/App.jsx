@@ -26,7 +26,7 @@ const router = createBrowserRouter(
 
       <Route path="/signup" element={<UserRegistration />} />
       <Route path="/signin" element={<Login />} />
-      <Route path="/asset-marketplace" element={<AssetMarketPlace /> } />"
+      <Route path="/asset-marketplace" element={<AssetMarketPlace /> } />
       <Route path="*" element={<NotFoundPage />} />
     </Route>
   )
