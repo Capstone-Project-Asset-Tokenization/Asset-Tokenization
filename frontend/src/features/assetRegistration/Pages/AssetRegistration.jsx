@@ -68,8 +68,8 @@ const AssetRegistration = () => {
         <div className="w-full mx-auto py-16">
           <form onSubmit={handleSubmit} className="text-white shadow-md rounded px-8 pt-6 pb-8 mb-4 ">
             <h1 className="block text-white font-bold mb-4 text-5xl font-mono">Create New Asset</h1>
-            <div className='flex flex-row flex-wrap gap-3'>
-              <div className='w-3/6 min-w-[10rem]'>
+            <div className='flex flex-row flex-wrap gap-3 w-full'>
+              <div className='w-[35rem] min-w-[10rem]'>
                 <div className="mb-4">
                   <label className="block mb-2 text-sm font-bold text-gray-400" htmlFor="assetName">
                     Asset Name
@@ -130,7 +130,7 @@ const AssetRegistration = () => {
                   </select>
                 </div>
               </div>
-              <div className="mb-4 w-3/6">
+              <div className="mb-4 w-[35rem]">
                 <div className="flex items-center justify-between flex-col">
                   <div className="w-full mb-2">
                     <label className="block mb-2 text-sm font-bold text-gray-400" htmlFor="assetImages">
