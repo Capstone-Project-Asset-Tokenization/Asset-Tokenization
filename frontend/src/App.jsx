@@ -15,7 +15,7 @@ import Login from "./features/authentication/Pages/Login";
 import AssetMarketPlace from "./features/marketPlace/Pages/AssetMarketPlace";
 import AssetVerification from "./features/assetVerification/pages/AssetVerification";
 import AssetDetail from "./features/assetVerification/pages/assetDetail";
-// import Footer from "./components/layout/Footer";
+import ConnectWallet from "./features/authentication/Pages/ConnectWalet";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -27,7 +27,9 @@ const router = createBrowserRouter(
 
       <Route path="/signup" element={<UserRegistration />} />
       <Route path="/signin" element={<Login />} />
-      <Route path="/asset-marketplace" element={<AssetMarketPlace /> } />
+      <Route path="/asset-marketplace" element={<AssetMarketPlace />} />
+      <Route path="/connect-wallet" element={<ConnectWallet />} />
+
       <Route path="*" element={<NotFoundPage />} />
     </Route>
   )
