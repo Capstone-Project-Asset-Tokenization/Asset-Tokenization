@@ -3,6 +3,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
 import signInImage from '../../../assets/sign_in_image.png'
+import { useLoginMutation } from '../../../stores/auth/authAPI';
 
 const LoginSchema = Yup.object().shape({
   usernameOrEmail: Yup.string()
@@ -13,23 +14,12 @@ const LoginSchema = Yup.object().shape({
 
 const Login = () => {
 
-  const handleSubmit = async (values, { setSubmitting }) => {
-    try {
-    //   const response = await axios.post('http://localhost:3000/login', values);
-      console.log(values);
-      // TODO:
-      // handle success redirect
-    } catch (error) {
-      console.error('Login error', error);
-      if (error.response && error.response.status === 401) {
-        // Handle invalid credentials
-        alert('Invalid username or password');
-      } else {
-        // Handle other kinds of errors
-        alert('An error occurred. Please try again later.');
-      }
-    }
+	const [login, { isLoading: loginLoading, isSuccess: loginSuccessful, isError: loginError }] = useLoginMutation();
 
+
+  const handleSubmit = async (values, { setSubmitting }) => {
+
+	login(values);
     setSubmitting(false);
   };
 
@@ -41,6 +31,28 @@ const Login = () => {
 		{/* Form Section */}
 		<div className="flex p-5 md:p-0 w-full h-full md:w-1/2 justify-center">
 			<div className="w-full max-w-xs my-auto">
+			{
+				loginError && (
+					<div className="w-full max-w-md px-6 py-8 my-auto">
+						<div class="px-3 py-1 text-xs font-medium leading-none text-center text-red-800 bg-red-200 rounded-full animate-pulse dark:bg-red-900 dark:text-red-200">Error!</div>
+						<h2 className="font-sans font-semibold text-white text-4xl md:text-5xl mb-4 md:mb-8">Login Failed</h2>
+						<p className="font-sans text-white text-xl mb-6">
+							There was an error logging you in. Please try again later.
+						</p>
+					</div>
+				)
+			}
+			{
+				loginLoading && (
+					<div className="w-full max-w-md px-6 py-8 my-auto">
+						<div class="px-3 py-1 text-xs font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">Loading!</div>
+						<h2 className="font-sans font-semibold text-white text-4xl md:text-5xl mb-4 md:mb-8">Logging In</h2>
+						<p className="font-sans text-white text-xl mb-6">
+							Please wait while we log you in.
+						</p>
+					</div>
+				)
+			}
 			<h2 className="font-sans font-semibold text-white text-4xl mb-4 md:mb-8 md:text-6xl">Sign In</h2>
 			<p className="font-sans text-white text-xl">Welcome back!</p>
 			<Formik
