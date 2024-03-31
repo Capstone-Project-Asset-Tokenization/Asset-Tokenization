@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import signUpImage from '../../../assets/sign_in_image.png'
 import { useRegisterMutation } from '../../../stores/auth/authAPI';
+import { useNavigate } from 'react-router-dom';
 
 const RegistrationSchema = Yup.object().shape({
 	fullName: Yup.string()
@@ -23,6 +24,8 @@ const RegistrationSchema = Yup.object().shape({
 
 const Registration = () => {
 
+	let navigate = useNavigate();
+
 
 	const [register, { isLoading: registerationLoading, isSuccess: registerationSucess, isError: registerationError }] = useRegisterMutation();
 
@@ -30,8 +33,10 @@ const Registration = () => {
 		register(values);
 		setSubmitting(false);
 	};
-	console.log(registerationSucess, registerationError, registerationLoading);
 
+	if (registerationSucess) {
+		navigate("/connect-wallet");
+	}
 	return (
 		<div className="flex flex-col md:flex-row h-screen bg-[#2B2B2B]">
 			{/* Image Section */}
@@ -40,33 +45,6 @@ const Registration = () => {
 			{/* Form Section */}
 			<div className="flex p-5 md:p-0 w-full h-full md:w-1/2 justify-center">
 
-				{
-					registerationSucess && (
-						<div className="w-full max-w-md px-6 py-8 my-auto">
-							<div class="px-3 py-1 text-xs font-medium leading-none text-center text-green-800 bg-green-200 rounded-full animate-pulse dark:bg-green-900 dark:text-green-200">Success!</div>
-							<h2 className="font-sans font-semibold text-white text-4xl md:text-5xl mb-4 md:mb-8">Account Created</h2>
-							<p className="font-sans text-white text-xl mb-6">
-								Your account has been created successfully. Please check your email to verify your account.
-							</p>
-						</div>
-					)
-				}
-				{
-					registerationError && (
-						<div className="w-full max-w-md px-6 py-8 my-auto">
-							<div class="px-3 py-1 text-xs font-medium leading-none text-center text-red-800 bg-red-200 rounded-full animate-pulse dark:bg-red-900 dark:text-red-200">Error!</div>
-							<h2 className="font-sans font-semibold text-white text-4xl md:text-5xl mb-4 md:mb-8">Account Creation Failed</h2>
-							<p className="font-sans text-white text-xl mb-6">
-								There was an error creating your account. Please try again later.
-							</p>
-						</div>
-					)
-				}
-				{
-					registerationLoading && (
-						<div class="px-3 py-1 text-xs font-medium leading-none text-center text-blue-800 bg-blue-200 rounded-full animate-pulse dark:bg-blue-900 dark:text-blue-200">loading...</div>
-					)
-				}
 				<div className="w-full max-w-md px-6 py-8 my-auto">
 					<h2 className="font-sans font-semibold text-white text-4xl md:text-5xl mb-4 md:mb-8">Create Account</h2>
 					<p className="font-sans text-white text-xl mb-6">
@@ -135,12 +113,23 @@ const Registration = () => {
 									<ErrorMessage name="legalIdNo" component="div" className="text-red-500 text-xs italic" />
 								</div>
 
+
+								{
+									registerationError && (
+										<div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-center" role="alert">
+											<span class="font-medium">Registration Failed!</span> There was an error creating your account. Please try again later.
+										</div>
+									)
+								}
+
 								<button
 									type="submit"
-									disabled={isSubmitting}
+									disabled={registerationLoading}
 									className="w-full bg-[#A259FF] hover:bg-[#b06af9] text-white font-bold py-2 px-4 rounded-2xl focus:outline-none focus:shadow-outline"
 								>
-									Register
+									{
+										registerationLoading ? "Registering..." : "Register"
+									}
 								</button>
 							</Form>
 						)}
