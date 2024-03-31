@@ -77,7 +77,7 @@ const Login = () => {
 										className="w-full bg-[#A259FF] hover:bg-[#b06af9] text-white font-bold py-2 px-4 rounded-2xl focus:outline-none focus:shadow-outline"
 									>
 										{
-											loginLoading ? "Logging In..." : "Login"
+											loginLoading ? "Signing In..." : "Sign In"
 										}
 									</button>
 								</div>
