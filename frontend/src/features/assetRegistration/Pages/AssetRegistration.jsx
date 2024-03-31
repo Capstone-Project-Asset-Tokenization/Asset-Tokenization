@@ -188,7 +188,7 @@ const AssetRegistration = () => {
 
             <div className="flex items-center justify-between">
               <button
-                className="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 w-2/6 rounded focus:outline-none focus:shadow-outline"
+                className="bg-primary-main hover:bg-purple-700 text-white font-bold py-2 px-4 w-2/6 rounded focus:outline-none focus:shadow-outline"
                 type="submit"
               >
                 Create

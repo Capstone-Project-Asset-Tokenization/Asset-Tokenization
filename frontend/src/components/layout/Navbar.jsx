@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { AiOutlineMenu, AiOutlineClose } from 'react-icons/ai'; // For menu icons
+import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai"; // For menu icons
 import { IoRocketOutline } from "react-icons/io5";
 import { useSelector } from 'react-redux';
 const Navbar = () => {
@@ -65,7 +65,9 @@ const Navbar = () => {
             <div>
               {/* Website Logo */}
               <a href="#" className="flex items-center py-4 px-2">
-                <span className="font-semibold  text-lg">Asset Tokenization Platform</span>
+                <span className="font-semibold  text-lg">
+                  Asset Tokenization Platform
+                </span>
               </a>
             </div>
             {/* Primary Navbar items */}
@@ -81,8 +83,15 @@ const Navbar = () => {
           {/* Secondary Navbar items */}
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center">
-            <button onClick={() => setIsMenuOpen(!isMenuOpen)} className="outline-none mobile-menu-button">
-              {isMenuOpen ? <AiOutlineClose className="text-3xl" /> : <AiOutlineMenu className="text-3xl" />}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="outline-none mobile-menu-button"
+            >
+              {isMenuOpen ? (
+                <AiOutlineClose className="text-3xl" />
+              ) : (
+                <AiOutlineMenu className="text-3xl" />
+              )}
             </button>
           </div>
         </div>
