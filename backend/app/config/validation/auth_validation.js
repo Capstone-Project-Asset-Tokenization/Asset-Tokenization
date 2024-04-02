@@ -6,6 +6,7 @@ export const RegistrationValidatorSchema = Joi.object({
   password: Joi.string().min(8).required(),
   // The validation depends on the type of the legalIdNo field in the database.
   legalIdNo: Joi.number().required(),
+  walletId: Joi.string().default(""),
 });
 
 export const LoginRegistratinValidatorSchema = Joi.object({

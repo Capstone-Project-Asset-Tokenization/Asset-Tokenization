@@ -18,6 +18,11 @@ const userSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  //
+  walletId: {
+    type: String,
+    default: "",
+  },
   createdAt: {
     type: Date,
     default: Date.now,
