@@ -1,0 +1,23 @@
+@baseUrl=http://localhost:3000/api/user
+### 
+
+POST {{baseUrl}}/register
+Content-Type: application/json
+
+{
+  "fullName": "John Doe",
+  "email": "john@gmail.com",
+  "password": "1212121212",
+  "legalIdNo": "1234567890",
+  "walletId":"my wallet Id is here "
+}
+###
+POST {{baseUrl}}/login
+Content-Type: application/json
+
+{
+
+    "email": "john@gmail.com",
+    "password": "1212121212"
+
+}
