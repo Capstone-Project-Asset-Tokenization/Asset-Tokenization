@@ -4,7 +4,10 @@ import * as Yup from 'yup';
 import axios from 'axios';
 import signInImage from '../../../assets/sign_in_image.png'
 import { useLoginMutation } from '../../../stores/auth/authAPI';
+import { setToken, setUser, setWalletAddress } from '../../../stores/auth/authSlice';
+import { useNavigate } from 'react-router-dom';
 
+import { useSelector, useDispatch } from 'react-redux'
 const LoginSchema = Yup.object().shape({
 	usernameOrEmail: Yup.string()
 		.required('Username or Email is required'),
@@ -14,14 +17,23 @@ const LoginSchema = Yup.object().shape({
 
 const Login = () => {
 
-	const [login, { isLoading: loginLoading, isSuccess: loginSuccessful, isError: loginError }] = useLoginMutation();
-
+	let navigate = useNavigate()
+	let dispatch = useDispatch()
+	const [login, { isLoading: loginLoading, isSuccess: loginSuccessful, isError: loginError, data: response, error: LoginErrorData }] = useLoginMutation();
+	let user = useSelector(state=>state.auth)
 
 	const handleSubmit = async (values, { setSubmitting }) => {
 
-		login(values);
+		login({ email: values.usernameOrEmail, password: values.password });
 		setSubmitting(false);
 	};
+
+	if (loginSuccessful) {
+		dispatch(setUser({ token: response.token, wallet: response.walletAddress }))
+		dispatch(setToken(response.token))
+		dispatch(setWalletAddress(response.walletAddress))
+		navigate('/')
+	}
 
 	return (
 		<div className="flex flex-col md:flex-row h-screen bg-[#2B2B2B]">
@@ -63,7 +75,7 @@ const Login = () => {
 								{
 									loginError && (
 										<div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-center" role="alert">
-											<span class="font-medium">Signin Failed! </span>There was an error logging you in. Please try again later.
+											<span class="font-medium">Signin Failed! </span>{LoginErrorData.data}
 
 										</div>
 

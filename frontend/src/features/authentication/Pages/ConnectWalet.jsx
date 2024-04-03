@@ -1,14 +1,14 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 
-const ConnectWallet = () => {
+const ConnectWallet = ({ handleBack, handleSubmit, setWallet }) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [defaultAccount, setDefaultAccount] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
   const [isLoading, setLoading] = useState(false);
 
   const connectMetaMask = async () => {
-    setLoading(true); 
+    setLoading(true);
     if (window.ethereum) {
       try {
         const result = await window.ethereum.request({
@@ -45,6 +45,8 @@ const ConnectWallet = () => {
   };
 
   const completeRegisteration = () => {
+    setWallet(defaultAccount);
+    handleSubmit(defaultAccount);
     console.log(defaultAccount, "Send to backend");
   };
 
@@ -55,7 +57,7 @@ const ConnectWallet = () => {
           className="mx-auto animated-element"
           src="../src/assets/connect_wallet.png"
           alt="clip image"
-        />
+        />completeRegisteration
       </div>
       <div className="basis-1/2 pb-8">
         <h2 className="text-4xl mb-4 font-semibold">Connect wallet</h2>

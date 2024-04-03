@@ -28,9 +28,9 @@ export const RegisterController = async (req, res) => {
     });
 
     const result = await user.save(user);
-    res.send(result);
+    res.json({user:result});
   } catch (error) {
-    res.send(error.message);
+    res.json({error:error.message});
   }
 };
 
@@ -50,8 +50,8 @@ export const LoginController = async (req, res) => {
       expiresIn: "160h",
     });
     console.log(token);
-    res.header("Autorization", `Bearer ${token}`).send(token);
+    res.header("Autorization", `Bearer ${token}`).json({token:token,walletAddress:user.walletId});
   } catch (error) {
-    res.send(error.message);
+    res.json({error:error.message});
   }
 };
