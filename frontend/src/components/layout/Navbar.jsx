@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { AiOutlineMenu, AiOutlineClose } from "react-icons/ai"; // For menu icons
 import { IoRocketOutline } from "react-icons/io5";
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom'
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  let dispatch = useDispatch()
 
   const authState = useSelector(state => state.auth);
-  console.log('authState', authState)
 
-  const [navbarItems, setNavbarItems] = useState([
+  const initialUrls = [
     {
       name: 'Home',
       link: '/',
@@ -44,15 +45,25 @@ const Navbar = () => {
       name: 'Profile',
       link: '/profile',
       protected: true
+    },
+    {
+      name: 'LogOut',
+      link: '/',
+      protected: true,
+      onClick: () => {
+        dispatch(logout());
+      }
     }
-  ]);
+  ]
+
+  const [navbarItems, setNavbarItems] = useState(initialUrls);
 
   useEffect(() => {
     if (authState.isAuthenticated) {
-      let temp = navbarItems.filter(item => item.name !== 'Login' && item.name !== 'Sign Up');
+      let temp = initialUrls.filter(item => item.name !== 'Login' && item.name !== 'Sign Up');
       setNavbarItems(temp);
     } else {
-      let temp = navbarItems.filter(item => !item.protected);
+      let temp = initialUrls.filter(item => !item.protected);
       setNavbarItems(temp);
     }
   }, [authState.isAuthenticated]);
@@ -64,18 +75,18 @@ const Navbar = () => {
           <div className="flex ">
             <div>
               {/* Website Logo */}
-              <a href="#" className="flex items-center py-4 px-2">
+              <Link to="/" className="flex items-center py-4 px-2">
                 <span className="font-semibold  text-lg">
                   Asset Tokenization Platform
                 </span>
-              </a>
+              </Link>
             </div>
             {/* Primary Navbar items */}
           </div>
           <div className="hidden md:flex items-center ">
             {
               navbarItems.map((item, index) => (
-                <a key={index} href={item.link} className="py-2 px-2 m-2 hover:bg-purple-500 transition duration-300  rounded font-semibold">{item.name}</a>
+                <Link key={index} to={item.link} onClick={() => { if (item.onClick) item.onClick() }} className="py-2 px-2 m-2 hover:bg-purple-500 transition duration-300  rounded font-semibold">{item.name}</Link>
               ))
             }
 
@@ -100,7 +111,7 @@ const Navbar = () => {
       <div className={`md:hidden ${isMenuOpen ? 'block' : 'hidden'}`}>
         {
           navbarItems.map((item, index) => (
-            <a key={index} href={item.link} className="block py-2 px-4 text-sm hover:bg-purple-500 hover:text-white">{item.name}</a>
+            <Link key={index} to={item.link} className="block py-2 px-4 text-sm hover:bg-purple-500 hover:text-white">{item.name}</Link>
           ))
         }
       </div>
