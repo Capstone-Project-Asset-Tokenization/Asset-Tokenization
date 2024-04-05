@@ -69,7 +69,7 @@ const Navbar = () => {
   }, [authState.isAuthenticated]);
 
   return (
-    <nav className=" shadow-lg text-white border-b-1.7 mb-5 p-3">
+    <nav className=" shadow-lg text-white border-b-1.7 p-3">
       <div className="mx-4">
         <div className="flex justify-between">
           <div className="flex ">
