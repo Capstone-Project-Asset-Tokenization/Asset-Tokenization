@@ -28,9 +28,9 @@ export const RegisterController = async (req, res) => {
     });
 
     const result = await user.save(user);
-    res.json({user:result});
+    res.json({ user: result });
   } catch (error) {
-    res.json({error:error.message});
+    res.json({ error: error.message });
   }
 };
 
@@ -44,14 +44,16 @@ export const LoginController = async (req, res) => {
 
     const user = await User.findOne({ email: email });
 
+    if (!user) return res.status(400).send("User not found");
+
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) return res.status(400).send("Invalid password");
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "160h",
     });
     console.log(token);
-    res.header("Autorization", `Bearer ${token}`).json({token:token,walletAddress:user.walletId});
+    res.header("Autorization", `Bearer ${token}`).json({ token: token, walletAddress: user.walletId });
   } catch (error) {
-    res.json({error:error.message});
+    res.json({ error: error.message });
   }
 };
