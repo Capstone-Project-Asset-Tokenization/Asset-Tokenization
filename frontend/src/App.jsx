@@ -21,6 +21,7 @@ import AssetDetail from "./features/assetVerification/pages/assetDetail";
 import { useSelector } from 'react-redux'
 import { Navigate } from "react-router-dom";
 import ConnectWallet from "./features/authentication/Pages/ConnectWalet";
+import ProfilePage from "./features/profile/pages";
 
 
 
@@ -39,6 +40,7 @@ function App() {
 
           <Route path="/signup" element={<UserRegistration />} />
           <Route path="/signin" element={<Login />} />
+          <Route path="/profile" element={<ProfilePage />} />
           <Route path="/asset-marketplace" element={<AssetMarketPlace />} />
           <Route path="/connect-wallet" element={<ConnectWallet />} />
           <Route path="*" element={<NotFoundPage />} />
