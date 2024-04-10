@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const BASE_URL = import.meta.env.VITE_APP_API_URL;
 
 export const authAPI = createApi({
-  reducerPath: "auth",
+  reducerPath: 'authAPI',
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
     prepareHeaders: (headers) => {
@@ -15,8 +15,8 @@ export const authAPI = createApi({
     register: builder.mutation({
       query: (data) => {
         return {
-          url: `/signup`,
-          method: "POST",
+          url: `/user/register`,
+          method: 'POST',
           body: data,
         };
       },
@@ -24,8 +24,8 @@ export const authAPI = createApi({
     login: builder.mutation({
       query: (data) => {
         return {
-          url: `/login`,
-          method: "POST",
+          url: `/user/login`,
+          method: 'POST',
           body: data,
         };
       },

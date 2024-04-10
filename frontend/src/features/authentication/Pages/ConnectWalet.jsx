@@ -1,20 +1,28 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
 
-const ConnectWallet = () => {
+const ConnectWallet = ({
+  handleBack,
+  handleSubmit,
+  setWallet,
+  registrationLoading,
+  registrationError,
+  registratonErrorResponse,
+}) => {
   const [errorMessage, setErrorMessage] = useState(null);
   const [defaultAccount, setDefaultAccount] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
   const [isLoading, setLoading] = useState(false);
 
   const connectMetaMask = async () => {
-    setLoading(true); 
+    setLoading(true);
     if (window.ethereum) {
       try {
         const result = await window.ethereum.request({
           method: "eth_requestAccounts",
         });
         accountChanged(result[0]);
+        setErrorMessage("");
       } catch (error) {
         setErrorMessage("Error connecting wallet: " + error.message);
       }
@@ -45,21 +53,23 @@ const ConnectWallet = () => {
   };
 
   const completeRegisteration = () => {
+    setWallet(defaultAccount);
+    handleSubmit(defaultAccount);
     console.log(defaultAccount, "Send to backend");
   };
 
   return (
-    <div className="md:flex justify-between space-x-5 items-center px-20">
+    <div className="md:flex justify-between space-x-5 px-20">
       <div className="basis-1/2 justify-center items-center">
         <img
-          className="mx-auto animated-element"
+          className="mx-auto"
           src="../src/assets/connect_wallet.png"
           alt="clip image"
         />
       </div>
-      <div className="basis-1/2 pb-8">
+      <div className="basis-1/2 pb-8 mt-16 ">
         <h2 className="text-4xl mb-4 font-semibold">Connect wallet</h2>
-        <p className=" mb-2">
+        <p className=" mb-2 text-gray-400">
           Choose a wallet you want to connect. There are several wallet
           providers.
         </p>
@@ -88,10 +98,19 @@ const ConnectWallet = () => {
         {defaultAccount && (
           <button
             onClick={completeRegisteration}
-            className="bg-primary-main hover:bg-primary-dark rounded py-2 px-4 mt-6"
+            className="bg-primary-main hover:bg-primary-dark rounded py-2 px-4 mt-6 w-[250px]"
           >
-            Complete registration
+            {registrationLoading ? "Registering..." : "Complete registration"}
           </button>
+        )}
+        {registrationError && (
+          <div
+            className="p-2 my-4 text-sm text-red-800 rounded bg-red-50 dark:bg-gray-800 dark:text-red-400 text-center  w-[250px]"
+            role="alert"
+          >
+            <span className="font-medium">Registration Failed!</span>{" "}
+            {registratonErrorResponse.data}
+          </div>
         )}
       </div>
     </div>

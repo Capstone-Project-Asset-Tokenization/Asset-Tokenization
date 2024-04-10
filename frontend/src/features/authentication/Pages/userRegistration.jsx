@@ -1,143 +1,215 @@
-import React from 'react';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
-import axios from 'axios';
-import signUpImage from '../../../assets/sign_in_image.png'
-import { useRegisterMutation } from '../../../stores/auth/authAPI';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+import axios from "axios";
+import signUpImage from "../../../assets/sign_in_image.png";
+import { useRegisterMutation } from "../../../stores/auth/authAPI";
+import { useNavigate } from "react-router-dom";
+import ConnectWallet from "./ConnectWalet";
 
 const RegistrationSchema = Yup.object().shape({
-	fullName: Yup.string()
-		.required('Full Name is required'),
-	email: Yup.string()
-		.email('Invalid email')
-		.required('Email is required'),
-	password: Yup.string()
-		.min(6, 'Password must be at least 6 characters')
-		.required('Password is required'),
-	confirmPassword: Yup.string()
-		.oneOf([Yup.ref('password'), null], 'Passwords must match')
-		.required('Please confirm your password'),
-	legalIdNo: Yup.string()
-		.required('Legal ID No. is required')
+  fullName: Yup.string().required("Full Name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+  confirmPassword: Yup.string()
+    .oneOf([Yup.ref("password"), null], "Passwords must match")
+    .required("Please confirm your password"),
+  legalIdNo: Yup.string().required("Legal ID No. is required"),
 });
 
 const Registration = () => {
+  let navigate = useNavigate();
 
-	let navigate = useNavigate();
+  let [section, setSection] = React.useState(0);
+  let [walletAddress, setWalletAddress] = React.useState(null);
+  let [values, setValues] = React.useState(null);
 
+  const [
+    register,
+    {
+      isLoading: registrationLoading,
+      isSuccess: registrationSucess,
+      isError: registrationError,
+      error: registratonErrorResponse,
+    },
+  ] = useRegisterMutation();
 
-	const [register, { isLoading: registerationLoading, isSuccess: registerationSucess, isError: registerationError }] = useRegisterMutation();
+  const handleProfileSubmit = async (values, { setSubmitting }) => {
+    setSection(1);
+    setValues(values);
+  };
 
-	const handleSubmit = async (values, { setSubmitting }) => {
-		register(values);
-		setSubmitting(false);
-	};
+  const handleSubmit = (wallet) => {
+    delete values.confirmPassword;
+    register({ ...values, walletId: wallet });
+  };
 
-	if (registerationSucess) {
-		navigate("/connect-wallet");
-	}
-	return (
-		<div className="flex flex-col md:flex-row h-screen bg-[#2B2B2B]">
-			{/* Image Section */}
-			<div className="hidden md:block md:w-1/2 bg-contain bg-center bg-no-repeat" style={{ backgroundImage: `url(${signUpImage})` }}></div>
+  const handleBack = () => {
+    setSection(0);
+  };
 
-			{/* Form Section */}
-			<div className="flex p-5 md:p-0 w-full h-full md:w-1/2 justify-center">
+  if (registrationSucess) {
+    navigate("/signin");
+  }
+  return (
+    <div className="">
+      <ol className="lg:flex items-start w-full space-y-4 lg:space-y-0">
+        <li className=" flex-1">
+          <div
+            onClick={() => setSection(0)}
+            className="border-l-2 flex flex-col border-t-0 pl-4 pt-0 border-solid border-purple-600 font-medium lg:pt-4 lg:border-t-2 lg:border-l-0 lg:pl-0"
+          >
+            <span className="mx-6 text-sm lg:text-base text-purple-300">
+              Step 1
+            </span>
+            <h4 className=" mx-6 text-sm text-gray-400">Create Account</h4>
+          </div>
+        </li>
+        <li className=" flex-1">
+          {section == 1 && (
+            <div className="border-l-2 flex flex-col border-t-0 pl-4 pt-0 border-solid border-purple-400 font-medium lg:pt-4 lg:border-t-2 lg:border-l-0 lg:pl-0">
+              <span className="text-sm lg:text-base text-purple-300">
+                Step 2
+              </span>
 
-				<div className="w-full max-w-md px-6 py-8 my-auto">
-					<h2 className="font-sans font-semibold text-white text-4xl md:text-5xl mb-4 md:mb-8">Create Account</h2>
-					<p className="font-sans text-white text-xl mb-6">
-						Welcome! enter your details and start creating, collecting and selling NFTs.
-					</p>
-					<Formik
-						initialValues={{
-							fullName: '',
-							email: '',
-							password: '',
-							confirmPassword: '',
-							legalIdNo: ''
-						}}
-						validationSchema={RegistrationSchema}
-						onSubmit={handleSubmit}
-					>
-						{({ isSubmitting }) => (
-							<Form className="bg-transparent">
-								<div className="mb-4">
-									<Field
-										type="text"
-										name="fullName"
-										placeholder="Full Name"
-										className="appearance-none bg-transparent border border-[#494949] rounded-2xl w-full py-2 px-3 text-white leading-tight focus:outline-none focus:border-blue-500"
-									/>
-									<ErrorMessage name="fullName" component="div" className="text-red-500 text-xs italic" />
-								</div>
+              <h4 className="text-sm text-gray-400">Connect Wallet</h4>
+            </div>
+          )}
+        </li>
+      </ol>
 
-								<div className="mb-4">
-									<Field
-										type="email"
-										name="email"
-										placeholder="Email Address"
-										className="appearance-none bg-transparent border border-[#494949] rounded-2xl w-full py-2 px-3 text-white leading-tight focus:outline-none focus:border-blue-500"
-									/>
-									<ErrorMessage name="email" component="div" className="text-red-500 text-xs italic" />
-								</div>
+      {section == 0 && (
+        <div className="flex flex-col md:flex-row h-screen bg-[#2B2B2B]">
+          {/* Image Section */}
+          <div
+            className="hidden md:block md:w-1/2 bg-contain bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${signUpImage})` }}
+          ></div>
 
-								<div className="mb-4">
-									<Field
-										type="password"
-										name="password"
-										placeholder="Password"
-										className="appearance-none bg-transparent border border-[#494949] rounded-2xl w-full py-2 px-3 text-white leading-tight focus:outline-none focus:border-blue-500"
-									/>
-									<ErrorMessage name="password" component="div" className="text-red-500 text-xs italic" />
-								</div>
+          {/* Form Section */}
+          <div className="flex  w-full  md:w-1/2">
+            <div className="w-full max-w-md px-6 ">
+              <h2 className="font-sans font-semibold pb-5 text-white text-3xl ">
+                Create Account
+              </h2>
+              <p className="font-sans text-neutral-400 mb-6">
+                Welcome! Enter your details and start creating, collecting and
+                selling NFTs.
+              </p>
+              <Formik
+                initialValues={{
+                  fullName: "",
+                  email: "",
+                  password: "",
+                  confirmPassword: "",
+                  legalIdNo: "",
+                }}
+                validationSchema={RegistrationSchema}
+                onSubmit={handleProfileSubmit}
+              >
+                {({ isSubmitting }) => (
+                  <Form className="bg-transparent">
+                    <div className="mb-4">
+                      <Field
+                        type="text"
+                        name="fullName"
+                        placeholder="Full Name"
+                        className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                      />
+                      <ErrorMessage
+                        name="fullName"
+                        component="div"
+                        className="text-red-500 text-xs italic"
+                      />
+                    </div>
 
-								<div className="mb-4">
-									<Field
-										type="password"
-										name="confirmPassword"
-										placeholder="Confirm Password"
-										className="appearance-none bg-transparent border border-[#494949] rounded-2xl w-full py-2 px-3 text-white leading-tight focus:outline-none focus:border-blue-500"
-									/>
-									<ErrorMessage name="confirmPassword" component="div" className="text-red-500 text-xs italic" />
-								</div>
+                    <div className="mb-4">
+                      <Field
+                        type="email"
+                        name="email"
+                        placeholder="Email Address"
+                        className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                      />
+                      <ErrorMessage
+                        name="email"
+                        component="div"
+                        className="text-red-500 text-xs italic"
+                      />
+                    </div>
 
-								<div className="mb-6">
-									<Field
-										type="text"
-										name="legalIdNo"
-										placeholder="Legal ID No"
-										className="appearance-none bg-transparent border border-[#494949] rounded-2xl w-full py-2 px-3 text-white leading-tight focus:outline-none focus:border-blue-500"
-									/>
-									<ErrorMessage name="legalIdNo" component="div" className="text-red-500 text-xs italic" />
-								</div>
+                    <div className="mb-4">
+                      <Field
+                        type="password"
+                        name="password"
+                        placeholder="Password"
+                        className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                      />
+                      <ErrorMessage
+                        name="password"
+                        component="div"
+                        className="text-red-500 text-xs italic"
+                      />
+                    </div>
 
+                    <div className="mb-4">
+                      <Field
+                        type="password"
+                        name="confirmPassword"
+                        placeholder="Confirm Password"
+                        className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                      />
+                      <ErrorMessage
+                        name="confirmPassword"
+                        component="div"
+                        className="text-red-500 text-xs italic"
+                      />
+                    </div>
 
-								{
-									registerationError && (
-										<div class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-center" role="alert">
-											<span class="font-medium">Registration Failed!</span> There was an error creating your account. Please try again later.
-										</div>
-									)
-								}
+                    <div className="mb-6">
+                      <Field
+                        type="text"
+                        name="legalIdNo"
+                        placeholder="Legal ID No"
+                        className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                      />
+                      <ErrorMessage
+                        name="legalIdNo"
+                        component="div"
+                        className="text-red-500 text-xs italic"
+                      />
+                    </div>
 
-								<button
-									type="submit"
-									disabled={registerationLoading}
-									className="w-full bg-[#A259FF] hover:bg-[#b06af9] text-white font-bold py-2 px-4 rounded-2xl focus:outline-none focus:shadow-outline"
-								>
-									{
-										registerationLoading ? "Registering..." : "Register"
-									}
-								</button>
-							</Form>
-						)}
-					</Formik>
-				</div>
-			</div>
-		</div>
-	);
+                    <button
+                      type="submit"
+                      disabled={registrationLoading}
+                      className="w-full bg-primary-main hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    >
+                      {registrationLoading ? "Registering..." : "Next"}
+                    </button>
+                  </Form>
+                )}
+              </Formik>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {section == 1 && (
+        <div>
+          <ConnectWallet
+            handleback={handleBack}
+            handleSubmit={handleSubmit}
+            setWallet={setWalletAddress}
+            registrationLoading={registrationLoading}
+            registrationError={registrationError}
+            registratonErrorResponse={registratonErrorResponse}
+          ></ConnectWallet>
+        </div>
+      )}
+    </div>
+  );
 };
 
 export default Registration;
