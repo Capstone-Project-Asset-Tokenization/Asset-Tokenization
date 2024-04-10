@@ -8,15 +8,16 @@ import { useNavigate } from "react-router-dom";
 import ConnectWallet from "./ConnectWalet";
 
 const RegistrationSchema = Yup.object().shape({
-  fullName: Yup.string().required("Full Name is required"),
+  firstName: Yup.string().required("Full Name is required"),
+  lastName: Yup.string().required("Full Name is required"),
   email: Yup.string().email("Invalid email").required("Email is required"),
   password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
+    .min(8, "Password must be at least 8 characters")
     .required("Password is required"),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref("password"), null], "Passwords must match")
     .required("Please confirm your password"),
-  legalIdNo: Yup.string().required("Legal ID No. is required"),
+  nationalID: Yup.string().required("Legal ID No. is required"),
 });
 
 const Registration = () => {
@@ -100,11 +101,12 @@ const Registration = () => {
               </p>
               <Formik
                 initialValues={{
-                  fullName: "",
+                  firstName: "",
+                  lastName: "",
                   email: "",
                   password: "",
                   confirmPassword: "",
-                  legalIdNo: "",
+                  nationalID: "",
                 }}
                 validationSchema={RegistrationSchema}
                 onSubmit={handleProfileSubmit}
@@ -114,12 +116,25 @@ const Registration = () => {
                     <div className="mb-4">
                       <Field
                         type="text"
-                        name="fullName"
-                        placeholder="Full Name"
+                        name="firstName"
+                        placeholder="Frist Name"
                         className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
                       />
                       <ErrorMessage
-                        name="fullName"
+                        name="firstName"
+                        component="div"
+                        className="text-red-500 text-xs italic"
+                      />
+                    </div>
+                    <div className="mb-4">
+                      <Field
+                        type="text"
+                        name="lastName"
+                        placeholder="Last Name"
+                        className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                      />
+                      <ErrorMessage
+                        name="lastName"
                         component="div"
                         className="text-red-500 text-xs italic"
                       />
@@ -170,12 +185,12 @@ const Registration = () => {
                     <div className="mb-6">
                       <Field
                         type="text"
-                        name="legalIdNo"
+                        name="nationalID"
                         placeholder="Legal ID No"
                         className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
                       />
                       <ErrorMessage
-                        name="legalIdNo"
+                        name="nationalID"
                         component="div"
                         className="text-red-500 text-xs italic"
                       />
