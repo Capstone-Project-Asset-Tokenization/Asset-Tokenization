@@ -56,7 +56,7 @@ const Registration = () => {
   }
   return (
     <div className="">
-      <ol className="lg:flex items-start w-full space-y-4 lg:space-y-0">
+      <ol className="lg:flex items-center w-full space-y-4 space-x-9 lg:space-y-0">
         <li className=" flex-1">
           <div
             onClick={() => setSection(0)}
@@ -82,7 +82,7 @@ const Registration = () => {
       </ol>
 
       {section == 0 && (
-        <div className="flex flex-col md:flex-row h-screen bg-[#2B2B2B]">
+        <div className="flex">
           {/* Image Section */}
           <div
             className="hidden md:block md:w-1/2 bg-contain bg-center bg-no-repeat"
@@ -90,7 +90,7 @@ const Registration = () => {
           ></div>
 
           {/* Form Section */}
-          <div className="flex  w-full  md:w-1/2">
+          <div className="flex w-full mb-20 md:w-1/2 justify-center">
             <div className="w-full max-w-md px-6 ">
               <h2 className="font-sans font-semibold pb-5 text-white text-3xl ">
                 Create Account

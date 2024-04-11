@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="border-t-1.6 text-white border-t border-neutral-700">
       <div className="max-w-6xl mx-auto px-4 py-8">
-        <div className="flex justify-between">
+        <div className="flex justify-between flex-col md:flex-row">
           <div className="flex flex-col">
             <span className="font-bold text-2xl mb-2">Asset Tokenization</span>
             <p className="text-gray-400 text-sm">Tokenize and manage all your assets in one place</p>
@@ -25,7 +25,7 @@ const Footer = () => {
               </a>
             </div>
           </div>
-          <div className="flex space-x-20 justify-between">
+          <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-20 justify-between">
             <div className="flex flex-col">
               <span className="font-semibold text-gray-400 uppercase mb-2">Explore</span>
               <a href="#" className="text-gray-400 text-sm hover:text-gray-200 mb-1">Marketplace</a>
