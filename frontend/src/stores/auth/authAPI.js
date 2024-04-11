@@ -30,7 +30,12 @@ export const authAPI = createApi({
         };
       },
     }),
+    getUser: builder.query({
+      query: () => ({ url: `/user`, method: "GET" }),
+      // Adding caching configuration
+      providesTags: ['User'],
+    }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation } = authAPI;
+export const { useRegisterMutation, useLoginMutation, useGetUserQuery } = authAPI;
