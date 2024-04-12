@@ -7,6 +7,7 @@ import { useRegisterMutation } from "../../../stores/auth/authAPI";
 import { useNavigate } from "react-router-dom";
 import ConnectWallet from "./ConnectWalet";
 
+
 const RegistrationSchema = Yup.object().shape({
   firstName: Yup.string().required("Full Name is required"),
   lastName: Yup.string().required("Full Name is required"),
