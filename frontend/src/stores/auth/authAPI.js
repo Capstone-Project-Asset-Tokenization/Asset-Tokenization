@@ -6,11 +6,15 @@ export const authAPI = createApi({
   reducerPath: "authAPI",
   baseQuery: fetchBaseQuery({
     baseUrl: BASE_URL,
-    prepareHeaders: (headers) => {
-      headers.set("Authorization", `Bearer token`);
+    prepareHeaders: (headers, { getState }) => {
+      const token = getState()?.auth?.token;
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
       return headers;
     },
   }),
+
   endpoints: (builder) => ({
     register: builder.mutation({
       query: (data) => {
@@ -33,9 +37,10 @@ export const authAPI = createApi({
     getUser: builder.query({
       query: () => ({ url: `/user`, method: "GET" }),
       // Adding caching configuration
-      providesTags: ['User'],
+      providesTags: ["User"],
     }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useGetUserQuery } = authAPI;
+export const { useRegisterMutation, useLoginMutation, useGetUserQuery } =
+  authAPI;
