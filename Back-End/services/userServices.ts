@@ -16,6 +16,7 @@ export default class UserServie {
 
   async register(user: RegistrationInput) {
     let existingUser = await this.userRepository.getUserByEmail(user.email);
+
     if (existingUser) {
       throw new CustomError(409, "User email already exists");
     }
@@ -35,7 +36,10 @@ export default class UserServie {
       );
 
     if (existingUser) {
-      throw new CustomError(409, "User wallet address already exists");
+      throw new CustomError(
+        409,
+        "User with this wallet address already exists"
+      );
     }
 
     return await this.userRepository.createUser(user);
