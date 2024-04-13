@@ -109,7 +109,7 @@ const ConnectWallet = ({
             role="alert"
           >
             <span className="font-medium">Registration Failed!</span>{" "}
-            {registratonErrorResponse.data}
+            {registratonErrorResponse?.data?.msg}
           </div>
         )}
       </div>

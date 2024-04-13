@@ -9,7 +9,7 @@ const ProfilePage = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [editedUserData, setEditedUserData] = useState({ ...userData });
-  console.log(editedUserData, "userdata");
+
   const RegistrationSchema = Yup.object().shape({
     firstName: Yup.string().required("Full Name is required"),
     lastName: Yup.string().required("Full Name is required"),
@@ -35,9 +35,7 @@ const ProfilePage = () => {
   if (isGettingUser) {
     return <div>Loading...</div>;
   }
-
-  console.log(userData, "user dat");
-
+  
   return (
     <div className="container mx-auto mt-8">
       <div className="max-w-md mx-auto p-6">

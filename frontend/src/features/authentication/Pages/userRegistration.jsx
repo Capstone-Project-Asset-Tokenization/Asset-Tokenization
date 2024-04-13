@@ -6,7 +6,6 @@ import { useRegisterMutation } from "../../../stores/auth/authAPI";
 import { useNavigate } from "react-router-dom";
 import ConnectWallet from "./ConnectWalet";
 
-
 const RegistrationSchema = Yup.object().shape({
   firstName: Yup.string().required("Full Name is required"),
   lastName: Yup.string().required("Full Name is required"),
@@ -44,7 +43,7 @@ const Registration = () => {
 
   const handleSubmit = (wallet) => {
     delete values.confirmPassword;
-    register({ ...values, walletId: wallet });
+    register({ ...values, walletAddress: wallet });
   };
 
   const handleBack = () => {
@@ -100,14 +99,18 @@ const Registration = () => {
                 selling NFTs.
               </p>
               <Formik
-                initialValues={{
-                  firstName: "",
-                  lastName: "",
-                  email: "",
-                  password: "",
-                  confirmPassword: "",
-                  nationalID: "",
-                }}
+                initialValues={
+                  values
+                    ? values
+                    : {
+                        firstName: "",
+                        lastName: "",
+                        email: "",
+                        password: "",
+                        confirmPassword: "",
+                        nationalID: "",
+                      }
+                }
                 validationSchema={RegistrationSchema}
                 onSubmit={handleProfileSubmit}
               >
