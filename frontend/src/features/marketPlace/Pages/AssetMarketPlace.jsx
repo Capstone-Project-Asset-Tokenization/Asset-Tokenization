@@ -7,18 +7,7 @@ import assetImage from '../../../assets/Image Placeholder.svg';
 
 const Marketplace = () => {
 	const dispatch = useDispatch();
-	const { assets, filteredAssets, searchCriteria } = useSelector((state) => state.assets);
-  
-	useEffect(() => {
-	  dispatch(fetchAssets());
-	}, [dispatch]);
 
-	useEffect(() => {
-		console.log(assets)
-		console.log(filteredAssets)
-		console.log(searchCriteria)
-  	}, [assets, filteredAssets])
-  
 	// const displayedAssets = Object.keys(searchCriteria).length === 0 ? assets : filteredAssets;
 	const displayedAssets = [
 		{
