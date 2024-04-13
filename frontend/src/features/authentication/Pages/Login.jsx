@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import axios from "axios";
@@ -13,7 +13,9 @@ import { useNavigate } from "react-router-dom";
 
 import { useSelector, useDispatch } from "react-redux";
 const LoginSchema = Yup.object().shape({
-  usernameOrEmail: Yup.string().required("Username or Email is required"),
+  usernameOrEmail: Yup.string()
+    .email("Invalid email format")
+    .required("Email is required"),
   password: Yup.string().required("Password is required"),
 });
 
@@ -37,14 +39,16 @@ const Login = () => {
     setSubmitting(false);
   };
 
-  if (loginSuccessful) {
-    dispatch(
-      setUser({ token: response.token, wallet: response.walletAddress })
-    );
-    dispatch(setToken(response.token));
-    dispatch(setWalletAddress(response.walletAddress));
-    navigate("/");
-  }
+  useEffect(() => {
+    if (loginSuccessful) {
+      dispatch(
+        setUser({ token: response.token, wallet: response.walletAddress })
+      );
+      dispatch(setToken(response.token));
+      dispatch(setWalletAddress(response.walletAddress));
+      navigate("/");
+    }
+  }, [loginSuccessful, response, dispatch, navigate]);
 
   return (
     <div className="flex flex-col md:flex-row h-screen bg-[#2B2B2B]">
@@ -96,11 +100,11 @@ const Login = () => {
                 </div>
                 {loginError && (
                   <div
-                    class="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-center"
+                    className="p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 text-center"
                     role="alert"
                   >
-                    <span class="font-medium">Signin Failed! </span>
-                    {LoginErrorData.data}
+                    <span className="font-medium">Signin Failed! </span>
+                    {LoginErrorData?.data?.msg}
                   </div>
                 )}
 
