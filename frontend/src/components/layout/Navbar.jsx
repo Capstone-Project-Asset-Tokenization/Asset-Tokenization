@@ -12,7 +12,6 @@ const Navbar = () => {
 
   const authState = useSelector((state) => state.auth);
   const location = useLocation();
-  console.log(location.pathname);
 
   const initialUrls = [
     {
