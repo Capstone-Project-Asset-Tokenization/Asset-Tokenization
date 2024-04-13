@@ -4,11 +4,15 @@ import { IoRocketOutline } from "react-icons/io5";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { logout } from "../../stores/auth/authSlice";
+import { useLocation } from "react-router-dom";
+
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   let dispatch = useDispatch();
 
   const authState = useSelector((state) => state.auth);
+  const location = useLocation();
+  console.log(location.pathname);
 
   const initialUrls = [
     {
@@ -47,7 +51,7 @@ const Navbar = () => {
       protected: true,
     },
     {
-      name: "LogOut",
+      name: "Logout",
       link: "/",
       protected: true,
       onClick: () => {
@@ -84,7 +88,7 @@ const Navbar = () => {
             </div>
           </Link>
 
-          <div className="hidden md:flex items-center ">
+          <div className="hidden md:flex space-x-2 items-center ">
             {navbarItems.map((item, index) => (
               <Link
                 key={index}
@@ -92,7 +96,13 @@ const Navbar = () => {
                 onClick={() => {
                   if (item.onClick) item.onClick();
                 }}
-                className="py-2 px-2 m-2 hover:bg-purple-500 transition duration-300  rounded font-semibold"
+                className={`${
+                  location?.pathname == item.link ? "text-primary-light" : ""
+                }  ${
+                  item.name == "Logout"
+                    ? "bg-primary-main text-gray-200 hover:text-white"
+                    : "hover:text-primary-main"
+                }  py-1 px-2 text-gray-300 font-medium  transition duration-300 rounded `}
               >
                 {item.name}
               </Link>

@@ -1,7 +1,6 @@
 import React from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import axios from "axios";
 import signUpImage from "../../../assets/sign_in_image.png";
 import { useRegisterMutation } from "../../../stores/auth/authAPI";
 import { useNavigate } from "react-router-dom";
