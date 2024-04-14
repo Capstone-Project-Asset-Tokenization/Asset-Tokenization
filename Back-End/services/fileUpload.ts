@@ -11,7 +11,7 @@ export class FileUploadService {
     async uploadFiles(files: any, filesName: string = 'file') {
         let responses = []
         for (let file of files) {
-            const response = await uploadFile(file, file.name)
+            const response = await uploadFile(file.tempFilePath, file.name)
             responses.push(response)
         }
         return responses
