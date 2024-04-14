@@ -126,16 +126,16 @@ function AssetVerification() {
             <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
                 <ul className="flex flex-wrap -mb-px justify-around">
                     <li onClick={()=>handleAssetStatusChange(1)} className="me-2">
-                        <a href="#" className="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">Verified</a>
+                        <a href="#" className={`inline-block p-4 border-b-2  rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${assetStatus==1?'border-grey-600':'border-transparent'}`}>Verified</a>
                     </li>
                     <li onClick={()=>handleAssetStatusChange(0)} className="me-2">
-                        <a href="#" className="inline-block p-4 text-grey-600 border-b-2 border-grey-600 rounded-t-lg active dark:text-grey-500 dark:border-grey-500" aria-current="page">Unverified</a>
+                        <a href="#" className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${assetStatus==0?'border-grey-600':'border-transparent'}`}>Unverified</a>
                     </li>
                     <li onClick={()=>handleAssetStatusChange(2)} className="me-2">
-                        <a href="#" className="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">Rejected</a>
+                        <a href="#" className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${assetStatus==2?'border-grey-600':'border-transparent'}`}>Declined</a>
                     </li>
-                    <li className="me-2">
-                        <a href="#" className="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">All</a>
+                    <li onClick={()=>handleAssetStatusChange(1)} className="me-2">
+                        <a href="#" className={`inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300`}>All</a>
                     </li>
                 </ul>
             </div>
