@@ -9,25 +9,25 @@ import {
   useUploadSingleFileMutation,
   // useRegisterAssetQuery,
 } from "../../../stores/asset/assetApi";
-import Web3 from "web3";
-import { assetContractABI } from "../../../config/config";
+// import Web3 from "web3";
+// import { assetContractABI } from "../../../config/config";
 import { SpinLoader } from "../../../components/common/spinner/spinLoader";
 import { Toaster } from "../../../components/common/toaster/toaster";
-const initWeb3 = async () => {
-  if (window.ethereum) {
-    try {
-      await window.ethereum.request({ method: "eth_requestAccounts" });
-      return new Web3(window.ethereum);
-    } catch (error) {
-      console.error("Error during web3 initialization:", error);
-      throw error;
-    }
-  } else {
-    console.error("Non-Ethereum browser detected. Consider trying MetaMask.");
-    throw new Error("Ethereum not available");
-  }
-};
-const contractAddress = import.meta.env.VITE_APP_WEB3_ASSET_CONTRACT_ADDRESS;
+import { getAssetContractInstance } from "../../../config/contractInstances/index";
+// const initWeb3 = async () => {
+//   if (window.ethereum) {
+//     try {
+//       await window.ethereum.request({ method: "eth_requestAccounts" });
+//       return new Web3(window.ethereum);
+//     } catch (error) {
+//       console.error("Error during web3 initialization:", error);
+//       throw error;
+//     }
+//   } else {
+//     console.error("Non-Ethereum browser detected. Consider trying MetaMask.");
+//     throw new Error("Ethereum not available");
+//   }
+// };
 const AssetRegistration = () => {
   const [assetName, setAssetName] = useState("");
   const [description, setDescription] = useState("");
@@ -64,7 +64,6 @@ const AssetRegistration = () => {
   const [error, setError] = useState(null);
 
   const uploadImages = async (images, isMultiple = false) => {
-    try {
       // const formData = new FormData();
       if (isMultiple) {
         console.log(images, "images");
@@ -81,12 +80,8 @@ const AssetRegistration = () => {
         console.log(imageUrl, "imageUrl");
         setUploadedImages((prev) => [...prev, imageUrl]);
       }
-    } catch (error) {
-      setImageFileUploadError(error.message);
-    }
   };
   const uploadFiles = async (files, isMultiple = false) => {
-    try {
       // const formData = new FormData();
       if (isMultiple) {
         console.log(files, "files");
@@ -102,9 +97,6 @@ const AssetRegistration = () => {
         console.log(url, "url");
         setUploadedFiles((prev) => [...prev, url]);
       }
-    } catch (error) {
-      setImageFileUploadError(error.message);
-    }
   };
 
   const handleSubmit = async (event) => {
@@ -142,36 +134,68 @@ const AssetRegistration = () => {
     }
 
     if (supportingFiles.length > 0) {
+      console.log("uploading files")
+      try{
       await uploadFiles(supportingFiles, supportingFiles.length > 1);
+      } catch (error) {
+        console.log("File upload error");
+        setLoading(false);
+        setSuccess(false);
+        console.log(error, "error");
+        setError("Error uploading files or Images. Please try again");
+        return;
+      }
     }
 
     if (assetImages.length > 0) {
+      try{
       await uploadImages(assetImages, assetImages.length > 1);
+      } catch (error) {
+        setLoading(false);
+        setSuccess(false);
+        console.log(error, "error");
+        setError("Error uploading files or Images. Please try again");
+        return;
+      }
     }
-    const web3 = await initWeb3();
-    const contract = new web3.eth.Contract(assetContractABI, contractAddress);
-    const accounts = await web3.eth.getAccounts();
-    if (!accounts[0]) throw new Error("No Ethereum account found");
+    // const web3 = await initWeb3();
+    const [contract, contractWithSigner] = await getAssetContractInstance();
+    const accounts = await window.ethereum.request({
+      method: "eth_requestAccounts",
+    });
+
+    if (
+      !contract ||
+      !contractWithSigner ||
+      !accounts ||
+      accounts.length === 0
+    ) {
+      setLoading(false);
+      setError("Error Connecting to MetaMask. Please try again");
+      return;
+    }
+
     try {
       const name = assetName;
       const decimals = Number(decimal);
       const initialSupply = Number(totalSupply);
       const images = uploadedImages.map((image) => image.url);
       const supportingFiles = uploadedFiles.map((file) => file.url);
-      const data = await contract.methods
-        .createAsset(
-          name,
-          symbol,
-          decimals,
-          initialSupply,
-          tokenPrice,
-          category,
-          description,
-          images,
-          supportingFiles
-        )
-        .send({ from: accounts[0] });
-      console.log(data, "data---");
+      const transactionResponse = await contractWithSigner.createAsset(
+        name,
+        symbol,
+        decimals,
+        initialSupply,
+        tokenPrice,
+        category,
+        description,
+        images,
+        supportingFiles
+    );
+    await transactionResponse.wait(); // Wait for the transaction to be mined
+    setLoading(false);
+    console.log('Asset created successfully!');
+      console.log(transactionResponse, "data---");
       setLoading(false);
       setSuccess(true);
       // clear form
@@ -189,6 +213,7 @@ const AssetRegistration = () => {
       // setTags([]);
     } catch (error) {
       setLoading(false);
+      setSuccess(false);
       console.log(error, "error");
       setError("Error creating asset. Please try again");
     }
@@ -502,22 +527,31 @@ const AssetRegistration = () => {
                 Create
               </button>
             </div>
-            {error && <Toaster message={error} type={"error"} />}
+            {error && (
+              <div className="mt-4 flex items-center justify-end">
+            <Toaster message={error} type={"error"}
+            />
+            </div>)
+             }
             {imageFileUploadError && (
+              <div className="mt-4 flex items-center justify-end">
               <Toaster message={imageFileUploadError} type={"error"} />
+            </div>
             )}
             {(isUploadingFiles ||
               isUploadingImages ||
               isUploadingSingleImage ||
               isUploadingSingleFile) && (
+                <div className="mt-4 flex items-center justify-end">
               <Toaster message="Uploading Files..." type={"info"} />
+            </div>
             )}
             {success && (
               <div className="mt-4 flex items-center justify-end">
-              <Toaster
-                message="Asset created successfully"
-                type={"success"}
-              />
+                <Toaster
+                  message="Asset created successfully"
+                  type={"success"}
+                />
               </div>
             )}
           </form>
