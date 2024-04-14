@@ -1,13 +1,97 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import { getAssetContractInstance, getUserContractInstance } from '../../../config/contractInstances'
+import { createAssetObjFromContract } from '../../../utils/createAssetObj'
+import { useGetUsersInfoFromWalletQuery } from '../../../stores/auth/authAPI'
+import { Link } from 'react-router-dom'
+import { dummyUserAvatar } from '../../../assets/avatar' 
+import { enumMap } from '../../../utils/enumMap'
+import { useNavigate } from 'react-router-dom'
+// import { getAssetContractInstance } from '../../../config/contractInstances/index'
+
 
 function AssetVerification() {
+
+    let [assets, setAssets] = useState([])
+    let [fullAssetsData, setFullAssetsData] = useState([])
+
+    let [error, setError] = useState('')
+    let [assetStatus, setAssetStatus] = useState(0)
+    let ownerAddresses = assets.map(asset => {
+        return asset.creator
+    })
+
+    let { data: users, error: userFetchError, isLoading: fetchingUsers } = useGetUsersInfoFromWalletQuery(ownerAddresses)
+
+
+    let handleAssetStatusChange = (status) => {
+        setAssetStatus(status)
+        fetchAssets(status)
+    }
+
+
+    let fetchAssets = async (verificationStatus = 1) => {
+        try {
+            let [assetContract, assetContractWithSigner] = await getAssetContractInstance()
+            let response = await assetContractWithSigner.getAssetsByFilter(verificationStatus)
+            response = await Promise.all(response.map(async (item) => {
+                return await createAssetObjFromContract(item)
+            }))
+            response=response.filter(item=>item.creator!="0x0000000000000000000000000000000000000000")
+            setAssets(response)
+            console.log('assets', response, response[0])
+        } catch (error) {
+            setError(error.message)
+            console.log('error in fetch asset', error)
+        }
+    }
+
+    fullAssetsData = assets.map((asset, index) => {
+        return {
+            ...asset,
+            ownerInfo: users ? users[index] : ''
+        }
+    }
+    )
+    
+    let approveHandler = async (assetId) => {
+        let [assetContract, assetContractWithSigner] = await getAssetContractInstance()
+        
+        try {
+            
+            let response = await assetContractWithSigner.verifyAsset(assetId, 1)
+            console.log('asset verification response', response)
+            // navigate("/asset-verification");
+            fetchAssets()
+        } catch (error) {
+            console.log('asset verification error', error)
+            setError(error.message.split('"')[1])
+        }
+    }
+    
+    let rejectHandler = async (assetId) => {
+        let [assetContract, assetContractWithSigner] = await getAssetContractInstance()
+        
+        try {
+            
+            let response = await assetContractWithSigner.verifyAsset(assetId, 2)
+            console.log('asset verification response', response)
+            // navigate("/asset-verification");
+            fetchAssets()
+        } catch (error) {
+            console.log('asset verification error', error)
+            setError(error.message.split('"')[1])
+        }
+    }
     let data = [
-        {
-            profileImg: 'https://fastly.picsum.photos/id/96/200/200.jpg?hmac=OWdGKA_6EKn7IZEMPRZ-F_wvRBZlDHi-n9QCzIKJV_4',
-            name: 'John Doe',
-            email: 'johndoe@gmail.com',
-            category: 'Apartment',
-        },
+
+    
+    // console.log('full assets data', fullAssetsData,'users',users)
+    {
+        profileImg: 'https://fastly.picsum.photos/id/96/200/200.jpg?hmac=OWdGKA_6EKn7IZEMPRZ-F_wvRBZlDHi-n9QCzIKJV_4',
+        name: 'John Doe',
+        email: 'johndoe@gmail.com',
+        category: 'Apartment',
+    },
         {
             profileImg: 'https://fastly.picsum.photos/id/96/200/200.jpg?hmac=OWdGKA_6EKn7IZEMPRZ-F_wvRBZlDHi-n9QCzIKJV_4',
             name: 'John Doe',
@@ -28,6 +112,10 @@ function AssetVerification() {
         },
 
     ]
+    useEffect(() => {
+        fetchAssets()
+    }, [])
+
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold mb-4">Created Assets</h1>
@@ -37,17 +125,17 @@ function AssetVerification() {
 
             <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
                 <ul className="flex flex-wrap -mb-px justify-around">
-                    <li className="me-2">
-                        <a href="#" className="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">Today</a>
+                    <li onClick={()=>handleAssetStatusChange(1)} className="me-2">
+                        <a href="#" className="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">Verified</a>
+                    </li>
+                    <li onClick={()=>handleAssetStatusChange(0)} className="me-2">
+                        <a href="#" className="inline-block p-4 text-grey-600 border-b-2 border-grey-600 rounded-t-lg active dark:text-grey-500 dark:border-grey-500" aria-current="page">Unverified</a>
+                    </li>
+                    <li onClick={()=>handleAssetStatusChange(2)} className="me-2">
+                        <a href="#" className="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">Rejected</a>
                     </li>
                     <li className="me-2">
-                        <a href="#" className="inline-block p-4 text-grey-600 border-b-2 border-grey-600 rounded-t-lg active dark:text-grey-500 dark:border-grey-500" aria-current="page">This Month</a>
-                    </li>
-                    <li className="me-2">
-                        <a href="#" className="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">This Week</a>
-                    </li>
-                    <li className="me-2">
-                        <a href="#" className="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">All Time</a>
+                        <a href="#" className="inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300">All</a>
                     </li>
                 </ul>
             </div>
@@ -76,7 +164,13 @@ function AssetVerification() {
                                 Owner Info
                             </th>
                             <th scope="col" className="px-6 py-3">
+                                Asset Name
+                            </th>
+                            <th scope="col" className="px-6 py-3">
                                 Category
+                            </th>
+                            <th scope="col" className="px-6 py-3">
+                                Status
                             </th>
                             <th scope="col" className="px-6 py-3">
                                 Detail
@@ -88,34 +182,40 @@ function AssetVerification() {
                     </thead>
                     <tbody>
                         {
-                            data.map((item, index) => {
+                            fullAssetsData.map((asset, index) => {
                                 return (
                                     <tr className="bg-white border-b dark:bg-background-primary dark:border-gray-700 hover:bg-background-secondary dark:hover:bg-background-secondary">
                                         <td className="w-4 p-4">
                                             {index + 1}
                                         </td>
                                         <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                            <img className="w-10 h-10 rounded-full" src={item.profileImg} alt="Jese image" />
+                                            <img className="w-10 h-10 rounded-full object-cover " src={dummyUserAvatar} alt="Jese image" />
                                             <div className="ps-3">
-                                                <div className="text-base font-semibold">{item.name}</div>
-                                                <div className="font-normal text-gray-500">{item.email}</div>
+                                                <div className="text-base font-semibold">{asset.ownerInfo?.firstName}</div>
+                                                <div className="font-normal text-gray-500">{asset.email}</div>
                                             </div>
                                         </th>
                                         <td className="px-6 py-4">
-                                            {item.category}
+                                            {asset.name}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {asset.category}
+                                        </td>
+                                        <td className="px-6 py-4">
+                                            {enumMap.verificationStatus[asset.verificationStatus]}
                                         </td>
                                         <td className="px-6 py-4">
                                             <div className="flex items-center">
-                                                <a href="/asset-verification-detail" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">See Detail</a>
+                                                <Link state={asset} to="/asset-verification-detail" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">See Detail</Link>
                                             </div>
                                         </td>
                                         <td className="px-6 py-4">
-                                            <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
+                                            <button onClick={()=>approveHandler(asset.ID)} className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
                                                 <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                                                     Approve
                                                 </span>
                                             </button>
-                                            <button className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
+                                            <button onClick={()=>rejectHandler(asset.ID)} className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
                                                 <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                                                     Reject
                                                 </span>
@@ -129,13 +229,13 @@ function AssetVerification() {
                     </tbody>
                 </table>
                 <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
-                    <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing <span className="font-semibold text-gray-900 dark:text-white">1-10</span> of <span className="font-semibold text-gray-900 dark:text-white">1000</span></span>
+                    <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing <span className="font-semibold text-gray-900 dark:text-white">1-10</span> of <span className="font-semibold text-gray-900 dark:text-white">{fullAssetsData.length}</span></span>
                     <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
                         <li>
                             <a href="#" className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-background-secondary hover:text-gray-700 dark:bg-background-primary dark:border-gray-700 dark:text-gray-400 dark:hover:bg-background-secondary dark:hover:text-white">Previous</a>
                         </li>
                         {
-                            [1, 2, 3, 4, 5].map((item, index) => {
+                            [1].map((item, index) => {
                                 return (
                                     <li>
                                         <a href="#" className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-background-secondary hover:text-gray-700 dark:bg-background-primary dark:border-gray-700 dark:text-gray-400 dark:hover:bg-background-secondary dark:hover:text-white">{item}</a>

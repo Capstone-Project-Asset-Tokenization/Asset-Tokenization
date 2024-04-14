@@ -39,8 +39,21 @@ export const authAPI = createApi({
       // Adding caching configuration
       providesTags: ["User"],
     }),
+    getUsersInfoFromWallet: builder.query({
+      query: (queryParams) => {
+        let query = ''
+        if (queryParams?.length > 0) {
+          query = queryParams.map(address => {
+            return `walletAddresses=${address}`
+          }).join('&')
+          query = `?${query}`
+        }
+        return { url: `/user/wallets${query}`, method: "GET" }
+      },
+      // Adding caching configuration
+    })
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useGetUserQuery } =
+export const { useRegisterMutation, useLoginMutation, useGetUserQuery, useGetUsersInfoFromWalletQuery } =
   authAPI;
