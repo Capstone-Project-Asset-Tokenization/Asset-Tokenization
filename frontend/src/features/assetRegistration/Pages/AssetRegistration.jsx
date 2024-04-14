@@ -1,47 +1,199 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { IoRocketOutline } from "react-icons/io5";
 import ImageChip from "../../../components/common/chips/imageChip";
-import TagChip from "../../../components/common/chips/tagChip";
-
+// import TagChip from "../../../components/common/chips/tagChip";
+import {
+  useUploadMultipleFilesMutation,
+  useUploadMultipleImagesMutation,
+  useUploadSingleImageMutation,
+  useUploadSingleFileMutation,
+  // useRegisterAssetQuery,
+} from "../../../stores/asset/assetApi";
+import Web3 from "web3";
+import { assetContractABI } from "../../../config/config";
+import { SpinLoader } from "../../../components/common/spinner/spinLoader";
+import { Toaster } from "../../../components/common/toaster/toaster";
+const initWeb3 = async () => {
+  if (window.ethereum) {
+    try {
+      await window.ethereum.request({ method: "eth_requestAccounts" });
+      return new Web3(window.ethereum);
+    } catch (error) {
+      console.error("Error during web3 initialization:", error);
+      throw error;
+    }
+  } else {
+    console.error("Non-Ethereum browser detected. Consider trying MetaMask.");
+    throw new Error("Ethereum not available");
+  }
+};
+const contractAddress = import.meta.env.VITE_APP_WEB3_ASSET_CONTRACT_ADDRESS;
 const AssetRegistration = () => {
   const [assetName, setAssetName] = useState("");
   const [description, setDescription] = useState("");
-  const [price, setPrice] = useState("");
-  const [category, setCategory] = useState("LAND"); // Default category
+  const [tokenPrice, setTokenPrice] = useState(0);
+  const [totalSupply, setTotalSupply] = useState(0);
+  const [category, setCategory] = useState(0); // Default category
   const [supportingFiles, setSupportingFiles] = useState([]);
   const supportingFilesInputRef = useRef(null);
   const [assetImages, setAssetImages] = useState([]);
   const assetImagesInputRef = useRef(null);
-  const [tags, setTags] = useState([]);
-  const tagInputRef = useRef(null);
+  const [symbol, setSymbol] = useState("");
+  const [decimal, setDecimal] = useState(0);
+  const [imageFileUploadError, setImageFileUploadError] = useState(null);
+  const [uploadedFiles, setUploadedFiles] = useState([]);
+  const [uploadedImages, setUploadedImages] = useState([]);
+  const [uploadMultipleFiles, { isLoading: isUploadingFiles }] =
+    useUploadMultipleFilesMutation();
+  const [uploadMultipleImages, { isLoading: isUploadingImages }] =
+    useUploadMultipleImagesMutation();
+  const [uploadSingleImage, { isLoading: isUploadingSingleImage }] =
+    useUploadSingleImageMutation();
+  const [uploadSingleFile, { isLoading: isUploadingSingleFile }] =
+    useUploadSingleFileMutation();
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  // const {
+  //   data,
+  //   error: queryError,
+  //   isLoading,
+  //   refetch,
+  // } = useRegisterAssetQuery(); // This is hypothetical; adjust according to your actual hook signature
+  // const [tags, setTags] = useState([]);
+  // const tagInputRef = useRef(null);
   const [error, setError] = useState(null);
 
-  const handleSubmit = (event) => {
+  const uploadImages = async (images, isMultiple = false) => {
+    try {
+      // const formData = new FormData();
+      if (isMultiple) {
+        console.log(images, "images");
+        // images.forEach(image => formData.append('images[]', image));
+        const imageUrls = await uploadMultipleImages(images).unwrap(); // Assumes returning an array of URLs
+        if (imageUrls.error) throw new Error("Error uploading multiple images");
+        console.log(imageUrls, "imageUrls");
+        setUploadedImages((prev) => [...prev, ...imageUrls]);
+      } else {
+        // formData.append('image', images[0]);
+        const img = images[0];
+        const imageUrl = await uploadSingleImage(img).unwrap(); // Assumes returning a single URL
+        if (imageUrl.error) throw new Error("Error uploading single image");
+        console.log(imageUrl, "imageUrl");
+        setUploadedImages((prev) => [...prev, imageUrl]);
+      }
+    } catch (error) {
+      setImageFileUploadError(error.message);
+    }
+  };
+  const uploadFiles = async (files, isMultiple = false) => {
+    try {
+      // const formData = new FormData();
+      if (isMultiple) {
+        console.log(files, "files");
+        // files.forEach(file => formData.append('files[]', file));
+        const urls = await uploadMultipleFiles(files).unwrap();
+        if (urls.error) throw new Error("Error uploading multiple files");
+        console.log(urls, "urls");
+        setUploadedFiles((prev) => [...prev, ...urls]);
+      } else {
+        const file = files[0];
+        const url = await uploadSingleFile(file).unwrap(); // Assumes returning a single URL
+        if (url.error) throw new Error("Error uploading single file");
+        console.log(url, "url");
+        setUploadedFiles((prev) => [...prev, url]);
+      }
+    } catch (error) {
+      setImageFileUploadError(error.message);
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    setImageFileUploadError(null);
+    setLoading(true);
+    setError(null);
     event.preventDefault();
-    // Validate form
+    console.log(
+      "submitting form",
+      assetName,
+      description,
+      tokenPrice,
+      category,
+      assetImages,
+      symbol,
+      totalSupply,
+      decimal,
+      supportingFiles
+    );
     if (
       !assetName ||
       !description ||
-      !price ||
-      !category ||
-      !tags.length ||
+      !(tokenPrice > 0) ||
       !assetImages.length ||
+      !symbol ||
+      !(totalSupply > 0) ||
+      !(decimal > 0) ||
       !supportingFiles.length
     ) {
+      setLoading(false);
       setError(
         "Please fill all the above fields and upload all the necessary files!!"
       );
       return;
     }
-    console.log({
-      assetName,
-      description,
-      price,
-      category,
-      supportingFiles,
-      assetImages,
-    });
+
+    if (supportingFiles.length > 0) {
+      await uploadFiles(supportingFiles, supportingFiles.length > 1);
+    }
+
+    if (assetImages.length > 0) {
+      await uploadImages(assetImages, assetImages.length > 1);
+    }
+    const web3 = await initWeb3();
+    const contract = new web3.eth.Contract(assetContractABI, contractAddress);
+    const accounts = await web3.eth.getAccounts();
+    if (!accounts[0]) throw new Error("No Ethereum account found");
+    try {
+      const name = assetName;
+      const decimals = Number(decimal);
+      const initialSupply = Number(totalSupply);
+      const images = uploadedImages.map((image) => image.url);
+      const supportingFiles = uploadedFiles.map((file) => file.url);
+      const data = await contract.methods
+        .createAsset(
+          name,
+          symbol,
+          decimals,
+          initialSupply,
+          tokenPrice,
+          category,
+          description,
+          images,
+          supportingFiles
+        )
+        .send({ from: accounts[0] });
+      console.log(data, "data---");
+      setLoading(false);
+      setSuccess(true);
+      // clear form
+      setAssetName("");
+      setDescription("");
+      setTokenPrice(0);
+      setCategory(0);
+      setSupportingFiles([]);
+      setAssetImages([]);
+      setSymbol("");
+      setTotalSupply(0);
+      setDecimal(0);
+      setUploadedFiles([]);
+      setUploadedImages([]);
+      // setTags([]);
+    } catch (error) {
+      setLoading(false);
+      console.log(error, "error");
+      setError("Error creating asset. Please try again");
+    }
   };
+  useEffect(() => {}, [uploadedFiles.length, uploadedImages.length]);
 
   const handleSupportingFileChange = (event) => {
     setSupportingFiles([...supportingFiles, ...Array.from(event.target.files)]);
@@ -67,18 +219,20 @@ const AssetRegistration = () => {
     assetImagesInputRef.current.click();
   };
 
-  const handleTagInputKeyDown = (event) => {
-    if (event.key === "Enter" && event.target.value.trim() !== "") {
-      event.preventDefault();
-      setTags([...tags, event.target.value.trim()]);
-      tagInputRef.current.value = "";
-    }
-  };
+  // const handleTagInputKeyDown = (event) => {
+  //   if (event.key === "Enter" && event.target.value.trim() !== "") {
+  //     event.preventDefault();
+  //     setTags([...tags, event.target.value.trim()]);
+  //     tagInputRef.current.value = "";
+  //   }
+  // };
+  // const handleDeleteTag = (tagToDelete) => {
+  //   setTags(tags.filter((tag) => tag !== tagToDelete));
+  // };
 
-  const handleDeleteTag = (tagToDelete) => {
-    setTags(tags.filter((tag) => tag !== tagToDelete));
-  };
-
+  if (loading) {
+    return <SpinLoader />;
+  }
   return (
     <>
       <div className="container mx-auto px-4">
@@ -122,45 +276,104 @@ const AssetRegistration = () => {
                     onChange={(e) => setDescription(e.target.value)}
                   />
                 </div>
-
-                <div className="mb-4">
-                  <label
-                    className="block mb-2 text-sm font-bold text-gray-400"
-                    htmlFor="price"
-                  >
-                    Price In ETH
-                  </label>
-                  <input
-                    id="price"
-                    className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
-                    type="text"
-                    placeholder="Set Price In ETH"
-                    value={price}
-                    onChange={(e) => setPrice(e.target.value)}
-                  />
+                <div className="flex space-x-4 space-around">
+                  <div className="mb-4  w-full">
+                    <label
+                      className="block mb-2 text-sm font-bold text-gray-400"
+                      htmlFor="price"
+                    >
+                      Price of Token
+                    </label>
+                    <input
+                      id="price"
+                      className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                      type="number"
+                      placeholder="Set Price In ETH"
+                      value={tokenPrice}
+                      onChange={(e) => {
+                        if (
+                          e.target.value < 0 ||
+                          e.target.value.toString().startsWith("0") ||
+                          e.target.value.toString().includes("-")
+                        ) {
+                          setTokenPrice(0);
+                        } else {
+                          setTokenPrice(e.target.value);
+                        }
+                      }}
+                    />
+                  </div>
+                  <div className="mb-4  w-full">
+                    <label
+                      className="block mb-2 text-sm font-bold text-gray-400"
+                      htmlFor="price"
+                    >
+                      Total Supply
+                    </label>
+                    <input
+                      id="price"
+                      className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                      type="number"
+                      placeholder="Set Price In ETH"
+                      value={totalSupply}
+                      onChange={(e) => {
+                        if (
+                          e.target.value < 0 ||
+                          e.target.value.toString().startsWith("0") ||
+                          e.target.value.toString().includes("-")
+                        ) {
+                          setTotalSupply(0);
+                        } else {
+                          setTotalSupply(e.target.value);
+                        }
+                      }}
+                    />
+                  </div>
                 </div>
                 <div className="flex space-x-4 justify-between">
                   <div className="mb-4 w-full">
                     <label
                       className="block mb-2 text-sm font-bold text-gray-400"
-                      htmlFor="category"
+                      htmlFor="symbol"
                     >
-                      Category
+                      Decimal
                     </label>
-                    <select
-                      id="category"
-                      className="bg-[#303030] rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
-                      value={category}
-                      onChange={(e) => setCategory(e.target.value)}
-                    >
-                      <option value="LAND">SHARE</option>
-                      <option value="REAL_ESTATE">REAL ESTATE</option>
-                      <option value="ART_WORKS">ART-WORKS</option>
-                      <option value="OTHERS">LAND</option>
-                      <option value="OTHERS">CAR</option>
-                    </select>
+                    <input
+                      id="symbol"
+                      className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                      type="number"
+                      placeholder="Enter Decimal"
+                      value={decimal}
+                      onChange={(e) => {
+                        if (
+                          e.target.value < 0 ||
+                          e.target.value.toString().startsWith("0") ||
+                          e.target.value.toString().includes("-")
+                        ) {
+                          setDecimal(0);
+                        } else {
+                          setDecimal(e.target.value);
+                        }
+                      }}
+                    />
                   </div>
                   <div className="mb-4 w-full">
+                    <label
+                      className="block mb-2 text-sm font-bold text-gray-400"
+                      htmlFor="symbol"
+                    >
+                      Symbol
+                    </label>
+                    <input
+                      id="symbol"
+                      className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                      type="text"
+                      placeholder="Enter Symbol"
+                      value={symbol}
+                      onChange={(e) => setSymbol(e.target.value)}
+                    />
+                  </div>
+                  {/* <div className="mb-4 w-full">
                     <label
                       className="block mb-2 text-sm font-bold text-gray-400"
                       htmlFor="tags"
@@ -184,7 +397,27 @@ const AssetRegistration = () => {
                         />
                       ))}
                     </div>
-                  </div>
+                  </div> */}
+                </div>
+
+                <div className="mb-4 w-full">
+                  <label
+                    className="block mb-2 text-sm font-bold text-gray-400"
+                    htmlFor="category"
+                  >
+                    Category
+                  </label>
+                  <select
+                    id="category"
+                    className="bg-[#303030] rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                  >
+                    <option value={0}>REAL ESTATE</option>
+                    <option value={1}>ART-WORKS</option>
+                    <option value={2}>INTELLECTUAL PROPERTY</option>
+                    <option value={3}>OTHER</option>
+                  </select>
                 </div>
               </div>
               <div className="w-full">
@@ -269,10 +502,22 @@ const AssetRegistration = () => {
                 Create
               </button>
             </div>
-            {error && (
-              <div className="bg-red-500 text-white p-2 rounded my-1">
-                <span className="font-bold">Error: </span>
-                {error}
+            {error && <Toaster message={error} type={"error"} />}
+            {imageFileUploadError && (
+              <Toaster message={imageFileUploadError} type={"error"} />
+            )}
+            {(isUploadingFiles ||
+              isUploadingImages ||
+              isUploadingSingleImage ||
+              isUploadingSingleFile) && (
+              <Toaster message="Uploading Files..." type={"info"} />
+            )}
+            {success && (
+              <div className="mt-4 flex items-center justify-end">
+              <Toaster
+                message="Asset created successfully"
+                type={"success"}
+              />
               </div>
             )}
           </form>

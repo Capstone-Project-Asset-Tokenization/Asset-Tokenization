@@ -12,7 +12,5 @@ export const store = configureStore({
     [blockchainApi.reducerPath]: blockchainApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(authAPI.middleware),
+    getDefaultMiddleware().concat(authAPI.middleware, blockchainApi.middleware),
 });
-
-
