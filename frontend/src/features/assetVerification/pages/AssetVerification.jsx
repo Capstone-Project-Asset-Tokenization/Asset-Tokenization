@@ -82,38 +82,9 @@ function AssetVerification() {
             setError(error.message.split('"')[1])
         }
     }
-    let data = [
-
-    
-    // console.log('full assets data', fullAssetsData,'users',users)
-    {
-        profileImg: 'https://fastly.picsum.photos/id/96/200/200.jpg?hmac=OWdGKA_6EKn7IZEMPRZ-F_wvRBZlDHi-n9QCzIKJV_4',
-        name: 'John Doe',
-        email: 'johndoe@gmail.com',
-        category: 'Apartment',
-    },
-        {
-            profileImg: 'https://fastly.picsum.photos/id/96/200/200.jpg?hmac=OWdGKA_6EKn7IZEMPRZ-F_wvRBZlDHi-n9QCzIKJV_4',
-            name: 'John Doe',
-            email: 'johndoe@gmail.com',
-            category: 'Apartment',
-        },
-        {
-            profileImg: 'https://fastly.picsum.photos/id/96/200/200.jpg?hmac=OWdGKA_6EKn7IZEMPRZ-F_wvRBZlDHi-n9QCzIKJV_4',
-            name: 'John Doe',
-            email: 'johndoe@gmail.com',
-            category: 'Apartment',
-        },
-        {
-            profileImg: 'https://fastly.picsum.photos/id/96/200/200.jpg?hmac=OWdGKA_6EKn7IZEMPRZ-F_wvRBZlDHi-n9QCzIKJV_4',
-            name: 'John Doe',
-            email: 'johndoe@gmail.com',
-            category: 'Apartment',
-        },
-
-    ]
+  
     useEffect(() => {
-        fetchAssets()
+        fetchAssets(assetStatus)
     }, [])
 
     return (
