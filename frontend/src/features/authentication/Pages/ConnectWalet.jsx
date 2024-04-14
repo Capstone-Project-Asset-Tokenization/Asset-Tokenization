@@ -45,7 +45,8 @@ const ConnectWallet = ({
         params: [String(accountAddress), "latest"],
       })
       .then((balance) => {
-        setUserBalance(ethers.utils.formatEther(balance));
+        console.log('balance',ethers.formatEther(balance),balance)
+        setUserBalance(ethers.formatEther(balance));
       })
       .catch((error) => {
         setErrorMessage("Error fetching balance: " + error.message);
