@@ -4,6 +4,7 @@ import { IUser, RegistrationInput } from '../types/user';
 
 export default class UserRepository {
     public async createUser(user: RegistrationInput) {
+        console.log('user', user)
         return await User.create(user);
     }
 
@@ -20,9 +21,23 @@ export default class UserRepository {
     }
 
     public async getUsersByWalletAddresses(walletAddresses: string[]) {
-        return await User.find({
-            walletAddress: { $in: walletAddresses }
-        });
+        // make the search case insensitive
+        const users = []
+        for (let i = 0; i < walletAddresses.length; i++) {
+            const user = await User.findOne({
+                walletAddress: { $regex: new RegExp(walletAddresses[i], 'i') }
+            });
+            if (!user) {
+                users.push('')
+                continue
+            }
+            users.push(user)
+        }
+
+        return users
+        // return await User.find({
+        //     walletAddress: { $in: walletAddresses }
+        // });
     }
 
     public async getUserById(id: string) {
