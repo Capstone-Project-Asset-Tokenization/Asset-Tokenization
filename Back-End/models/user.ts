@@ -18,7 +18,11 @@ const userSchema = new Schema<IUser, IUserModel>({
     nationalID: { type: String, required: true },
     email: { type: String, required: true },
     walletAddress: { type: String},
-    roles: [{ type: [String], enum: ['ADMIN', 'USER', 'APPROVER'], default: ['USER'] }],
+    roles: {
+        type: [String],
+        enum: ['ADMIN', 'USER', 'APPROVER'],
+        default: ['USER'],
+    },
     password: { type: String }
 });
 

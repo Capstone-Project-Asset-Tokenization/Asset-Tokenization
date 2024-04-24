@@ -62,11 +62,25 @@ const Navbar = () => {
   const [navbarItems, setNavbarItems] = useState(initialUrls);
 
   useEffect(() => {
+    const authData = JSON.parse(localStorage.getItem("authData"));
     if (authState.isAuthenticated) {
-      let temp = initialUrls.filter(
-        (item) => item.name !== "Login" && item.name !== "Sign Up"
-      );
-      setNavbarItems(temp);
+      if (authData.roles.includes("ADMIN")) {
+        let temp = initialUrls.filter(
+          (item) =>
+            item.name !== "Register Asset" &&
+            item.name !== "Login" &&
+            item.name !== "Sign Up"
+        );
+        setNavbarItems(temp);
+      } else {
+        let temp = initialUrls.filter(
+          (item) =>
+            item.name !== "Login" &&
+            item.name !== "Sign Up" &&
+            item.name !== "Verify Asset"
+        );
+        setNavbarItems(temp);
+      }
     } else {
       let temp = initialUrls.filter((item) => !item.protected);
       setNavbarItems(temp);
