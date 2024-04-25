@@ -1,14 +1,28 @@
 import React, { useState } from "react";
 import { ethers } from "ethers";
+import PropTypes from "prop-types";
 
-const ConnectWallet = ({
+ConnectWallet.propTypes = {
+  handleBack: PropTypes.func,
+  handleSubmit: PropTypes.func,
+  setWallet: PropTypes.func,
+  registrationLoading: PropTypes.bool,
+  registrationError: PropTypes.string || PropTypes.bool,
+  registratonErrorResponse: PropTypes.any,
+  registratonBKErrorResponse: PropTypes.any,
+  smartContractRegistratonErrorResponse: PropTypes.any,
+};
+
+export default function ConnectWallet({
   handleBack,
   handleSubmit,
   setWallet,
   registrationLoading,
   registrationError,
   registratonErrorResponse,
-}) => {
+  registratonBKErrorResponse,
+  smartContractRegistratonErrorResponse,
+}) {
   const [errorMessage, setErrorMessage] = useState(null);
   const [defaultAccount, setDefaultAccount] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
@@ -45,7 +59,7 @@ const ConnectWallet = ({
         params: [String(accountAddress), "latest"],
       })
       .then((balance) => {
-        console.log('balance',ethers.formatEther(balance),balance)
+        console.log("balance", ethers.formatEther(balance), balance);
         setUserBalance(ethers.formatEther(balance));
       })
       .catch((error) => {
@@ -110,12 +124,11 @@ const ConnectWallet = ({
             role="alert"
           >
             <span className="font-medium">Registration Failed!</span>{" "}
-            {registratonErrorResponse?.data?.msg}
+            {registratonBKErrorResponse?.data.msg ??
+              smartContractRegistratonErrorResponse}
           </div>
         )}
       </div>
     </div>
   );
-};
-
-export default ConnectWallet;
+}
