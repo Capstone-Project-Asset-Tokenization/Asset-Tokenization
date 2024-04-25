@@ -5,7 +5,10 @@ import signUpImage from "../../../assets/sign_in_image.png";
 import { useRegisterMutation } from "../../../stores/auth/authAPI";
 import { useNavigate } from "react-router-dom";
 import ConnectWallet from "./ConnectWalet";
-import { getUserContractInstance, getAssetContractInstance } from "../../../config/contractInstances";
+import {
+  getUserContractInstance,
+  getAssetContractInstance,
+} from "../../../config/contractInstances";
 
 const RegistrationSchema = Yup.object().shape({
   firstName: Yup.string().required("Full Name is required"),
@@ -26,8 +29,12 @@ const Registration = () => {
   let [section, setSection] = React.useState(0);
   let [walletAddress, setWalletAddress] = React.useState(null);
   let [values, setValues] = React.useState(null);
-  let [smartContractRegistrationError, setSmartContractRegistrationError] = React.useState('');
-  let [smartContractRegistratonErrorResponse, setSmartContractRegistratonErrorResponse] = React.useState({data:{msg:''}});
+  let [smartContractRegistrationError, setSmartContractRegistrationError] =
+    React.useState("");
+  let [
+    smartContractRegistratonErrorResponse,
+    setSmartContractRegistratonErrorResponse,
+  ] = React.useState("");
 
   const [
     register,
@@ -38,9 +45,12 @@ const Registration = () => {
       error: registratonBKErrorResponse,
     },
   ] = useRegisterMutation();
-
-  let registrationError = registrationBKError || smartContractRegistrationError
-  let registrationErrorResponse = registratonBKErrorResponse || smartContractRegistratonErrorResponse 
+  console.log("registrationSucess", registrationSucess);
+  console.log("registrationBKError", registrationBKError);
+  console.log("registratonBKErrorResponse", registratonBKErrorResponse);
+  let registrationError = registrationBKError || smartContractRegistrationError;
+  let registrationErrorResponse =
+    registratonBKErrorResponse || smartContractRegistratonErrorResponse;
   const handleProfileSubmit = async (values, { setSubmitting }) => {
     setSection(1);
     setValues(values);
@@ -57,27 +67,27 @@ const Registration = () => {
 
   const handleBlockChainRegistration = async () => {
     if (registrationSucess) {
-      let [userContract, userContractwithSigner] = await getUserContractInstance();
+      let [userContract, userContractwithSigner] =
+        await getUserContractInstance();
 
       try {
-
-        let response = await userContractwithSigner.registerUser()
-        console.log('user registration response', response)
+        let response = await userContractwithSigner.registerUser();
+        console.log("user registration response", response);
         navigate("/signin");
       } catch (error) {
-        console.log('user registration error', error)
+        console.log("user registration error", error);
         // registrationError = true
-        setSmartContractRegistrationError(true)
-        setSmartContractRegistratonErrorResponse({data:{msg:error.message.split('"')[1]}})
+        setSmartContractRegistrationError(true);
+        setSmartContractRegistratonErrorResponse(
+          error.reason ? error.reason : "Error registering user on blockchain"
+        );
       }
     }
-  }
-
+  };
 
   useEffect(() => {
-    handleBlockChainRegistration()
-
-  }, [registrationSucess])
+    handleBlockChainRegistration();
+  }, [registrationSucess]);
   return (
     <div className="">
       <ol className="lg:flex items-center w-full space-y-4 space-x-9 lg:space-y-0">
@@ -128,13 +138,13 @@ const Registration = () => {
                   values
                     ? values
                     : {
-                      firstName: "",
-                      lastName: "",
-                      email: "",
-                      password: "",
-                      confirmPassword: "",
-                      nationalID: "",
-                    }
+                        firstName: "",
+                        lastName: "",
+                        email: "",
+                        password: "",
+                        confirmPassword: "",
+                        nationalID: "",
+                      }
                 }
                 validationSchema={RegistrationSchema}
                 onSubmit={handleProfileSubmit}
@@ -248,7 +258,11 @@ const Registration = () => {
             registrationLoading={registrationLoading}
             registrationError={registrationError}
             registratonErrorResponse={smartContractRegistratonErrorResponse}
-          ></ConnectWallet>
+            registratonBKErrorResponse={registratonBKErrorResponse}
+            smartContractRegistratonErrorResponse={
+              smartContractRegistratonErrorResponse
+            }
+          />
         </div>
       )}
     </div>
