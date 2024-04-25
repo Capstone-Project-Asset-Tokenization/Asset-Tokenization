@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import AssetCard from '../Components/AssetCard';
 import SearchForm from '../Components/SearchForm';
 import { getAssetContractInstance } from '../../../config/contractInstances';
+import { SpinLoader } from '../../../components/common/spinner/spinLoader';
 
 const Marketplace = () => {
 
     const [assets, setAssets] = useState([]);
+    const [loading, setLoading] = useState(true);
 	const [displayedAssets, setDisplayedAssets] = useState([]);
 	const [error, setError] = useState('');
 
@@ -31,6 +33,8 @@ const Marketplace = () => {
         } catch (error) {
             console.error('Error fetching assets from blockchain:', error);
 			setError(error.message)
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -54,7 +58,26 @@ const Marketplace = () => {
     };    
 
     useEffect(() => {
-        fetchAssets()
+        fetchAssets();
+    
+        const handleAccountChange = (accounts) => {
+            if (accounts.length > 0) {
+                console.log('Account connected:', accounts[0]);
+                fetchAssets();
+            } else {
+                console.log('Please connect to MetaMask.');
+            }
+        };
+    
+        if (window.ethereum) {
+            window.ethereum.on('accountsChanged', handleAccountChange);
+        }
+
+        return () => {
+            if (window.ethereum) {
+                window.ethereum.removeListener('accountsChanged', handleAccountChange);
+            }
+        };
     }, []);
 
     console.log(displayedAssets)
@@ -64,7 +87,7 @@ const Marketplace = () => {
     //         ownerInfo:"users[index]"
     //     }
     // })
-
+    if (loading) return <div><SpinLoader /></div>;
     return (
         <div className="flex flex-col text-white">
             <div className='bg-[#2B2B2B] p-6 mb-20'>
@@ -76,12 +99,7 @@ const Marketplace = () => {
                 {displayedAssets.map((asset, index) => (
                     <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2" key={index}>
                         <AssetCard
-                            // asset={asset}
-                            name={asset.name}
-                            totalSupply={asset.totalSupply}
-                            tokenPrice={asset.tokenPrice}
-                            // owner={{ profile_img: asset.owner.profileImg, owner_name: asset.owner.name }}
-                            images={asset.images}
+                            asset={asset}
                         />
                     </div>
                 ))}

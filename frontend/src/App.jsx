@@ -22,6 +22,7 @@ import { useSelector } from 'react-redux'
 import { Navigate } from "react-router-dom";
 import ConnectWallet from "./features/authentication/Pages/ConnectWalet";
 import ProfilePage from "./features/profile/pages";
+import AssetDetailPage from "./features/marketPlace/Pages/AssetDetailPage";
 
 
 
@@ -43,6 +44,7 @@ function App() {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/asset-marketplace" element={<AssetMarketPlace />} />
           <Route path="/connect-wallet" element={<ConnectWallet />} />
+          <Route path="/asset/:id" element={<AssetDetailPage />} />
           <Route path="*" element={<NotFoundPage />} />
 
 
