@@ -42,8 +42,14 @@ const Login = () => {
   useEffect(() => {
     if (loginSuccessful) {
       dispatch(
-        setUser({ token: response.token, wallet: response.walletAddress })
+        setUser({
+          token: response.token,
+          wallet: response.walletAddress,
+          user: response.user,
+          roles: response.user.roles,
+        })
       );
+      console.log("response", response);
       dispatch(setToken(response.token));
       dispatch(setWalletAddress(response.walletAddress));
       navigate("/");

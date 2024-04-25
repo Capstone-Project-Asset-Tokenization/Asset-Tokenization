@@ -37,23 +37,29 @@ export const authAPI = createApi({
     getUser: builder.query({
       query: () => ({ url: `/user`, method: "GET" }),
       // Adding caching configuration
-      providesTags: ["User"],
+      providesTags: (result, error, arg) => [{ type: "User", id: "LIST" }],
     }),
     getUsersInfoFromWallet: builder.query({
       query: (queryParams) => {
-        let query = ''
+        let query = "";
         if (queryParams?.length > 0) {
-          query = queryParams.map(address => {
-            return `walletAddresses=${address}`
-          }).join('&')
-          query = `?${query}`
+          query = queryParams
+            .map((address) => {
+              return `walletAddresses=${address}`;
+            })
+            .join("&");
+          query = `?${query}`;
         }
-        return { url: `/user/wallets${query}`, method: "GET" }
+        return { url: `/user/wallets${query}`, method: "GET" };
       },
       // Adding caching configuration
-    })
+    }),
   }),
 });
 
-export const { useRegisterMutation, useLoginMutation, useGetUserQuery, useGetUsersInfoFromWalletQuery } =
-  authAPI;
+export const {
+  useRegisterMutation,
+  useLoginMutation,
+  useGetUserQuery,
+  useGetUsersInfoFromWalletQuery,
+} = authAPI;
