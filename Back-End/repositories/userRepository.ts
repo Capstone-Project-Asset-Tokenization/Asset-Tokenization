@@ -4,7 +4,6 @@ import { IUser, RegistrationInput } from '../types/user';
 
 export default class UserRepository {
     public async createUser(user: RegistrationInput) {
-        console.log('user', user)
         return await User.create(user);
     }
 

@@ -88,4 +88,60 @@ contract UserManagement {
     function unbanUser(address userAddress) external onlyAdmin {
         users[userAddress].isBanned = false;
     }
+
+
+    function getAdminsWithPromoterDetails() external view returns (User[] memory, User[] memory) {
+       
+        uint256 count = 0;
+        for (uint256 i = 0; i < usersAddressList.length; i++) {
+            if (users[usersAddressList[i]].isAdmin) {
+                count=count+1;
+            }
+        }
+        address[] memory admins = new address[](count);
+        address[] memory promoters = new address[](count);
+        count = 0;
+        for (uint256 i = 0; i < usersAddressList.length; i++) {
+            if (users[usersAddressList[i]].isAdmin) {
+                admins[count] = users[usersAddressList[i]];
+                promoters[count] = users[users[usersAddressList[i]].promotedBy];
+                count=count+1;
+            }
+        }
+        return (admins, promoters);
+    }
+
+    function getBannedUsers() external view returns (User[] memory) {
+        uint256 count = 0;
+        for (uint256 i = 0; i < usersAddressList.length; i++) {
+            if (users[usersAddressList[i]].isBanned) {
+                count=count+1;
+            }
+        }
+        address[] memory bannedUsers = new address[](count);
+        count = 0;
+        for (uint256 i = 0; i < usersAddressList.length; i++) {
+            if (users[usersAddressList[i]].isBanned) {
+                bannedUsers[count] = users[usersAddressList[i]];
+                count=count+1;
+            }
+        }
+        return bannedUsers;
+    }
+
+    function getRegisteredUsers() external view returns (User[] memory) {
+        address[] memory registeredUsers = new address[](usersAddressList.length);
+        uint256 count = 0;
+        for (uint256 i = 0; i < usersAddressList.length; i++) {
+            if (users[usersAddressList[i]].isRegistered) {
+                registeredUsers[count] = users[usersAddressList[i]];
+                count=count+1;
+            }
+        }
+        return registeredUsers;
+    }
+
+    function depromoteAdmin(address userAddress) external onlyAdmin {
+        users[userAddress].isAdmin = false;
+    }
 }

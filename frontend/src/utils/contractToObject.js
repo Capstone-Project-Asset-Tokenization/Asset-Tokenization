@@ -19,3 +19,31 @@ export let createAssetObjFromContract = async (contractItem) => {
     assetObj.creator = contractItem['11']
     return assetObj;
 }
+
+
+
+
+
+export let createUserObjFromContract = async (contractItem) => {
+    let userObj = {};
+    userObj.isAdmin = contractItem['0']
+    userObj.isRegistered = contractItem['1']
+    userObj.isBanned = contractItem['2']
+    userObj.userAddress = contractItem['4']
+
+
+    return userObj;
+}
+
+
+export let createAdminUserObjFromContract = async (contractItem) => {
+    console.log('admin data from contarct',contractItem)
+    let userObj = {};
+    userObj.isAdmin = contractItem['0']
+    userObj.isRegistered = contractItem['1']
+    userObj.isBanned = contractItem['2']
+    userObj.userAddress = contractItem['4']
+
+
+    return userObj;
+}

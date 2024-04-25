@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { getAssetContractInstance, getUserContractInstance } from '../../../config/contractInstances'
-import { createAssetObjFromContract } from '../../../utils/createAssetObj'
+import { createAssetObjFromContract } from '../../../utils/contractToObject'
 import { useGetUsersInfoFromWalletQuery } from '../../../stores/auth/authAPI'
 import { Link } from 'react-router-dom'
 import { dummyUserAvatar } from '../../../assets/avatar' 

@@ -227,26 +227,42 @@ contract AssetTokenizationPlatform  {
 
     // function to get list of assets based on filter such as are verified,unverified,all
     function getAssetsByFilter(VerificationStatus filter) external view returns (Asset[] memory) {
-        Asset[] memory filteredAssets = new Asset[](assetCount);
+        // get assets count based on filter
         uint256 filteredAssetCount = 0;
         for (uint256 i = 0; i < assetCount; i++) {
             if (assets[i].verificationStatus == filter) {
-                filteredAssets[filteredAssetCount] = assets[i];
                 filteredAssetCount++;
+            }
+        }
+        // create array of assets based on filter
+        Asset[] memory filteredAssets = new Asset[](filteredAssetCount);
+        uint256 count = 0;
+        for (uint256 i = 0; i < assetCount; i++) {
+            if (assets[i].verificationStatus == filter) {
+                filteredAssets[count] = assets[i];
+                count++;
             }
         }
         return filteredAssets;
     }
     // function to get list of user assets based on filter such as are verified,unverified,all
     function getUserAssetsByFilter(address user, VerificationStatus filter) external view returns (Asset[] memory) {
-        Asset[] memory userFilteredAssets = new Asset[](assetCount);
-        uint256 userFilteredAssetCount = 0;
+        // get user assets count based on filter
+        uint256 filteredAssetCount = 0;
         for (uint256 i = 0; i < assetCount; i++) {
             if (assets[i].creator == user && assets[i].verificationStatus == filter) {
-                userFilteredAssets[userFilteredAssetCount] = assets[i];
-                userFilteredAssetCount++;
+                filteredAssetCount++;
             }
         }
-        return userFilteredAssets;
+        // create array of user assets based on filter
+        Asset[] memory filteredAssets = new Asset[](filteredAssetCount);
+        uint256 count = 0;
+        for (uint256 i = 0; i < assetCount; i++) {
+            if (assets[i].creator == user && assets[i].verificationStatus == filter) {
+                filteredAssets[count] = assets[i];
+                count++;
+            }
+        }
+        return filteredAssets;
     }
 }

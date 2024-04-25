@@ -35,6 +35,11 @@ const Navbar = () => {
       protected: true,
     },
     {
+      name: "User Management",
+      link: "/user-management",
+      protected: true,
+    },
+    {
       name: "Login",
       link: "/signin",
       protected: false,

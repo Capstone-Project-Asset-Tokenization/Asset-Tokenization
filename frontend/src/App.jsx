@@ -22,6 +22,7 @@ import { useSelector } from 'react-redux'
 import { Navigate } from "react-router-dom";
 import ConnectWallet from "./features/authentication/Pages/ConnectWalet";
 import ProfilePage from "./features/profile/pages";
+import UserManagement from "./features/userManagement/pages/userManagement";
 
 
 
@@ -37,6 +38,7 @@ function App() {
           <Route path="/asset-registration" element={auth.isAuthenticated ? <AssetRegistration /> : <Navigate to="/signin" />} />
           <Route path="/asset-verification" element={auth.isAuthenticated ? <AssetVerification /> : <Navigate to="/signin" />} />
           <Route path="/asset-verification-detail" element={auth.isAuthenticated ? <AssetDetail /> : <Navigate to="/signin" />} />
+          <Route path="/user-management" element={auth.isAuthenticated?<UserManagement/>:<Navigate to='/signin'/>} />
 
           <Route path="/signup" element={<UserRegistration />} />
           <Route path="/signin" element={<Login />} />

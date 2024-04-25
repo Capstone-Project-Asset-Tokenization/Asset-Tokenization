@@ -10,7 +10,7 @@ export const getUserContractInstance = async () => {
   let contract = await new ethers.Contract(
     UserContractAddress,
     UserContractABI,
-    provider.getSigner()
+    // provider.getSigner()
   );
   // let contractWithSigner = await contract.connect(provider.getSigner());
   let contractWithSigner = await new ethers.Contract(
