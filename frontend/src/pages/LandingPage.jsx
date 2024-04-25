@@ -2,8 +2,10 @@ import React from "react";
 import { IoRocketOutline } from "react-icons/io5";
 import LandingCard from "../components/landing/LandingCard";
 import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const LandingPage = () => {
+  const authState = useSelector((state) => state.auth);
   return (
     <div className=" px-6 sm:px-20">
       <div className="md:flex justify-between items-center ">
@@ -16,7 +18,9 @@ const LandingPage = () => {
             Tokenize and manage all your assets easily and quickly.
           </p>
           <p> lorem ipsum dolor sit amet, consectetur.</p>
-          <Link to="/signup">
+          <Link
+            to={authState.isAuthenticated ? "/asset-registration" : "/signup"}
+          >
             <button className="bg-primary-main rounded-xl mt-10 px-6 py-2 flex items-center">
               <IoRocketOutline className="inline-block mr-2" />
               Get Started
