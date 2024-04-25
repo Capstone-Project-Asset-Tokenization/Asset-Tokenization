@@ -38,7 +38,7 @@ function AssetVerification() {
             }))
             response=response.filter(item=>item.creator!="0x0000000000000000000000000000000000000000")
             setAssets(response)
-            console.log('assets', response, response[0])
+            console.log('assets', response, response[0],'verification status',verificationStatus)
         } catch (error) {
             setError(error.message)
             console.log('error in fetch asset', error)
@@ -61,7 +61,7 @@ function AssetVerification() {
             let response = await assetContractWithSigner.verifyAsset(assetId, 1)
             console.log('asset verification response', response)
             // navigate("/asset-verification");
-            fetchAssets()
+            fetchAssets(assetStatus)
         } catch (error) {
             console.log('asset verification error', error)
             setError(error.message.split('"')[1])
@@ -76,7 +76,7 @@ function AssetVerification() {
             let response = await assetContractWithSigner.verifyAsset(assetId, 2)
             console.log('asset verification response', response)
             // navigate("/asset-verification");
-            fetchAssets()
+            fetchAssets(assetStatus)
         } catch (error) {
             console.log('asset verification error', error)
             setError(error.message.split('"')[1])
