@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { setSearchCriteria, filterAssets } from '../assetsSlice'
-const SearchForm = () => {
+
+const SearchForm = ({ onSearch }) => {
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -9,24 +8,31 @@ const SearchForm = () => {
     maxPrice: '',
   });
 
-  const dispatch = useDispatch();
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const categoryMapping = {
+    "RealEstate": 0,
+    "Artwork": 1,
+    "IntellectualProperty": 2,
+    "Other": 3
   };
+
+  // const handleChange = (e) => {
+  //   const { name, value } = e.target;
+  //   if (name === "category") {
+  //     const categoryValue = categoryMapping[value] ?? categoryMapping["Other"];
+  //     setFormData({ ...formData, [name]: categoryValue });
+  //   } else {
+  //     setFormData({ ...formData, [name]: value });
+  //   }
+  // };
+  const handleChange = (e) => {
+      setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(setSearchCriteria({
-      name: formData.name,
-      category: formData.category,
-      minPrice: formData.minPrice,
-      maxPrice: formData.maxPrice,
-    }));
-    // Optionally, dispatch another action to filter properties based on new criteria
-    dispatch(filterAssets());
+    onSearch(formData);
   };
-  
 
   return (
     <div className="bg-[#2B2B2B] p-6">
@@ -39,14 +45,19 @@ const SearchForm = () => {
           placeholder="Search your favourite assets"
           className="border border-[#858584] bg-transparent placeholder-[#858584] text-white p-3 w-1/3 rounded-lg"
         />
-        <input
-          type="text"
+        <select
           name="category"
           value={formData.category}
           onChange={handleChange}
-          placeholder="Category"
-          className="border border-[#858584] bg-transparent placeholder-[#858584] text-white p-2 rounded-lg"
-        />
+          className="border border-[#858584] bg-transparent text-white p-2 rounded-lg"
+          style={{ backgroundColor: '#2B2B2B' }}
+        >
+          <option value="">Select Category</option>
+          <option value="RealEstate">Real Estate</option>
+          <option value="Artwork">Artwork</option>
+          <option value="IntellectualProperty">Intellectual Property</option>
+          <option value="Other">Other</option>
+        </select>
         <input
           type="number"
           name="minPrice"
