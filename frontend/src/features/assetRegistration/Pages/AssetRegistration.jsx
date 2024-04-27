@@ -63,44 +63,50 @@ const AssetRegistration = () => {
   // const tagInputRef = useRef(null);
   const [error, setError] = useState(null);
 
-  const uploadImages = useCallback(async (images, isMultiple = false) => {
-    // const formData = new FormData();
-    if (isMultiple) {
-      console.log(images, "images");
-      // images.forEach(image => formData.append('images[]', image));
-      const imageUrls = await uploadMultipleImages(images).unwrap(); // Assumes returning an array of URLs
-      if (imageUrls.error) throw new Error("Error uploading multiple images");
-      console.log(imageUrls, "imageUrls");
-      setUploadedImages((prev) => [
-        ...prev,
-        ...imageUrls.map((url) => url.url),
-      ]);
-    } else {
-      // formData.append('image', images[0]);
-      const img = images[0];
-      const imageUrl = await uploadSingleImage(img).unwrap(); // Assumes returning a single URL
-      if (imageUrl.error) throw new Error("Error uploading single image");
-      console.log(imageUrl, "imageUrl");
-      setUploadedImages((prev) => [...prev, imageUrl.url]);
-    }
-  }, [uploadMultipleImages, uploadSingleImage]);
-  const uploadFiles = useCallback(async (files, isMultiple = false) => {
-    // const formData = new FormData();
-    if (isMultiple) {
-      console.log(files, "files");
-      // files.forEach(file => formData.append('files[]', file));
-      const urls = await uploadMultipleFiles(files).unwrap();
-      if (urls.error) throw new Error("Error uploading multiple files");
-      console.log(urls, "urls");
-      setUploadedFiles((prev) => [...prev, ...urls.map((url) => url.url)]);
-    } else {
-      const file = files[0];
-      const url = await uploadSingleFile(file).unwrap(); // Assumes returning a single URL
-      if (url.error) throw new Error("Error uploading single file");
-      console.log(url, "url");
-      setUploadedFiles((prev) => [...prev, url.url]);
-    }
-  }, [uploadMultipleFiles, uploadSingleFile]);
+  const uploadImages = useCallback(
+    async (images, isMultiple = false) => {
+      // const formData = new FormData();
+      if (isMultiple) {
+        console.log(images, "images");
+        // images.forEach(image => formData.append('images[]', image));
+        const imageUrls = await uploadMultipleImages(images).unwrap(); // Assumes returning an array of URLs
+        if (imageUrls.error) throw new Error("Error uploading multiple images");
+        console.log(imageUrls, "imageUrls");
+        setUploadedImages((prev) => [
+          ...prev,
+          ...imageUrls.map((url) => url.url),
+        ]);
+      } else {
+        // formData.append('image', images[0]);
+        const img = images[0];
+        const imageUrl = await uploadSingleImage(img).unwrap(); // Assumes returning a single URL
+        if (imageUrl.error) throw new Error("Error uploading single image");
+        console.log(imageUrl, "imageUrl");
+        setUploadedImages((prev) => [...prev, imageUrl.url]);
+      }
+    },
+    [uploadMultipleImages, uploadSingleImage]
+  );
+  const uploadFiles = useCallback(
+    async (files, isMultiple = false) => {
+      // const formData = new FormData();
+      if (isMultiple) {
+        console.log(files, "files");
+        // files.forEach(file => formData.append('files[]', file));
+        const urls = await uploadMultipleFiles(files).unwrap();
+        if (urls.error) throw new Error("Error uploading multiple files");
+        console.log(urls, "urls");
+        setUploadedFiles((prev) => [...prev, ...urls.map((url) => url.url)]);
+      } else {
+        const file = files[0];
+        const url = await uploadSingleFile(file).unwrap(); // Assumes returning a single URL
+        if (url.error) throw new Error("Error uploading single file");
+        console.log(url, "url");
+        setUploadedFiles((prev) => [...prev, url.url]);
+      }
+    },
+    [uploadMultipleFiles, uploadSingleFile]
+  );
 
   const handleSubmit = useCallback(
     async (event) => {
@@ -165,7 +171,7 @@ const AssetRegistration = () => {
           return;
         }
       }
-      
+
       // const web3 = await initWeb3();
       // const [contract, contractWithSigner] = await getAssetContractInstance();
       // const accounts = await window.ethereum.request({
@@ -249,9 +255,16 @@ const AssetRegistration = () => {
   useEffect(() => {
     const processSubmission = async () => {
       const [contract, contractWithSigner] = await getAssetContractInstance();
-      const accounts = await window.ethereum.request({ method: "eth_requestAccounts" });
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
 
-      if (!contract || !contractWithSigner || !accounts || accounts.length === 0) {
+      if (
+        !contract ||
+        !contractWithSigner ||
+        !accounts ||
+        accounts.length === 0
+      ) {
         setError("Error Connecting to MetaMask. Please try again");
         setLoading(false);
         return;
@@ -274,7 +287,7 @@ const AssetRegistration = () => {
         setSuccess(true);
         setError(null);
         setLoading(false);
-        console.log('Asset created successfully!');
+        console.log("Asset created successfully!");
         resetForm();
       } catch (error) {
         setError("Error creating asset: " + error.message);
@@ -285,20 +298,30 @@ const AssetRegistration = () => {
     if (uploadedFiles.length > 0 && uploadedImages.length > 0) {
       processSubmission();
     }
-  }, [uploadedFiles, uploadedImages, assetName, symbol, decimal, totalSupply, tokenPrice, category, description]);
+  }, [
+    uploadedFiles,
+    uploadedImages,
+    assetName,
+    symbol,
+    decimal,
+    totalSupply,
+    tokenPrice,
+    category,
+    description,
+  ]);
 
   const resetForm = () => {
     setAssetName("");
-        setDescription("");
-        setTokenPrice(0);
-        setCategory(0);
-        setSupportingFiles([]);
-        setAssetImages([]);
-        setSymbol("");
-        setTotalSupply(0);
-        setDecimal(0);
-        setUploadedFiles([]);
-        setUploadedImages([]);
+    setDescription("");
+    setTokenPrice(0);
+    setCategory(0);
+    setSupportingFiles([]);
+    setAssetImages([]);
+    setSymbol("");
+    setTotalSupply(0);
+    setDecimal(0);
+    setUploadedFiles([]);
+    setUploadedImages([]);
   };
   const handleSupportingFileChange = (event) => {
     setSupportingFiles([...supportingFiles, ...Array.from(event.target.files)]);
