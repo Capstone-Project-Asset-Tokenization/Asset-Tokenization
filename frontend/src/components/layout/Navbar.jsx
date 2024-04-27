@@ -81,8 +81,9 @@ const Navbar = () => {
         let temp = initialUrls.filter(
           (item) =>
             item.name !== "Login" &&
-            item.name !== "Sign Up"
-            // item.name !== "Verify Asset"
+            item.name !== "Sign Up" &&
+            item.name !== "Verify Asset" &&
+            item.name !== "User Management"
         );
         setNavbarItems(temp);
       }
