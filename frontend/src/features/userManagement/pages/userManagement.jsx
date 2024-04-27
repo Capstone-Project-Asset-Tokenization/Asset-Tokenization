@@ -46,8 +46,8 @@ function UserManagement() {
 
             switch (selectedUserStatus) {
                 case 'ADMINS':
-                    response = await Promise.all(response.map(async (item) => {
-                        return await createAdminUserObjFromContract(item[0])
+                    response = await Promise.all(response[0].map(async (item) => {
+                        return await createAdminUserObjFromContract(item)
                     }))
                     response = response.filter(item => item.userAddress != "0x0000000000000000000000000000000000000000")
                     break
