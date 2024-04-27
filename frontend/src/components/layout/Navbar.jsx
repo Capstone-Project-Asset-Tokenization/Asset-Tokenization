@@ -35,6 +35,11 @@ const Navbar = () => {
       protected: true,
     },
     {
+      name: "User Management",
+      link: "/user-management",
+      protected: true,
+    },
+    {
       name: "Login",
       link: "/signin",
       protected: false,
@@ -76,8 +81,8 @@ const Navbar = () => {
         let temp = initialUrls.filter(
           (item) =>
             item.name !== "Login" &&
-            item.name !== "Sign Up" &&
-            item.name !== "Verify Asset"
+            item.name !== "Sign Up"
+            // item.name !== "Verify Asset"
         );
         setNavbarItems(temp);
       }
