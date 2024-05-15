@@ -28,7 +28,9 @@ import { getAssetContractInstance } from "../../../config/contractInstances/inde
 //     throw new Error("Ethereum not available");
 //   }
 // };
-const AssetRegistration = () => {
+const EditAssetDetails = () => {
+  const assetId = window.location.pathname.split("/")[2];
+  console.log(assetId, "assetId");
   const [assetName, setAssetName] = useState("");
   const [description, setDescription] = useState("");
   const [tokenPrice, setTokenPrice] = useState(0);
@@ -43,6 +45,8 @@ const AssetRegistration = () => {
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
+  const [initialState, setInitialState] = useState(null);
+
   const [uploadMultipleFiles, { isLoading: isUploadingFiles }] =
     useUploadMultipleFilesMutation();
   const [uploadMultipleImages, { isLoading: isUploadingImages }] =
@@ -53,59 +57,140 @@ const AssetRegistration = () => {
     useUploadSingleFileMutation();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
-  // const {
-  //   data,
-  //   error: queryError,
-  //   isLoading,
-  //   refetch,
-  // } = useRegisterAssetQuery(); // This is hypothetical; adjust according to your actual hook signature
-  // const [tags, setTags] = useState([]);
-  // const tagInputRef = useRef(null);
+
+  useEffect(() => {
+    setLoading(true);
+    const fetchAsset = async () => {
+      const [contract, contractWithSigner] = await getAssetContractInstance();
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      if (
+        !contract ||
+        !contractWithSigner ||
+        !accounts ||
+        accounts.length === 0
+      ) {
+        setError("Error Connecting to MetaMask. Please try again");
+        setLoading(false);
+        console.log("error");
+        return;
+      }
+
+      try {
+        const assetData = await contractWithSigner.getAsset(assetId);
+        console.log(assetData, "assetData");
+
+        const files = Object.values(assetData[10]).map((url, index) => ({
+          name: `File ${index + 1}`,
+          type: "file",
+          preview: url,
+        }));
+        const images = Object.values(assetData[9]).map((url, index) => ({
+          name: `Image ${index + 1}`,
+          type: "image",
+          preview: url,
+        }));
+        const initialState = {
+          assetName: assetData[1],
+          description: assetData[8],
+          tokenPrice: Number(assetData[5]),
+          totalSupply: Number(assetData[4]),
+          category: assetData[6],
+          symbol: assetData[2],
+          decimal: Number(assetData[3]),
+          supportingFiles: files,
+          assetImages: images,
+        };
+
+        setInitialState(initialState);
+        setAssetName(assetData[1]);
+        setDescription(assetData[8]);
+        setTokenPrice(Number(assetData[5]));
+        setCategory(assetData[6]);
+        setSymbol(assetData[2]);
+        setTotalSupply(Number(assetData[4]));
+        setDecimal(Number(assetData[3]));
+        setSupportingFiles(files);
+        setAssetImages(images);
+        setLoading(false);
+      } catch (error) {
+        console.log(error, "error");
+        setError("Error fetching asset details: " + error.message);
+        setLoading(false);
+      }
+    };
+    fetchAsset();
+    console.log("fetching asset");
+  }, [assetId]);
+
   const [error, setError] = useState(null);
 
   const uploadImages = useCallback(
-    async (images, isMultiple = false) => {
-      // const formData = new FormData();
-      if (isMultiple) {
-        console.log(images, "images");
-        // images.forEach(image => formData.append('images[]', image));
-        const imageUrls = await uploadMultipleImages(images).unwrap(); // Assumes returning an array of URLs
-        if (imageUrls.error) throw new Error("Error uploading multiple images");
-        console.log(imageUrls, "imageUrls");
-        setUploadedImages((prev) => [
-          ...prev,
-          ...imageUrls.map((url) => url.url),
-        ]);
-      } else {
-        // formData.append('image', images[0]);
-        const img = images[0];
-        const imageUrl = await uploadSingleImage(img).unwrap(); // Assumes returning a single URL
-        if (imageUrl.error) throw new Error("Error uploading single image");
-        console.log(imageUrl, "imageUrl");
-        setUploadedImages((prev) => [...prev, imageUrl.url]);
+    async (images) => {
+      const newImageUrls = [];
+      const uploadPromises = [];
+
+      images.forEach((image) => {
+        if (image instanceof File) {
+          uploadPromises.push(
+            uploadSingleImage(image)
+              .unwrap()
+              .then((response) => {
+                if (response.error) {
+                  throw new Error("Error uploading image");
+                }
+                newImageUrls.push(response.url);
+              })
+          );
+        } else {
+          newImageUrls.push(image.preview);
+        }
+      });
+
+      try {
+        await Promise.all(uploadPromises);
+        setUploadedImages((prev) => [...prev, ...newImageUrls]);
+      } catch (error) {
+        console.error("Error uploading images:", error);
+        throw error;
       }
     },
-    [uploadMultipleImages, uploadSingleImage]
+    [uploadSingleImage]
   );
+
   const uploadFiles = useCallback(
-    async (files, isMultiple = false) => {
-      // const formData = new FormData();
-      if (isMultiple) {
-        console.log(files, "files");
-        // files.forEach(file => formData.append('files[]', file));
-        const urls = await uploadMultipleFiles(files).unwrap();
-        if (urls.error) throw new Error("Error uploading multiple files");
-        console.log(urls, "urls");
-        setUploadedFiles((prev) => [...prev, ...urls.map((url) => url.url)]);
-      } else {
-        const file = files[0];
-        const url = await uploadSingleFile(file).unwrap(); // Assumes returning a single URL
-        if (url.error) throw new Error("Error uploading single file");
-        console.log(url, "url");
-        setUploadedFiles((prev) => [...prev, url.url]);
+    async (files) => {
+      const newFileUrls = [];
+      const uploadPromises = [];
+
+      files.forEach((file) => {
+        if (file instanceof File) {
+          uploadPromises.push(
+            uploadSingleFile(file)
+              .unwrap()
+              .then((response) => {
+                if (response.error) {
+                  throw new Error("Error uploading file");
+                }
+                newFileUrls.push(response.url);
+              })
+          );
+        } else {
+          newFileUrls.push(file.preview);
+        }
+      });
+
+      try {
+        await Promise.all(uploadPromises);
+        setUploadedFiles((prev) => [...prev, ...newFileUrls]);
+      } catch (error) {
+        console.error("Error uploading files:", error);
+        throw error;
       }
     },
-    [uploadMultipleFiles, uploadSingleFile]
+    [uploadSingleFile]
   );
 
   const handleSubmit = useCallback(
@@ -143,6 +228,33 @@ const AssetRegistration = () => {
         return;
       }
 
+      let hasChange =
+        assetName !== initialState.assetName ||
+        description !== initialState.description ||
+        tokenPrice !== initialState.tokenPrice ||
+        category !== initialState.category ||
+        symbol !== initialState.symbol ||
+        totalSupply !== initialState.totalSupply ||
+        decimal !== initialState.decimal;
+
+      supportingFiles.forEach((each) => {
+        if (each instanceof File) {
+          hasChange = true;
+        }
+      });
+
+      assetImages.forEach((each) => {
+        if (each instanceof File) {
+          hasChange = true;
+        }
+      });
+
+      if (!hasChange) {
+        setLoading(false);
+        setError("No changes detected. Please make some changes to update");
+        return;
+      }
+
       if (
         supportingFiles.length > 0 &&
         typeof supportingFiles[0] !== "string"
@@ -171,72 +283,6 @@ const AssetRegistration = () => {
           return;
         }
       }
-
-      // const web3 = await initWeb3();
-      // const [contract, contractWithSigner] = await getAssetContractInstance();
-      // const accounts = await window.ethereum.request({
-      //   method: "eth_requestAccounts",
-      // });
-
-      // if (
-      //   !contract ||
-      //   !contractWithSigner ||
-      //   !accounts ||
-      //   accounts.length === 0
-      // ) {
-      //   setLoading(false);
-      //   setError("Error Connecting to MetaMask. Please try again");
-      //   return;
-      // }
-
-      // try {
-      //   // uploadedImages.forEach((image) => {
-      //   //   console.log(image, "image----");
-      //   //   console.log(image.url, "image==");
-      //   // });
-      //   const name = assetName;
-      //   const decimals = Number(decimal);
-      //   const initialSupply = Number(totalSupply);
-      //   // const images = uploadedImages.map((image) => image.url);
-      //   // const supportingFiles = uploadedFiles.map((file) => file.url);
-      //   console.log(uploadedImages, "images");
-      //   console.log(uploadedFiles, "files");
-      //   const transactionResponse = await contractWithSigner.createAsset(
-      //     name,
-      //     symbol,
-      //     decimals,
-      //     initialSupply,
-      //     tokenPrice,
-      //     category,
-      //     description,
-      //     uploadedImages,
-      //     uploadedFiles
-      //   );
-      //   await transactionResponse.wait(); // Wait for the transaction to be mined
-      //   setLoading(false);
-      //   console.log("Asset created successfully!");
-      //   console.log(transactionResponse, "data---");
-      //   setLoading(false);
-      //   setSuccess(true);
-      //   // clear form
-      //   setAssetName("");
-      //   setDescription("");
-      //   setTokenPrice(0);
-      //   setCategory(0);
-      //   setSupportingFiles([]);
-      //   setAssetImages([]);
-      //   setSymbol("");
-      //   setTotalSupply(0);
-      //   setDecimal(0);
-      //   setUploadedFiles([]);
-      //   setUploadedImages([]);
-      //   // setTags([]);
-      // } catch (error) {
-      //   setLoading(false);
-      //   setSuccess(false);
-      //   console.log(error, "error");
-      //   setError("Error creating asset. Please try again");
-      // }
     },
     [
       assetName,
@@ -250,6 +296,7 @@ const AssetRegistration = () => {
       supportingFiles,
       uploadFiles,
       uploadImages,
+      initialState,
     ]
   );
   useEffect(() => {
@@ -271,7 +318,10 @@ const AssetRegistration = () => {
       }
 
       try {
-        const transactionResponse = await contractWithSigner.createAsset(
+        console.log(
+          assetName,
+          symbol,
+          // const transactionResponse = await contractWithSigner.updateAsset(
           assetName,
           symbol,
           Number(decimal),
@@ -282,47 +332,31 @@ const AssetRegistration = () => {
           uploadedImages,
           uploadedFiles
         );
-
-        await transactionResponse.wait();
+        // );
+        // await transactionResponse.wait();
         setSuccess(true);
         setError(null);
         setLoading(false);
-        console.log("Asset created successfully!");
-        resetForm();
+        console.log("Asset updated successfully!");
+        // clear uploaded files and images
+        setUploadedFiles([]);
+        setUploadedImages([]);
       } catch (error) {
-        setError("Error creating asset: " + error.message);
+        setError("Error updating asset: " + error.message);
         setLoading(false);
       }
     };
 
-    if (uploadedFiles.length > 0 && uploadedImages.length > 0) {
+    if (
+      uploadedFiles &&
+      uploadedImages &&
+      uploadedFiles.length > 0 &&
+      uploadedImages.length > 0
+    ) {
       processSubmission();
     }
-  }, [
-    uploadedFiles,
-    uploadedImages,
-    assetName,
-    symbol,
-    decimal,
-    totalSupply,
-    tokenPrice,
-    category,
-    description,
-  ]);
+  });
 
-  const resetForm = () => {
-    setAssetName("");
-    setDescription("");
-    setTokenPrice(0);
-    setCategory(0);
-    setSupportingFiles([]);
-    setAssetImages([]);
-    setSymbol("");
-    setTotalSupply(0);
-    setDecimal(0);
-    setUploadedFiles([]);
-    setUploadedImages([]);
-  };
   const handleSupportingFileChange = (event) => {
     setSupportingFiles([...supportingFiles, ...Array.from(event.target.files)]);
   };
@@ -347,17 +381,6 @@ const AssetRegistration = () => {
     assetImagesInputRef.current.click();
   };
 
-  // const handleTagInputKeyDown = (event) => {
-  //   if (event.key === "Enter" && event.target.value.trim() !== "") {
-  //     event.preventDefault();
-  //     setTags([...tags, event.target.value.trim()]);
-  //     tagInputRef.current.value = "";
-  //   }
-  // };
-  // const handleDeleteTag = (tagToDelete) => {
-  //   setTags(tags.filter((tag) => tag !== tagToDelete));
-  // };
-
   if (loading) {
     return <SpinLoader />;
   }
@@ -375,6 +398,24 @@ const AssetRegistration = () => {
                   message="Asset created successfully"
                   type={"success"}
                 />
+              </div>
+            )}
+            {error && (
+              <div className="mt-4 flex items-center justify-end">
+                <Toaster message={error} type={"error"} />
+              </div>
+            )}
+            {imageFileUploadError && (
+              <div className="mt-4 flex items-center justify-end">
+                <Toaster message={imageFileUploadError} type={"error"} />
+              </div>
+            )}
+            {(isUploadingFiles ||
+              isUploadingImages ||
+              isUploadingSingleImage ||
+              isUploadingSingleFile) && (
+              <div className="mt-4 flex items-center justify-end">
+                <Toaster message="Uploading Files..." type={"info"} />
               </div>
             )}
             <div className="flex md:space-x-16 justify-between md:flex-row flex-col">
@@ -638,24 +679,6 @@ const AssetRegistration = () => {
                 Create
               </button>
             </div>
-            {error && (
-              <div className="mt-4 flex items-center justify-end">
-                <Toaster message={error} type={"error"} />
-              </div>
-            )}
-            {imageFileUploadError && (
-              <div className="mt-4 flex items-center justify-end">
-                <Toaster message={imageFileUploadError} type={"error"} />
-              </div>
-            )}
-            {(isUploadingFiles ||
-              isUploadingImages ||
-              isUploadingSingleImage ||
-              isUploadingSingleFile) && (
-              <div className="mt-4 flex items-center justify-end">
-                <Toaster message="Uploading Files..." type={"info"} />
-              </div>
-            )}
           </form>
         </div>
       </div>
@@ -663,4 +686,4 @@ const AssetRegistration = () => {
   );
 };
 
-export default AssetRegistration;
+export default EditAssetDetails;

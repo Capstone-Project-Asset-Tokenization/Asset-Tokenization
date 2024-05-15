@@ -24,6 +24,7 @@ import ConnectWallet from "./features/authentication/Pages/ConnectWalet";
 import ProfilePage from "./features/profile/pages";
 import UserManagement from "./features/userManagement/pages/userManagement";
 import AssetDetailPage from "./features/marketPlace/Pages/AssetDetailPage";
+import EditAssetDetails from "./features/editAssetDetails/pages/editAssetDetails";
 
 function App() {
   let auth = useSelector((state) => state.auth);
@@ -37,10 +38,52 @@ function App() {
       <Routes>
         <Route>
           <Route index element={<LandingPage />} />
-          <Route path="/asset-registration" element={auth.isAuthenticated ? <AssetRegistration /> : <Navigate to="/signin" />} />
-          <Route path="/asset-verification" element={auth.isAuthenticated ? <AssetVerification /> : <Navigate to="/signin" />} />
-          <Route path="/asset-verification-detail" element={auth.isAuthenticated ? <AssetDetail /> : <Navigate to="/signin" />} />
-          <Route path="/user-management" element={auth.isAuthenticated ? <UserManagement /> : <Navigate to='/signin' />} />
+          <Route
+            path="/asset-registration"
+            element={
+              auth.isAuthenticated ? (
+                <AssetRegistration />
+              ) : (
+                <Navigate to="/signin" />
+              )
+            }
+          />
+          <Route
+            path="/asset-verification"
+            element={
+              auth.isAuthenticated ? (
+                <AssetVerification />
+              ) : (
+                <Navigate to="/signin" />
+              )
+            }
+          />
+          <Route
+            path="/asset-verification-detail"
+            element={
+              auth.isAuthenticated ? <AssetDetail /> : <Navigate to="/signin" />
+            }
+          />
+          <Route
+            path="/user-management"
+            element={
+              auth.isAuthenticated ? (
+                <UserManagement />
+              ) : (
+                <Navigate to="/signin" />
+              )
+            }
+          />
+          <Route
+            path={`/edit-asset/:id`}
+            element={
+              auth.isAuthenticated ? (
+                <EditAssetDetails />
+              ) : (
+                <Navigate to="/signin" />
+              )
+            }
+          />
 
           <Route path="/signup" element={<UserRegistration />} />
           <Route path="/signin" element={<Login />} />

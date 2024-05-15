@@ -21,7 +21,7 @@
 .animated-element {
   animation-duration: 2s;
   animation-fill-mode: both;
-  animation-timing-function: ease;
+  animation-timing-function: ease-in-out;
   animation-iteration-count: 10;
   animation-name: fadeIn;
   position: relative;
