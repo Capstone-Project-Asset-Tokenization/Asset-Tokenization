@@ -103,6 +103,10 @@ const EditAssetDetails = () => {
           supportingFiles: files,
           assetImages: images,
         };
+        const initialSupply = Number(assetData[4]);
+        const assetDecimals = Number(assetData[3]);
+        const normalizedTotalSupply =
+          initialSupply / Math.pow(10, assetDecimals);
 
         setInitialState(initialState);
         setAssetName(assetData[1]);
@@ -110,7 +114,7 @@ const EditAssetDetails = () => {
         setTokenPrice(Number(assetData[5]));
         setCategory(assetData[6]);
         setSymbol(assetData[2]);
-        setTotalSupply(Number(assetData[4]));
+        setTotalSupply(normalizedTotalSupply);
         setDecimal(Number(assetData[3]));
         setSupportingFiles(files);
         setAssetImages(images);
