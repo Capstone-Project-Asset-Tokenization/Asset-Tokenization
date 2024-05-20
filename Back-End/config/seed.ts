@@ -14,6 +14,7 @@ const seed = async () => {
         walletAddress: EnvConfig.ADMIN_WALLET,
         nationalID: EnvConfig.ADMIN_NATIONAL_ID,
         roles: ["ADMIN"],
+        isBanned: false,
       });
 
       await newAdmin.save();

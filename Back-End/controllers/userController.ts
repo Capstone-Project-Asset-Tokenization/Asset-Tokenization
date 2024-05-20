@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import UserServie from '../services/userServices';
 import { catchAsyncError } from '../utils/error/catchAsyncError';
-import { parseLoginRequest, parseRegistrationRequest, parseWalletUpdateRequest } from '../schemas/userSchemas';
+import { parseLoginRequest, parseRegistrationRequest, parseUpdateRoleRequest, parseWalletUpdateRequest } from '../schemas/userSchemas';
 import { RegistrationInput } from '../types/user';
 import { CustomRequest } from '../types/customRequest';
 
@@ -19,7 +19,7 @@ export default class UserController {
         let { email, password } = parseLoginRequest(req.body)
         let token = await this.userService.login(email, password)
         let user = await this.userService.getUserByEmail(email)
-        res.status(200).json({token , user})
+        res.status(200).json({ token, user })
 
     })
 
@@ -44,5 +44,22 @@ export default class UserController {
         let user = await this.userService.updateUserWalletAddress(req.userID!, walletAddress)
         res.status(200).json(user)
     })
+
+    updateUserRole = catchAsyncError(async (req: CustomRequest, res: Response) => {
+        let { newRole, walletAddress } = parseUpdateRoleRequest(req.body)
+        let user = await this.userService.updateUserRole(walletAddress, newRole)
+        res.status(200).json(user)
+    })
+
+    banUser = catchAsyncError(async (req: CustomRequest, res: Response) => {
+        let user = await this.userService.banUser(req.params.walletAddress)
+        res.status(200).json(user)
+    })
+
+    unbanUser = catchAsyncError(async (req: CustomRequest, res: Response) => {
+        let user = await this.userService.unbanUser(req.params.walletAddress)
+        res.status(200).json(user)
+    })
+
 
 }

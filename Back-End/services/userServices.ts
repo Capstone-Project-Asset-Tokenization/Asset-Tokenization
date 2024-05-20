@@ -94,4 +94,32 @@ export default class UserServie {
     }
     return await this.userRepository.updateUserWalletAddress(id, walletAddress);
   }
+
+  async updateUserRole(userWallet: string, newRole: string) {
+
+    let existingUser = await this.userRepository.getUserByWalletAddress(userWallet);
+    if (!existingUser) {
+      throw new NotFoundError("There is no user with this wallet");
+    }
+
+    return await this.userRepository.updateUserRole(userWallet, newRole);
+  }
+
+  async banUser(userWallet: string) {
+    let existingUser = await this.userRepository.getUserByWalletAddress(userWallet);
+    if (!existingUser) {
+      throw new NotFoundError("There is no user with this wallet");
+    }
+
+    return await this.userRepository.banUser(userWallet);
+  }
+
+  async unbanUser(userWallet: string) {
+    let existingUser = await this.userRepository.getUserByWalletAddress(userWallet);
+    if (!existingUser) {
+      throw new NotFoundError("There is no user with this wallet");
+    }
+
+    return await this.userRepository.unbanUser(userWallet);
+  }
 }

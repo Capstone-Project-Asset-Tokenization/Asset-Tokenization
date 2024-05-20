@@ -46,3 +46,11 @@ const walletUpdateSchema = z.object({
 
 export const parseWalletUpdateRequest = (record: unknown) =>
     walletUpdateSchema.parse(record);
+
+const userRoleUpdateSchema = z.object({
+    newRole: z.string().min(3),
+    walletAddress: z.string().min(3),
+})
+
+export const parseUpdateRoleRequest = (record: unknown) =>
+    userRoleUpdateSchema.parse(record);

@@ -15,5 +15,8 @@ userRouter.get('/', authenticateUser, userController.getUser)
 userRouter.get('/wallet/:walletAddress', authenticateUser, userController.getUserByWalletAddress)
 userRouter.get('/wallets', authenticateUser, userController.getUsersByWalletAddresses)
 userRouter.put('/wallet', authenticateUser, userController.updateUserWalletAddress)
+userRouter.put('/update-role', authenticateUser, isAdmin, userController.updateUserRole)
+userRouter.put('/ban/:walletAddress', authenticateUser, isAdmin, userController.banUser)
+userRouter.put('/unban/:walletAddress', authenticateUser, isAdmin, userController.unbanUser)
 
 export default userRouter
