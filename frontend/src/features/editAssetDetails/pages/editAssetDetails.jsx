@@ -322,22 +322,26 @@ const EditAssetDetails = () => {
       }
 
       try {
-        console.log(
-          assetName,
-          symbol,
-          // const transactionResponse = await contractWithSigner.updateAsset(
-          assetName,
-          symbol,
-          Number(decimal),
-          Number(totalSupply),
-          Number(tokenPrice),
-          category,
-          description,
-          uploadedImages,
-          uploadedFiles
+        const assetUpdateData = {
+          name: assetName,
+          symbol: symbol,
+          decimals: Number(decimal),
+          totalSupply: Number(totalSupply),
+          tokenPrice: Number(tokenPrice),
+          category: category,
+          description: description,
+          images: uploadedImages,
+          supportingDocuments: uploadedFiles,
+        };
+
+        // console.log(
+        // assetName,
+        // symbol,
+        const transactionResponse = await contractWithSigner.updateAsset(
+          assetId,
+          assetUpdateData
         );
-        // );
-        // await transactionResponse.wait();
+        await transactionResponse.wait();
         setSuccess(true);
         setError(null);
         setLoading(false);
