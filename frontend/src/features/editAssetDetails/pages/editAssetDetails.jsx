@@ -57,6 +57,7 @@ const EditAssetDetails = () => {
     useUploadSingleFileMutation();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -128,8 +129,6 @@ const EditAssetDetails = () => {
     fetchAsset();
     console.log("fetching asset");
   }, [assetId]);
-
-  const [error, setError] = useState(null);
 
   const uploadImages = useCallback(
     async (images) => {
@@ -392,18 +391,58 @@ const EditAssetDetails = () => {
   if (loading) {
     return <SpinLoader />;
   }
+  if (error !== null && error.includes("Asset does not exist")) {
+    return (
+      <div className="container mx-auto px-4 min-h-screen flex items-center justify-center bg-gradient-to-r from-red-400 to-indigo-700">
+        <div className="w-full max-w-md py-16 px-8 bg-white shadow-lg rounded-lg">
+          <div className="flex justify-center items-center mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-3 3v-6m6-6H6.4a.6.6 0 00-.6.6V21a3 3 0 003 3h6a3 3 0 003-3V6a6 6 0 00-6-6z"
+              />
+            </svg>
+          </div>
+          <h1 className="text-center text-3xl font-bold text-red-800 mb-3">
+            Oops! Asset Not Found
+          </h1>
+          <p className="text-center text-gray-600 mb-8">
+            The asset you are looking for might have been removed, had its name
+            changed, or is temporarily unavailable.
+          </p>
+          <div className="text-center">
+            <button
+              className="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+              onClick={() => window.history.back()}
+            >
+              Go Back
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="container mx-auto px-4">
         <div className="w-full mx-auto py-16">
           <form onSubmit={handleSubmit} className="text-white rounded">
             <h1 className="block text-white font-bold mb-8 text-3xl">
-              Create New Asset
+              Edit {assetName} asset details
             </h1>
             {success && (
               <div className="mt-4 flex items-center justify-end">
                 <Toaster
-                  message="Asset created successfully"
+                  message="Asset Updated successfully"
                   type={"success"}
                 />
               </div>
@@ -684,7 +723,7 @@ const EditAssetDetails = () => {
                 className="bg-primary-main hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="submit"
               >
-                Create
+                Update Asset Details
               </button>
             </div>
           </form>
