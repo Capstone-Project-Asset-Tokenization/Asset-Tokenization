@@ -153,7 +153,7 @@ contract AssetTokenizationPlatform  {
 
         emit AssetUpdated(assetID, name, symbol, decimals, totalSupply, tokenPrice, category, description, images, supportingDocuments, msg.sender);
     }
-}
+
 
 
     function totalSupply(uint256 assetId) external view assetExists(assetId) returns (uint256) {
