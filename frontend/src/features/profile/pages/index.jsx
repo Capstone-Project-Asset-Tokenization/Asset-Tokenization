@@ -4,6 +4,8 @@ import { useGetUserQuery } from "../../../stores/auth/authAPI";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { SpinLoader } from "../../../components/common/spinner/spinLoader";
+import { getAssetContractInstance } from "../../../config/contractInstances";
+import { assert, ethers } from "ethers";
 
 const ProfilePage = () => {
   const {
@@ -14,6 +16,7 @@ const ProfilePage = () => {
   } = useGetUserQuery();
   const [isEditing, setIsEditing] = useState(false);
   const [editedUserData, setEditedUserData] = useState({ ...userData });
+  const [userAssets, setUserAssets] = useState([]);
 
   const RegistrationSchema = Yup.object().shape({
     firstName: Yup.string().required("Full Name is required"),
@@ -22,8 +25,21 @@ const ProfilePage = () => {
     nationalID: Yup.string().required("Legal ID No. is required"),
   });
 
-  const userAssets = [];
   useEffect(() => {
+    const fetchUserAssets = async () => {
+      const [contract, contractWithSigner] = await getAssetContractInstance();
+      console.log(userData?.walletAddress);
+      // get address from metamask
+      const address = window.ethereum.selectedAddress;
+      console.log(address);
+      const userAssets = await contractWithSigner.getUserAssetsByFilter(
+        address,
+        0
+      );
+      console.log(userAssets);
+      setUserAssets(userAssets);
+    };
+    fetchUserAssets().then(() => console.log("done"));
     refetch();
   }, [refetch]);
 
@@ -231,9 +247,16 @@ const ProfilePage = () => {
                   {userAssets.length > 0 ? (
                     <ul>
                       {userAssets.map((asset, index) => (
-                        <li key={index} className="mb-2">
-                          {asset.name} - {asset.description}
-                        </li>
+                        <RealEstateCard
+                          key={index}
+                          image={asset.images[0]}
+                          title={asset.name}
+                          totalSupply={asset.totalSupply}
+                          price={asset.price}
+                          onEdit={() => console.log("edit")}
+                          onDelete={() => console.log("delete")}
+                          onViewDetails={() => console.log("view details")}
+                        />
                       ))}
                     </ul>
                   ) : (
@@ -250,3 +273,49 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
+
+const RealEstateCard = ({
+  image,
+  title,
+  totalSupply,
+  price,
+  onEdit,
+  onDelete,
+  onViewDetails,
+}) => {
+  return (
+    <div className="max-w-sm rounded overflow-hidden shadow-lg bg-gray-800 text-white">
+      <img className="w-full" src={image} alt={title} />
+      <div className="px-6 py-4">
+        <div className="font-bold text-xl mb-2">{title}</div>
+        <p className="text-gray-400 text-base">
+          <span className="font-semibold">Total Supply:</span> {totalSupply}{" "}
+          Units
+        </p>
+        <p className="text-gray-400 text-base">
+          <span className="font-semibold">Price:</span> {price} ETH
+        </p>
+      </div>
+      <div className="px-6 pt-4 pb-2 flex justify-between items-center">
+        <button
+          onClick={onViewDetails}
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        >
+          View Details
+        </button>
+        <button
+          onClick={onEdit}
+          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Edit
+        </button>
+        <button
+          onClick={onDelete}
+          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+        >
+          Delete
+        </button>
+      </div>
+    </div>
+  );
+};
