@@ -24,6 +24,19 @@ contract AssetTokenizationPlatform  {
         address creator;
     }
 
+    struct AssetUpdateData {
+        string name;
+        string symbol;
+        uint8 decimals;
+        uint256 totalSupply;
+        uint256 tokenPrice;
+        AssetCategory category;
+        string description;
+        string[] images;
+        string[] supportingDocuments;
+    }
+
+
 
 
     mapping(uint256=>mapping(address=>uint256)) public balances;
@@ -46,19 +59,7 @@ contract AssetTokenizationPlatform  {
     event TokensLocked(uint256 indexed assetId, address indexed tokenHolder, bool locked);
     event TokensUnlocked(uint256 indexed assetId, address indexed tokenHolder, bool unlocked);
     event AssetVerificationDeclined(uint256 indexed assetId, address indexed verifier);
-    event AssetUpdated(
-        uint256 assetID,
-        string name,
-        string symbol,
-        uint8 decimals,
-        uint256 totalSupply,
-        uint256 tokenPrice,
-        AssetCategory category,
-        string description,
-        string[] images,
-        string[] supportingDocuments,
-        address updater
-    );
+    event AssetUpdated(uint256 indexed assetID,string name,string symbol,uint8 decimals,uint256 totalSupply,uint256 tokenPrice,AssetCategory category,string description,string[] images,string[] supportingDocuments,address updater);
 
     modifier onlyAssetCreator(uint256 assetID) {
         require(msg.sender == assets[assetID].creator, "Only asset creator can update the asset");
@@ -127,33 +128,24 @@ contract AssetTokenizationPlatform  {
         assetCount++;
     }
 
-        function updateAsset(
+    function updateAsset(
         uint256 assetID,
-        string memory name,
-        string memory symbol,
-        uint8 decimals,
-        uint256 totalSupply,
-        uint256 tokenPrice,
-        AssetCategory category,
-        string memory description,
-        string[] memory images,
-        string[] memory supportingDocuments
+        AssetUpdateData memory data
     ) external onlyRegisteredUser onlyAssetCreator(assetID) {
         Asset storage asset = assets[assetID];
 
-        asset.name = name;
-        asset.symbol = symbol;
-        asset.decimals = decimals;
-        asset.totalSupply = totalSupply * 10 ** uint256(decimals);
-        asset.tokenPrice = tokenPrice;
-        asset.category = category;
-        asset.description = description;
-        asset.images = images;
-        asset.supportingDocuments = supportingDocuments;
+        asset.name = data.name;
+        asset.symbol = data.symbol;
+        asset.decimals = data.decimals;
+        asset.totalSupply = data.totalSupply * 10 ** uint256(data.decimals);
+        asset.tokenPrice = data.tokenPrice;
+        asset.category = data.category;
+        asset.description = data.description;
+        asset.images = data.images;
+        asset.supportingDocuments = data.supportingDocuments;
 
-        emit AssetUpdated(assetID, name, symbol, decimals, totalSupply, tokenPrice, category, description, images, supportingDocuments, msg.sender);
+        emit AssetUpdated(assetID, data.name, data.symbol, data.decimals, data.totalSupply, data.tokenPrice, data.category, data.description, data.images, data.supportingDocuments, msg.sender);
     }
-
 
 
     function totalSupply(uint256 assetId) external view assetExists(assetId) returns (uint256) {
