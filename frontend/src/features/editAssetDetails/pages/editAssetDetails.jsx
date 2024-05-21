@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { IoRocketOutline } from "react-icons/io5";
+import { IoCloseCircle, IoRocketOutline } from "react-icons/io5";
 import ImageChip from "../../../components/common/chips/imageChip";
 // import TagChip from "../../../components/common/chips/tagChip";
 import {
@@ -46,6 +46,8 @@ const EditAssetDetails = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [initialState, setInitialState] = useState(null);
+  const [openImageModal, setOpenImageModal] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
 
   const [uploadMultipleFiles, { isLoading: isUploadingFiles }] =
     useUploadMultipleFilesMutation();
@@ -388,6 +390,23 @@ const EditAssetDetails = () => {
     assetImagesInputRef.current.click();
   };
 
+  const handleShowImageModal = (image) => {
+    console.log("showing image modal", image);
+    setOpenImageModal(true);
+    setCurrentImage(image);
+  };
+
+  const handleFileDownload = (file) => {
+    console.log("downloading file", file);
+    const link = document.createElement("a");
+    link.style.display = "none";
+    link.href = file.preview;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) {
     return <SpinLoader />;
   }
@@ -433,6 +452,30 @@ const EditAssetDetails = () => {
 
   return (
     <>
+      {openImageModal && (
+        <div
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
+          onClick={() => setOpenImageModal(false)}
+        >
+          <div
+            className="bg-white p-4 rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={currentImage.preview || URL.createObjectURL(currentImage)}
+              alt="asset"
+              className="h-96 w-96 object-cover"
+            />
+            <button
+              onClick={() => setOpenImageModal(false)}
+              className="absolute top-2 right-2 text-white bg-red-500 p-2 rounded-full"
+            >
+              {/* X button */}
+              <IoCloseCircle />
+            </button>
+          </div>
+        </div>
+      )}
       <div className="container mx-auto px-4">
         <div className="w-full mx-auto py-16">
           <form onSubmit={handleSubmit} className="text-white rounded">
@@ -673,6 +716,7 @@ const EditAssetDetails = () => {
                   <div className="flex flex-wrap mt-2">
                     {assetImages.map((file) => (
                       <ImageChip
+                        onOpenModal={() => handleShowImageModal(file)}
                         key={file.name}
                         file={file}
                         onDelete={handleAssetImageDelete}
@@ -708,6 +752,7 @@ const EditAssetDetails = () => {
                   <div className="flex flex-wrap mt-2">
                     {supportingFiles.map((file) => (
                       <ImageChip
+                        onDownLoad={() => handleFileDownload(file)}
                         key={file.name}
                         file={file}
                         onDelete={handleSupportingDeleteFile}
