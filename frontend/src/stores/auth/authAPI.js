@@ -54,6 +54,34 @@ export const authAPI = createApi({
       },
       // Adding caching configuration
     }),
+
+    updateRole: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/user/update-role`,
+          method: "PUT",
+          body: data,
+        };
+      },
+    }),
+    banUser: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/user/ban/${data.userWallet}`,
+          method: "PUT",
+          body: {},
+        };
+      },
+    }),
+    unbanUser: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/user/unban/${data.userWallet}`,
+          method: "PUT",
+          body: {},
+        };
+      },
+    })
   }),
 });
 
@@ -62,4 +90,7 @@ export const {
   useLoginMutation,
   useGetUserQuery,
   useGetUsersInfoFromWalletQuery,
+  useUpdateRoleMutation,
+  useBanUserMutation,
+  useUnbanUserMutation
 } = authAPI;

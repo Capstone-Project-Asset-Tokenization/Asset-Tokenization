@@ -1,3 +1,4 @@
+import UserRepository from '../../repositories/userRepository'
 import { CustomRequest } from '../../types/customRequest'
 import { UserToken } from '../../types/userToken'
 import { verifyToken } from '../../utils/authentication/verifyToken'
@@ -11,11 +12,17 @@ export const authenticateUser = catchAsyncError(async (req: CustomRequest, res: 
 
     if (token) {
         let verified: UserToken = verifyToken(token)
+        let userRepository = new UserRepository()
+        let existingUser = await userRepository.getUserById(verified._id)
 
-        req.userRoles = verified.roles
-        req.email = verified.email
-        req.walletAddress = verified.walletAddress
-        req.userID = verified._id
+        if (!existingUser) {
+            throw new CustomError(404, 'User not found')
+        }
+    
+        req.userRoles = existingUser.roles
+        req.email = existingUser.email
+        req.walletAddress = existingUser.walletAddress
+        req.userID = existingUser._id
         next()
     } else {
         throw new UnauthorizedError()
@@ -23,7 +30,8 @@ export const authenticateUser = catchAsyncError(async (req: CustomRequest, res: 
 
 })
 
-export const isAdmin = catchAsyncError((req: CustomRequest, res: Response, next: NextFunction) => {
+export const isAdmin = catchAsyncError(async (req: CustomRequest, res: Response, next: NextFunction) => {
+
     if (req.userRoles?.includes('ADMIN')) {
         next()
     } else {

@@ -15,7 +15,7 @@ export default class UserRepository {
 
     public async getUserByWalletAddress(walletAddress: string) {
         return await User.findOne({
-            walletAddress
+            walletAddress: { $regex: new RegExp(walletAddress, 'i') }
         });
     }
 
@@ -59,6 +59,18 @@ export default class UserRepository {
         return await User.findOne({
             phoneNumber
         });
+    }
+
+    public async updateUserRole(userWallet: string, newRole: string) {
+        return await User.findOneAndUpdate({ walletAddress: { $regex: new RegExp(userWallet, 'i') } }, { roles: [newRole] }, { new: true });
+    }
+
+    public async banUser(userWallet: string) {
+        return await User.findOneAndUpdate({ walletAddress: { $regex: new RegExp(userWallet, 'i') } }, { isBanned: true }, { new: true });
+    }
+
+    public async unbanUser(userWallet: string) {
+        return await User.findOneAndUpdate({ walletAddress: { $regex: new RegExp(userWallet, 'i') } }, { isBanned: false }, { new: true });
     }
 
 }
