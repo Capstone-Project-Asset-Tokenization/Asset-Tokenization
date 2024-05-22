@@ -1,7 +1,8 @@
 import React from "react";
 import dummyAsset from "../../../assets/dummy_asset.jpg";
+import { Link } from "react-router-dom";
 
-const AssetCard = ({ asset, openModal }) => {
+const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
   return (
     <div
       className="flex flex-col shadow-lg rounded-[20px] overflow-hidden h-[450px] cursor-pointer"
@@ -30,9 +31,25 @@ const AssetCard = ({ asset, openModal }) => {
             </p>
           </div>
         </div>
-        <span className="opacity-50 font-mono font-thin pt-6 cursor-pointer">
-          See Details
-        </span>
+
+        <div className="flex justify-between">
+          <button
+            onClick={() => openModal(asset)}
+            state={{ id: asset.ID }}
+            className="opacity-50 font-mono font-thin pt-6 cursor-pointer"
+          >
+            See Details
+          </button>
+          {isMyAsset && (
+            <Link
+              to={`/edit-asset/${asset.ID}`}
+              state={{ id: asset.ID }}
+              className="opacity-50 font-mono font-thin pt-6 cursor-pointer"
+            >
+              Edit
+            </Link>
+          )}
+        </div>
       </div>
     </div>
   );
