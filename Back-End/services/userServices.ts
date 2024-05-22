@@ -45,6 +45,15 @@ export default class UserServie {
     return await this.userRepository.createUser(user);
   }
 
+  async verifyEmail(emailToken: string) {
+    let user = await this.userRepository.getUserVerification(emailToken);
+    if (!user) {
+      throw new NotFoundError("Invalid email token");
+    }
+
+    return await this.userRepository.updateIsVerified(user.email);
+  }
+
   async getUserByEmail(email: string) {
     let user = await this.userRepository.getUserByEmail(email);
     if (!user) {
@@ -96,8 +105,9 @@ export default class UserServie {
   }
 
   async updateUserRole(userWallet: string, newRole: string) {
-
-    let existingUser = await this.userRepository.getUserByWalletAddress(userWallet);
+    let existingUser = await this.userRepository.getUserByWalletAddress(
+      userWallet
+    );
     if (!existingUser) {
       throw new NotFoundError("There is no user with this wallet");
     }
@@ -106,7 +116,9 @@ export default class UserServie {
   }
 
   async banUser(userWallet: string) {
-    let existingUser = await this.userRepository.getUserByWalletAddress(userWallet);
+    let existingUser = await this.userRepository.getUserByWalletAddress(
+      userWallet
+    );
     if (!existingUser) {
       throw new NotFoundError("There is no user with this wallet");
     }
@@ -115,7 +127,9 @@ export default class UserServie {
   }
 
   async unbanUser(userWallet: string) {
-    let existingUser = await this.userRepository.getUserByWalletAddress(userWallet);
+    let existingUser = await this.userRepository.getUserByWalletAddress(
+      userWallet
+    );
     if (!existingUser) {
       throw new NotFoundError("There is no user with this wallet");
     }
