@@ -173,7 +173,7 @@ const ProfilePage = () => {
               )}
             </Formik>
           </div>
-        ) : userData.roles.includes("ADMIN") ? (
+        ) : userData?.roles?.includes("ADMIN") ? (
           <div className="flex-auto w-full md:w-1/2 md:pr-4">
             <div className="max-w-lg mx-auto  p-3 rounded-lg shadow">
               <div className="flex items-center space-x-4">
@@ -208,7 +208,7 @@ const ProfilePage = () => {
                 </div>
               </div>
               <div className="mt-4 flex justify-start">
-                {userData?.roles.map((role, index) => (
+                {userData?.roles?.map((role, index) => (
                   <span
                     key={index}
                     className="inline-block bg-purple-300 text-purple-800 text-xs font-semibold mr-2 px-3 py-1 rounded-full"
@@ -241,7 +241,7 @@ const ProfilePage = () => {
                   <p class="text-gray-400 text-base mb-6">
                     Legal ID: {userData?.nationalID}
                   </p>
-                  {userData?.roles.map((role, index) => (
+                  {userData?.roles?.map((role, index) => (
                     <span
                       key={index}
                       class="inline-block bg-purple-200 text-purple-800 text-sm font-semibold px-3 py-1 rounded-full"
@@ -263,7 +263,7 @@ const ProfilePage = () => {
                       fgColor="#6b21a8"
                       size={150}
                       eyeRadius={[20, 20, 20, 20]}
-                      value={userData?.walletAddress}
+                      value={userData?.walletAddress || ""}
                     />
                     <div className="text-gray-500 text-xl px-4 font-bold">
                       {" "}
@@ -315,7 +315,7 @@ const ProfilePage = () => {
                   </div>
                 )}
 
-                {!tabChange && userAssets.length > 0 && (
+                {!tabChange && userAssets?.length > 0 && (
                   <div className="flex">
                     {userAssets.map((asset, index) => {
                       console.log(typeof asset[6]);
@@ -337,7 +337,7 @@ const ProfilePage = () => {
                 {isModalOpen && (
                   <AssetDetail asset={selectedAsset} onClose={closeModal} />
                 )}
-                {userAssets.length === 0 && (
+                {userAssets?.length === 0 && (
                   <p>You currently have no assets.</p>
                 )}
               </div>

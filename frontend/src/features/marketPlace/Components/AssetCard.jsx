@@ -36,7 +36,7 @@ const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
           <button
             onClick={() => openModal(asset)}
             state={{ id: asset.ID }}
-            className="opacity-50 font-mono font-thin pt-6"
+            className="opacity-50 font-mono font-thin pt-6 cursor-pointer"
           >
             See Details
           </button>
@@ -44,7 +44,7 @@ const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
             <Link
               to={`/edit-asset/${asset.ID}`}
               state={{ id: asset.ID }}
-              className="opacity-50 font-mono font-thin pt-6"
+              className="opacity-50 font-mono font-thin pt-6 cursor-pointer"
             >
               Edit
             </Link>

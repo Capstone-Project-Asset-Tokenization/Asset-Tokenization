@@ -44,7 +44,7 @@ const AssetDetail = ({ asset, onClose }) => {
               asset.images.map((img, index) => (
                 <div
                   key={index}
-                  className="w-full h-full w-full overflow-hidden"
+                  className="w-full h-full overflow-hidden"
                 >
                   <img
                     className="object-cover h-[300px]"
