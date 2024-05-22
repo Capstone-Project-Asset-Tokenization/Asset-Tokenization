@@ -3,6 +3,7 @@ import dummyAsset from "../../../assets/dummy_asset.jpg";
 import { Link } from "react-router-dom";
 
 const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
+  console.log("asset", asset);
   return (
     <div
       className="flex flex-col shadow-lg rounded-[20px] overflow-hidden h-[450px] cursor-pointer"

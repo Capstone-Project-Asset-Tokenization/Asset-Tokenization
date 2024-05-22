@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import dummyAsset from "../../../assets/dummy_asset.jpg";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
+import PropTypes from "prop-types";
 
 const AssetDetail = ({ asset, onClose }) => {
   const categoryMapping = {
@@ -11,14 +12,22 @@ const AssetDetail = ({ asset, onClose }) => {
     3: "Other",
   };
 
-  const downloadFile = (fileUrl, fileName) => {
-    const anchor = document.createElement("a");
-    anchor.style.display = "none";
-    anchor.href = fileUrl;
-    anchor.download = fileName;
-    document.body.appendChild(anchor);
-    anchor.click();
-    document.body.removeChild(anchor);
+  const [isSingleToken, setIsSingleToken] = useState(asset.category === 1);
+  const [buyModelOpen, setBuyModelOpen] = useState(false);
+  const [newPrice, setNewPrice] = useState(asset.tokenPrice);
+
+  // const downloadFile = (fileUrl, fileName) => {
+  //   const anchor = document.createElement("a");
+  //   anchor.style.display = "none";
+  //   anchor.href = fileUrl;
+  //   anchor.download = fileName;
+  //   document.body.appendChild(anchor);
+  //   anchor.click();
+  //   document.body.removeChild(anchor);
+  // };
+
+  const handleOpenBuyModal = () => {
+    setBuyModelOpen(true);
   };
 
   if (!asset) return <div>No asset found</div>;
@@ -29,6 +38,51 @@ const AssetDetail = ({ asset, onClose }) => {
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
       onClick={onClose}
     >
+      {buyModelOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-10">
+          <div
+            className="bg-[#2B2B2B] text-white w-[50vw] h-[90vh] mb-6 rounded-lg overflow-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex flex-col gap-6 m-6 mx-20">
+              <h1 className="text-6xl mb-5">Buy Asset </h1>
+              <h2 className="text-4xl mb-5">{asset.name}</h2>
+              <p className="text-xl mb-5 opacity-50 font-mono">
+                You are about to buy a token of this asset for{" "}
+                <span className="font-bold">
+                  {Number(asset.tokenPrice)} ETH
+                </span>
+              </p>
+              <p className="text-xl mb-5 opacity-50 font-mono">
+                You will be able to view the asset details after the purchase
+              </p>
+              {isSingleToken ? null : (
+                <>
+                  <label className="text-xl opacity-50 font-mono">
+                    Number of Tokens
+                  </label>
+                  <input
+                    type="number"
+                    className="bg-gray-600 text-white w-1/2 p-2 rounded outline-none"
+                    onChange={(e) =>
+                      setNewPrice(e.target.value * Number(asset.tokenPrice))
+                    }
+                  />
+                </>
+              )}
+              <label className="text-xl opacity-50 font-mono">
+                Total Price : <span className="font-bold">{newPrice} ETH</span>
+              </label>
+              <button
+                onClick={() => setBuyModelOpen(false)}
+                className="bg-primary-main text-white px-4 py-2 rounded"
+              >
+                Confirm Purchase
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div
         className="bg-[#2B2B2B] text-white w-[50vw] h-[90vh] mb-6 rounded-lg overflow-auto"
         onClick={(e) => e.stopPropagation()}
@@ -42,10 +96,7 @@ const AssetDetail = ({ asset, onClose }) => {
           >
             {asset.images.length > 0 ? (
               asset.images.map((img, index) => (
-                <div
-                  key={index}
-                  className="w-full h-full overflow-hidden"
-                >
+                <div key={index} className="w-full h-full overflow-hidden">
                   <img
                     className="object-cover h-[300px]"
                     src={img}
@@ -71,12 +122,20 @@ const AssetDetail = ({ asset, onClose }) => {
             <p className="text-xl mb-5 opacity-50 font-mono">
               {parseInt(asset.tokenPrice)} ETH per Token
             </p>
+            <p
+              className={`text-xl opacity-50 font-mono ${
+                Number(asset.totalSupply) <= 10 ? "text-red-500" : ""
+              }`}
+            >
+              Available Tokens for this asset are :{" "}
+              <span className="font-bold">{Number(asset.totalSupply)}</span>
+            </p>
           </div>
           <div>
             <h3 className="font-bold font-mono mb-3">Description</h3>
             <p className="text-xl opacity-50 font-mono">{asset.description}</p>
           </div>
-          <div>
+          {/* <div>
             <h3 className="font-bold font-mono mb-3">Supporting Documents</h3>
             <div className="flex flex-col gap-4">
               {asset.supportingDocuments.map((doc, index) => (
@@ -98,13 +157,19 @@ const AssetDetail = ({ asset, onClose }) => {
                 </div>
               ))}
             </div>
-          </div>
+          </div> */}
           <div>
             <h3 className="font-bold mb-3">Category</h3>
             <span className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-2 rounded">
               {categoryMapping[asset.category]}
             </span>
           </div>
+          <button
+            onClick={handleOpenBuyModal}
+            className="bg-primary-main text-white px-4 py-2 rounded"
+          >
+            Buy Now
+          </button>
         </div>
       </div>
     </div>
@@ -112,3 +177,8 @@ const AssetDetail = ({ asset, onClose }) => {
 };
 
 export default AssetDetail;
+
+AssetDetail.propTypes = {
+  asset: PropTypes.object.isRequired,
+  onClose: PropTypes.func.isRequired,
+};
