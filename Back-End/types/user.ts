@@ -7,6 +7,7 @@ export interface IUser {
     walletAddress?: string;
     roles: string[];
     password: string;
+    isBanned: boolean;
 }
 
 export interface RegistrationInput {

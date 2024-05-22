@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { getAssetContractInstance, getUserContractInstance } from '../../../config/contractInstances'
 import { createAdminUserObjFromContract, createAssetObjFromContract, createUserObjFromContract } from '../../../utils/contractToObject'
-import { useGetUsersInfoFromWalletQuery } from '../../../stores/auth/authAPI'
+import { useBanUserMutation, useGetUsersInfoFromWalletQuery, useUnbanUserMutation, useUpdateRoleMutation } from '../../../stores/auth/authAPI'
 import { Link } from 'react-router-dom'
 import { dummyUserAvatar } from '../../../assets/avatar'
 import { enumMap } from '../../../utils/enumMap'
 import { useNavigate } from 'react-router-dom'
+import { SpinLoader } from '../../../components/common/spinner/spinLoader'
 // import { getAssetContractInstance } from '../../../config/contractInstances/index'
 
 
@@ -13,14 +14,19 @@ function UserManagement() {
 
     let [usersDetail, setUsersDetail] = useState([])
     let [fullUsersData, setFullAssetsData] = useState([])
+    const [updateRole, { isError: roleUpdateError, isLoading: roleUpdateLoading, isSuccess: roleUpdateSuccess }] = useUpdateRoleMutation()
+    const [banUser, { isError: banUserError, isLoading: banUserLoading, isSuccess: banUserSuccess }] = useBanUserMutation()
+    const [unbanUser, { isError: unbanUserError, isLoading: unbanUserLoading, isSuccess: unbanUserSuccess }] = useUnbanUserMutation()
 
     let [error, setError] = useState('')
+    let [loading, setLoading] = useState(false)
     let [selectedUserStatus, setSelectedUserStatus] = useState('ALL')
     let userAddresses = usersDetail.map(user => {
         return user.userAddress
     })
 
     let { data: users, error: userFetchError, isLoading: fetchingUsers } = useGetUsersInfoFromWalletQuery(userAddresses)
+
 
 
     let handleSelectedUserChange = (status) => {
@@ -31,6 +37,7 @@ function UserManagement() {
 
     let fetchUsers = async (selectedUserStatus = 'ALL') => {
         try {
+            setLoading(true)
             let [userContract, userContractWithSigner] = await getUserContractInstance()
             let response;
             switch (selectedUserStatus) {
@@ -56,9 +63,11 @@ function UserManagement() {
                         return await createUserObjFromContract(item)
                     }))
             }
+            setLoading(false)
             setUsersDetail(response)
             console.log('users', response, 'selected user status', selectedUserStatus)
         } catch (error) {
+            setLoading(false)
             setError(error.message)
             console.log('error in fetch users', error)
         }
@@ -107,11 +116,14 @@ function UserManagement() {
     let promoteHandler = async (userWallet) => {
         let [userContract, userContractWithSigner] = await getUserContractInstance()
         try {
-
+            setLoading(true)
             let response = await userContractWithSigner.promoteToAdmin(userWallet)
             console.log('admin promote response', response)
+            updateRole({ walletAddress: userWallet, newRole: "ADMIN" })
             fetchUsers(selectedUserStatus)
+            setLoading(false)
         } catch (error) {
+            setLoading(false)
             console.log('admin promote error', error)
             setError(error.message.split('"')[1])
         }
@@ -122,11 +134,15 @@ function UserManagement() {
 
         try {
 
+            setLoading(true)
             let response = await userContractWithSigner.depromoteAdmin(userWallet)
             console.log('admin depromote response', response)
+            updateRole({ walletAddress: userWallet, newRole: "USER" })
             // navigate("/asset-verification");
             fetchUsers(selectedUserStatus)
+            setLoading(false)
         } catch (error) {
+            setLoading(false)
             console.log('admin depromote error', error)
             setError(error.message.split('"')[1])
         }
@@ -137,11 +153,15 @@ function UserManagement() {
 
         try {
 
+            setLoading(true)
             let response = await userContractWithSigner.banUser(userWallet)
             console.log('user ban response', response)
+            banUser({ userWallet: userWallet })
             // navigate("/asset-verification");
             fetchUsers(selectedUserStatus)
+            setLoading(false)
         } catch (error) {
+            setLoading(false)
             console.log('user ban error', error)
             setError(error.message.split('"')[1])
         }
@@ -150,11 +170,15 @@ function UserManagement() {
     let unbanHandler = async (userWallet) => {
         let [userContract, userContractWithSigner] = await getUserContractInstance()
         try {
+            setLoading(true)
             let response = await userContractWithSigner.unbanUser(userWallet)
             console.log('user unban response', response)
+            unbanUser({ userWallet: userWallet })
             // navigate("/asset-verification");
             fetchUsers(selectedUserStatus)
+            setLoading(false)
         } catch (error) {
+            setLoading(false)
             console.log('user unban error', error)
             setError(error.message.split('"')[1])
         }
@@ -199,107 +223,111 @@ function UserManagement() {
             </div>
 
             <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+                {
+                    loading ? <div className='flex justify-center items-center'>
+                        <SpinLoader></SpinLoader>
+                    </div> :
+                        <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+                            <thead className="text-xs text-gray-700 uppercase bg-background-secondary dark:bg-background-secondary dark:text-gray-400">
+                                <tr>
+                                    <th scope="col" className="p-4">
+                                        #
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        User Name
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Email
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Legal ID
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Is Banned
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Is Admin
+                                    </th>
+                                    <th scope="col" className="px-6 py-3">
+                                        Actions
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    fullUsersData.map((user, index) => {
+                                        return (
+                                            <tr className="bg-white border-b dark:bg-background-primary dark:border-gray-700 hover:bg-background-secondary dark:hover:bg-background-secondary">
+                                                <td className="w-4 p-4">
+                                                    {index + 1}
+                                                </td>
+                                                <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
+                                                    <img className="w-10 h-10 rounded-full object-cover " src={dummyUserAvatar} alt="Jese image" />
+                                                    <div className="ps-3">
+                                                        <div className="text-base font-semibold">{user.userMetaData?.firstName + " " + user.userMetaData.lastName}</div>
+                                                        <div className="font-normal text-gray-500">{user.email}</div>
+                                                    </div>
+                                                </th>
+                                                <td className="px-6 py-4">
+                                                    {user.userMetaData.email}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {user.userMetaData.nationalID}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {user.isBanned ? 'Yes' : 'No'}
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {user.isAdmin ? 'Yes' : 'No'}
 
-                <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-                    <thead className="text-xs text-gray-700 uppercase bg-background-secondary dark:bg-background-secondary dark:text-gray-400">
-                        <tr>
-                            <th scope="col" className="p-4">
-                                #
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                User Name
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Email
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Legal ID
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Is Banned
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Is Admin
-                            </th>
-                            <th scope="col" className="px-6 py-3">
-                                Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            fullUsersData.map((user, index) => {
-                                return (
-                                    <tr className="bg-white border-b dark:bg-background-primary dark:border-gray-700 hover:bg-background-secondary dark:hover:bg-background-secondary">
-                                        <td className="w-4 p-4">
-                                            {index + 1}
-                                        </td>
-                                        <th scope="row" className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white">
-                                            <img className="w-10 h-10 rounded-full object-cover " src={dummyUserAvatar} alt="Jese image" />
-                                            <div className="ps-3">
-                                                <div className="text-base font-semibold">{user.userMetaData?.firstName + " " + user.userMetaData.lastName}</div>
-                                                <div className="font-normal text-gray-500">{user.email}</div>
-                                            </div>
-                                        </th>
-                                        <td className="px-6 py-4">
-                                            {user.userMetaData.email}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {user.userMetaData.nationalID}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {user.isBanned ? 'Yes' : 'No'}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {user.isAdmin ? 'Yes' : 'No'}
-
-                                            {/* <div className="flex items-center">
+                                                    {/* <div className="flex items-center">
                                                 <Link state={user} to="/asset-verification-detail" className="font-medium text-blue-600 dark:text-blue-500 hover:underline">See Detail</Link>
                                             </div> */}
-                                        </td>
-                                        <td className="px-6 py-4">
-                                            {
-                                                !user.isAdmin && !user.isBanned &&
-                                                <button onClick={() => promoteHandler(user.userAddress)} className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
-                                                    <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                                                        Promote
-                                                    </span>
-                                                </button>
-                                            }
+                                                </td>
+                                                <td className="px-6 py-4">
+                                                    {
+                                                        !user.isAdmin && !user.isBanned &&
+                                                        <button onClick={() => promoteHandler(user.userAddress)} className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800">
+                                                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                                                Promote
+                                                            </span>
+                                                        </button>
+                                                    }
 
-                                            {
-                                                user.isAdmin &&
-                                                <button onClick={() => dePromoteHandler(user.userAddress)} className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
-                                                    <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                                                        Depromote
-                                                    </span>
-                                                </button>
-                                            }
+                                                    {
+                                                        user.isAdmin &&
+                                                        <button onClick={() => dePromoteHandler(user.userAddress)} className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
+                                                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                                                Depromote
+                                                            </span>
+                                                        </button>
+                                                    }
 
-                                            {
-                                                !user.isBanned &&
-                                                <button onClick={() => banHandler(user.userAddress)} className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
-                                                    <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                                                        Ban
-                                                    </span>
-                                                </button>
-                                            }
-                                            {
-                                                user.isBanned &&
-                                                <button onClick={() => unbanHandler(user.userAddress)} className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
-                                                    <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                                                        Unban
-                                                    </span>
-                                                </button>
-                                            }
+                                                    {
+                                                        !user.isBanned &&
+                                                        <button onClick={() => banHandler(user.userAddress)} className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
+                                                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                                                Ban
+                                                            </span>
+                                                        </button>
+                                                    }
+                                                    {
+                                                        user.isBanned &&
+                                                        <button onClick={() => unbanHandler(user.userAddress)} className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800">
+                                                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                                                                Unban
+                                                            </span>
+                                                        </button>
+                                                    }
 
-                                        </td>
-                                    </tr>
-                                )
-                            })
-                        }
-                    </tbody>
-                </table>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+                            </tbody>
+                        </table>
+                }
                 <nav className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4" aria-label="Table navigation">
                     <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">Showing <span className="font-semibold text-gray-900 dark:text-white">1-10</span> of <span className="font-semibold text-gray-900 dark:text-white">{fullUsersData.length}</span></span>
                     <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">

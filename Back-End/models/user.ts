@@ -23,7 +23,9 @@ const userSchema = new Schema<IUser, IUserModel>({
         enum: ['ADMIN', 'USER', 'APPROVER'],
         default: ['USER'],
     },
-    password: { type: String }
+    password: { type: String },
+    isBanned: { type: Boolean, default: false },
+}, { timestamps: true
 });
 
 // add password hash method
