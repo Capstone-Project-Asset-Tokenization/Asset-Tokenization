@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { IoRocketOutline } from "react-icons/io5";
+import { IoCloseCircle, IoRocketOutline } from "react-icons/io5";
 import ImageChip from "../../../components/common/chips/imageChip";
 // import TagChip from "../../../components/common/chips/tagChip";
 import {
@@ -46,6 +46,8 @@ const EditAssetDetails = () => {
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
   const [initialState, setInitialState] = useState(null);
+  const [openImageModal, setOpenImageModal] = useState(false);
+  const [currentImage, setCurrentImage] = useState(null);
 
   const [uploadMultipleFiles, { isLoading: isUploadingFiles }] =
     useUploadMultipleFilesMutation();
@@ -57,6 +59,7 @@ const EditAssetDetails = () => {
     useUploadSingleFileMutation();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     setLoading(true);
@@ -128,8 +131,6 @@ const EditAssetDetails = () => {
     fetchAsset();
     console.log("fetching asset");
   }, [assetId]);
-
-  const [error, setError] = useState(null);
 
   const uploadImages = useCallback(
     async (images) => {
@@ -389,21 +390,102 @@ const EditAssetDetails = () => {
     assetImagesInputRef.current.click();
   };
 
+  const handleShowImageModal = (image) => {
+    console.log("showing image modal", image);
+    setOpenImageModal(true);
+    setCurrentImage(image);
+  };
+
+  const handleFileDownload = (file) => {
+    console.log("downloading file", file);
+    const link = document.createElement("a");
+    link.style.display = "none";
+    link.href = file.preview;
+    link.download = file.name;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   if (loading) {
     return <SpinLoader />;
   }
+  if (error !== null && error.includes("Asset does not exist")) {
+    return (
+      <div className="container mx-auto px-4 min-h-screen flex items-center justify-center bg-gradient-to-r from-red-400 to-indigo-700">
+        <div className="w-full max-w-md py-16 px-8 bg-white shadow-lg rounded-lg">
+          <div className="flex justify-center items-center mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-16 w-16 text-gray-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 12h6m-3 3v-6m6-6H6.4a.6.6 0 00-.6.6V21a3 3 0 003 3h6a3 3 0 003-3V6a6 6 0 00-6-6z"
+              />
+            </svg>
+          </div>
+          <h1 className="text-center text-3xl font-bold text-red-800 mb-3">
+            Oops! Asset Not Found
+          </h1>
+          <p className="text-center text-gray-600 mb-8">
+            The asset you are looking for might have been removed, had its name
+            changed, or is temporarily unavailable.
+          </p>
+          <div className="text-center">
+            <button
+              className="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+              onClick={() => window.history.back()}
+            >
+              Go Back
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
+      {openImageModal && (
+        <div
+          className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center"
+          onClick={() => setOpenImageModal(false)}
+        >
+          <div
+            className="bg-white p-4 rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img
+              src={currentImage.preview || URL.createObjectURL(currentImage)}
+              alt="asset"
+              className="h-96 w-96 object-cover"
+            />
+            <button
+              onClick={() => setOpenImageModal(false)}
+              className="absolute top-2 right-2 text-white bg-red-500 p-2 rounded-full"
+            >
+              {/* X button */}
+              <IoCloseCircle />
+            </button>
+          </div>
+        </div>
+      )}
       <div className="container mx-auto px-4">
         <div className="w-full mx-auto py-16">
           <form onSubmit={handleSubmit} className="text-white rounded">
             <h1 className="block text-white font-bold mb-8 text-3xl">
-              Create New Asset
+              Edit {assetName} asset details
             </h1>
             {success && (
               <div className="mt-4 flex items-center justify-end">
                 <Toaster
-                  message="Asset created successfully"
+                  message="Asset Updated successfully"
                   type={"success"}
                 />
               </div>
@@ -634,6 +716,7 @@ const EditAssetDetails = () => {
                   <div className="flex flex-wrap mt-2">
                     {assetImages.map((file) => (
                       <ImageChip
+                        onOpenModal={() => handleShowImageModal(file)}
                         key={file.name}
                         file={file}
                         onDelete={handleAssetImageDelete}
@@ -669,6 +752,7 @@ const EditAssetDetails = () => {
                   <div className="flex flex-wrap mt-2">
                     {supportingFiles.map((file) => (
                       <ImageChip
+                        onDownLoad={() => handleFileDownload(file)}
                         key={file.name}
                         file={file}
                         onDelete={handleSupportingDeleteFile}
@@ -684,7 +768,7 @@ const EditAssetDetails = () => {
                 className="bg-primary-main hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="submit"
               >
-                Create
+                Update Asset Details
               </button>
             </div>
           </form>

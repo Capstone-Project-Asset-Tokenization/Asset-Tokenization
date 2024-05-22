@@ -377,6 +377,24 @@ const AssetRegistration = () => {
                 />
               </div>
             )}
+            {error && (
+              <div className="mt-4 flex items-center justify-end">
+                <Toaster message={error} type={"error"} />
+              </div>
+            )}
+            {imageFileUploadError && (
+              <div className="mt-4 flex items-center justify-end">
+                <Toaster message={imageFileUploadError} type={"error"} />
+              </div>
+            )}
+            {(isUploadingFiles ||
+              isUploadingImages ||
+              isUploadingSingleImage ||
+              isUploadingSingleFile) && (
+              <div className="mt-4 flex items-center justify-end">
+                <Toaster message="Uploading Files..." type={"info"} />
+              </div>
+            )}
             <div className="flex md:space-x-16 justify-between md:flex-row flex-col">
               <div className="w-full">
                 <div className="mb-4">
@@ -638,24 +656,6 @@ const AssetRegistration = () => {
                 Create
               </button>
             </div>
-            {error && (
-              <div className="mt-4 flex items-center justify-end">
-                <Toaster message={error} type={"error"} />
-              </div>
-            )}
-            {imageFileUploadError && (
-              <div className="mt-4 flex items-center justify-end">
-                <Toaster message={imageFileUploadError} type={"error"} />
-              </div>
-            )}
-            {(isUploadingFiles ||
-              isUploadingImages ||
-              isUploadingSingleImage ||
-              isUploadingSingleFile) && (
-              <div className="mt-4 flex items-center justify-end">
-                <Toaster message="Uploading Files..." type={"info"} />
-              </div>
-            )}
           </form>
         </div>
       </div>
