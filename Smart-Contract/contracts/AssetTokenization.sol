@@ -143,6 +143,8 @@ contract AssetTokenizationPlatform  {
         asset.description = data.description;
         asset.images = data.images;
         asset.supportingDocuments = data.supportingDocuments;
+        // update verification status to pending after updating asset
+        asset.verificationStatus = VerificationStatus.Pending;
 
         emit AssetUpdated(assetID, data.name, data.symbol, data.decimals, data.totalSupply, data.tokenPrice, data.category, data.description, data.images, data.supportingDocuments, msg.sender);
     }
