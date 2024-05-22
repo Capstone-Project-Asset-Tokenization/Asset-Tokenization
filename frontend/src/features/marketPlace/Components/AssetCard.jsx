@@ -1,5 +1,6 @@
 import React from "react";
 import dummyAsset from "../../../assets/dummy_asset.jpg";
+import { dummyUserAvatar } from "../../../assets/avatar";
 
 const AssetCard = ({ asset, openModal }) => {
   return (
@@ -16,6 +17,18 @@ const AssetCard = ({ asset, openModal }) => {
       </div>
       <div className="p-6 bg-[#2B2B2B] text-white flex flex-col justify-between flex-grow">
         <h1 className="text-2xl font-sans font-semibold">{asset.name}</h1>
+        <div className="flex items-center gap-3 mt-2 mb-5">
+          <img
+            className="w-10 h-10 rounded-full object-cover"
+            src={dummyUserAvatar}
+            alt="Jese image"
+          />
+          <p className="text-lg font-mono font-thin">
+            {asset.ownerInfo
+              ? asset.ownerInfo.firstName + " " + asset.ownerInfo.lastName
+              : "User not found"}
+          </p>
+        </div>
         <div className="my-3 flex justify-between">
           <div>
             <span className="opacity-50 font-mono font-thin">Total Supply</span>
