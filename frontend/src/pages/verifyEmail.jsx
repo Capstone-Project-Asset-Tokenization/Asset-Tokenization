@@ -13,7 +13,7 @@ function VerifyUserEmail() {
         const params = new URLSearchParams(location.search);
         const emailToken = params.get("emailToken");
         const response = await axios.patch(
-          "http://localhost:5001/api/user/verifyemail",
+          `${process.env.REACT_APP_API_URL}/api/user/verifyemail`,
           {
             emailToken: emailToken,
           }
