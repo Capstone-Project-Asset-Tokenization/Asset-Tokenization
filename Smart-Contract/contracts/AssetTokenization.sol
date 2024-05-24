@@ -26,8 +26,6 @@ contract AssetTokenizationPlatform  {
 
     struct AssetUpdateData {
         string name;
-        string symbol;
-        uint8 decimals;
         uint256 totalSupply;
         uint256 tokenPrice;
         AssetCategory category;
@@ -136,7 +134,6 @@ contract AssetTokenizationPlatform  {
         Asset storage asset = assets[assetID];
 
         asset.name = data.name;
-        asset.symbol = data.symbol;
         asset.totalSupply = data.totalSupply;
         asset.tokenPrice = data.tokenPrice;
         asset.category = data.category;
