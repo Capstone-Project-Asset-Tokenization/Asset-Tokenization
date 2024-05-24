@@ -11,6 +11,7 @@ const userController = new UserController(userService)
 
 userRouter.post('/register', userController.register)
 userRouter.post('/login', userController.login)
+userRouter.patch('/verifyemail', userController.verifyEmail)
 userRouter.get('/', authenticateUser, userController.getUser)
 userRouter.get('/wallet/:walletAddress', authenticateUser, userController.getUserByWalletAddress)
 userRouter.get('/wallets', authenticateUser, userController.getUsersByWalletAddresses)
