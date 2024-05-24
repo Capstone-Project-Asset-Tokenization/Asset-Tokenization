@@ -174,6 +174,26 @@ contract AssetTokenizationPlatform  {
                 _transfer(assetId, usersAddressList[i], recipient, transferAmount);
                 remainingAmount -= transferAmount;
                 if (remainingAmount == 0) {
+                if (assets[assetId].category == AssetCategory.Artwork) {
+                    assets[assetId].creator = recipient;
+                } else {
+                    uint8 decimals = 0;
+                    assets[assetCount] = Asset({
+                        ID: assetCount,
+                        name: assets[assetId].name,
+                        symbol: assets[assetId].symbol,
+                        decimals: decimals,
+                        totalSupply: amount,
+                        tokenPrice: assets[assetId].tokenPrice,
+                        verificationStatus: VerificationStatus.Verified,
+                        category: assets[assetId].category,
+                        description: assets[assetId].description,
+                        images: assets[assetId].images,
+                        supportingDocuments: assets[assetId].supportingDocuments,
+                        creator: recipient
+                    });
+                    assetCount++;
+                }
                     break;
                 }
             }

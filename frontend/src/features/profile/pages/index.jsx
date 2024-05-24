@@ -27,8 +27,8 @@ const ProfilePage = () => {
   const [selectedAsset, setSelectedAsset] = useState(null);
 
   const tabs = [
-    { label: "Approved" },
     { label: "Pending" },
+    { label: "Approved" },
     { label: "Declined" },
   ];
 
@@ -85,7 +85,6 @@ const ProfilePage = () => {
   if (isGettingUser) {
     return <SpinLoader />;
   }
-
 
   return (
     <div className="container mx-auto mt-8 mb-14">
@@ -227,24 +226,26 @@ const ProfilePage = () => {
                 <img
                   src="https://avatar.iran.liara.run/public/boy?username=Ash"
                   alt={`${userData?.firstName} ${userData?.lastName}`}
-                  class="h-60 w-30 rounded-full object-cover border-2 border-gray-300"
+                  className="h-60 w-30 rounded-full object-cover border-2 border-gray-300"
                 />
               </div>
               <div className="flex  justify-around items-center space-x-60">
                 {" "}
                 <div>
                   {" "}
-                  <h3 class="text-5xl font-bold text-gray-100 uppercase">
+                  <h3 className="text-5xl font-bold text-gray-100 uppercase">
                     {userData?.firstName} {userData?.lastName}
                   </h3>
-                  <p class="text-gray-400 text-base my-3">{userData?.email}</p>
-                  <p class="text-gray-400 text-base mb-6">
+                  <p className="text-gray-400 text-base my-3">
+                    {userData?.email}
+                  </p>
+                  <p className="text-gray-400 text-base mb-6">
                     Legal ID: {userData?.nationalID}
                   </p>
                   {userData?.roles?.map((role, index) => (
                     <span
                       key={index}
-                      class="inline-block bg-purple-200 text-purple-800 text-sm font-semibold px-3 py-1 rounded-full"
+                      className="inline-block bg-purple-200 text-purple-800 text-sm font-semibold px-3 py-1 rounded-full"
                     >
                       {role.toUpperCase()}
                     </span>
@@ -272,12 +273,12 @@ const ProfilePage = () => {
                   </div>
 
                   <div className="flex space-x-2 mt-4">
-                    <p class="text-gray-400 text-base">
+                    <p className="text-gray-400 text-base">
                       {userData?.walletAddress}
                     </p>
                     <button
                       onClick={() => copyToClipboard(userData?.walletAddress)}
-                      class="bg-purple-800 text-white text-xs py-1.5 px-3 rounded focus:outline-none focus:shadow-outline"
+                      className="bg-purple-800 text-white text-xs py-1.5 px-3 rounded focus:outline-none focus:shadow-outline"
                     >
                       {isCopied ? "Copied!" : "Copy"}
                     </button>
