@@ -74,7 +74,7 @@ export default class UserServie {
     }
 
     if (!user.isVerified) {
-      console.log(requestVerification,"requested?")
+      console.log(requestVerification, "requested?", user);
       if (requestVerification) {
         sendMail(email, user.emailToken);
       }

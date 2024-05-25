@@ -9,24 +9,25 @@ function VerifyUserEmail() {
 
   useEffect(() => {
     const handle = async () => {
+      console.log("verfiying");
       try {
         const params = new URLSearchParams(location.search);
         const emailToken = params.get("emailToken");
         const response = await axios.patch(
-          `${process.env.REACT_APP_API_URL}/api/user/verifyemail`,
+          `http://localhost:5001/api/user/verifyemail`,
           {
             emailToken: emailToken,
           }
         );
-
+        console.log(response);
         if (response.data.isVerified === true) {
           setIsVerified(true);
           setTimeout(() => {
             navigate("/signin");
           }, 3000);
+        } else {
+          console.log("Try again later");
         }
-
-        console.log(response);
       } catch (error) {
         console.log(error);
       }
