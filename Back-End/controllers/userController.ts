@@ -28,8 +28,8 @@ export default class UserController {
 
   login = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
-      let { email, password } = parseLoginRequest(req.body);
-      let token = await this.userService.login(email, password);
+      let { email, password, requestVerification } = req.body;
+      let token = await this.userService.login(email, password, requestVerification);
       let user = await this.userService.getUserByEmail(email);
       res.status(200).json({ token, user });
     }
