@@ -30,25 +30,14 @@ export default class UserRepository {
     );
   }
 
-  public async getUsersByWalletAddresses(walletAddresses: string[]) {
-    // make the search case insensitive
-    const users = [];
-    for (let i = 0; i < walletAddresses.length; i++) {
-      const user = await User.findOne({
-        walletAddress: { $regex: new RegExp(walletAddresses[i], "i") },
-      });
-      if (!user) {
-        users.push("");
-        continue;
-      }
-      users.push(user);
-    }
-
-    return users;
-    // return await User.find({
-    //     walletAddress: { $in: walletAddresses }
-    // });
-  }
+ public async getUsersByWalletAddresses(walletAddresses: string[]): Promise<(any)[]> {
+  console.log(walletAddresses)
+  const users = await User.find({
+    walletAddress: { $in: walletAddresses }
+  }).exec();
+  const userMap = new Map(users.map(user => [user.walletAddress, user]));
+  return walletAddresses.map(address => userMap.get(address) || null);
+}
 
   public async verifyEmail(emailToken: string) {
     console.log("verifying email with token sent....", emailToken)

@@ -1,10 +1,24 @@
+/* eslint-disable react/prop-types */
 import React from "react";
 import dummyAsset from "../../../assets/dummy_asset.jpg";
 import { Link } from "react-router-dom";
 import { dummyUserAvatar } from "../../../assets/avatar";
+import { useGetUsersInfoFromWalletQuery } from "../../../stores/auth/authAPI";
 
 const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
   console.log("asset", asset);
+
+  const {
+    data: users,
+    error: userFetchError,
+    isLoading: fetchingUsers,
+  } = useGetUsersInfoFromWalletQuery([asset.creator.toLowerCase()]);
+
+  if (userFetchError) {
+    console.error("Error fetching user info:", userFetchError);
+  }
+  const fetchedAssets = { ...asset };
+  fetchedAssets.ownerInfo = users ? users[0] : null;
   return (
     <div
       className="flex flex-col shadow-lg rounded-[20px] overflow-hidden h-[450px] cursor-pointer"
@@ -26,8 +40,10 @@ const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
             alt="Jese image"
           />
           <p className="text-lg font-mono font-thin">
-            {asset.ownerInfo
-              ? asset.ownerInfo.firstName + " " + asset.ownerInfo.lastName
+            {fetchedAssets.ownerInfo
+              ? fetchedAssets.ownerInfo.firstName +
+                " " +
+                fetchedAssets.ownerInfo.lastName
               : "User not found"}
           </p>
         </div>

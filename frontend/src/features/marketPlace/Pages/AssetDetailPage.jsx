@@ -8,6 +8,8 @@ import { getAssetContractInstance } from "../../../config/contractInstances";
 import { SpinLoader } from "../../../components/common/spinner/spinLoader";
 import sprite from "../../../assets/sprite.svg";
 import "../../../customCarousel.css";
+import { useGetUsersInfoFromWalletQuery } from "../../../stores/auth/authAPI";
+import { useSelector } from "react-redux";
 
 const AssetDetail = ({ asset, onClose }) => {
   const categoryMapping = {
@@ -25,6 +27,19 @@ const AssetDetail = ({ asset, onClose }) => {
   const [error, setError] = useState(null);
   const [isMyAsset, setIsMyAsset] = useState(false);
 
+  const user = useSelector((state) => state.auth.user);
+  const {
+    data: users,
+    error: userFetchError,
+    isLoading: fetchingUsers,
+  } = useGetUsersInfoFromWalletQuery([asset.creator.toLowerCase()]);
+
+  if (userFetchError) {
+    console.error("Error fetching user info:", userFetchError);
+  }
+  const fetchedAssets = { ...asset };
+  fetchedAssets.ownerInfo = users ? users[0] : null;
+
   useEffect(() => {
     if (asset.creator.toLowerCase() === window.ethereum.selectedAddress) {
       setIsMyAsset(true);
@@ -33,6 +48,17 @@ const AssetDetail = ({ asset, onClose }) => {
 
   const handleOpenBuyModal = () => {
     setBuyModelOpen(true);
+  };
+
+  const downloadFile = (fileUrl, fileName) => {
+    const anchor = document.createElement("a");
+    anchor.style.display = "none";
+    anchor.target = "_blank";
+    anchor.href = fileUrl;
+    anchor.download = fileName;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
   };
 
   const handleBuyToken = async () => {
@@ -58,7 +84,7 @@ const AssetDetail = ({ asset, onClose }) => {
 
   if (!asset) return <div>No asset found</div>;
 
-  console.log("images", asset.images.length);
+  console.log("assetss---", asset);
   return (
     <div
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4"
@@ -221,8 +247,10 @@ const AssetDetail = ({ asset, onClose }) => {
                 alt="Jese image"
               />
               <p className="font-mono">
-                {asset.ownerInfo
-                  ? asset.ownerInfo.firstName + " " + asset.ownerInfo.lastName
+                {fetchedAssets.ownerInfo
+                  ? fetchedAssets.ownerInfo.firstName +
+                    " " +
+                    fetchedAssets.ownerInfo.lastName
                   : "User not found"}
               </p>
             </div>
@@ -233,37 +261,63 @@ const AssetDetail = ({ asset, onClose }) => {
             </h3>
             <p className="font-mono">{asset.description}</p>
           </div>
-          <div>
-            <h3 className="font-bold mb-3">Category</h3>
-            <h3 className="font-bold text-xl opacity-50 font-mono mb-3">
-              Supporting Documents
-            </h3>
-            <div className="flex flex-col gap-4">
-              {asset.documents.map((doc, index) => (
-                <div key={index} className="flex items-center">
-                  <p className="font-mono mr-4">Document {index + 1}</p>
-                  <button
-                    onClick={() =>
-                      downloadFile(
-                        doc,
-                        doc.split("/")[doc.split("/").length - 1]
-                      )
-                    }
-                    className="bg-primary-main text-white px-2 py-1 rounded"
-                  >
-                    View
-                  </button>
+          {isMyAsset && (
+            <>
+              <div>
+                <h3 className="font-bold text-xl opacity-50 font-mono mb-3">
+                  Supporting Documents
+                </h3>
+                <div className="flex flex-col gap-4">
+                  {asset.supportingDocuments.map((doc, index) => (
+                    <div key={index} className="flex items-center">
+                      <p className="font-mono mr-4">Document {index + 1}</p>
+                      <button
+                        onClick={() =>
+                          downloadFile(
+                            doc,
+                            doc.split("/")[doc.split("/").length - 1]
+                          )
+                        }
+                        className="bg-primary-main text-white px-2 py-1 rounded"
+                      >
+                        View
+                      </button>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
+              </div>
+              <div>
+                <h3 className="font-bold text-xl opacity-50 font-mono mb-3">
+                  Supporting Images
+                </h3>
+                <div className="flex flex-col gap-4">
+                  {asset.images.map((doc, index) => (
+                    <div key={index} className="flex items-center">
+                      <p className="font-mono mr-4">Image {index + 1}</p>
+                      <button
+                        onClick={() =>
+                          downloadFile(
+                            doc,
+                            doc.split("/")[doc.split("/").length - 1]
+                          )
+                        }
+                        className="bg-primary-main text-white px-2 py-1 rounded"
+                      >
+                        View
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
           <div>
             <h3 className="font-bold opacity-50 mb-3">Category</h3>
             <span className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-2 rounded">
               {categoryMapping[asset.category]}
             </span>
           </div>
-          {!isMyAsset && (
+          {!isMyAsset && !user.roles.includes("ADMIN") && (
             <button
               onClick={handleOpenBuyModal}
               className="bg-primary-main text-white px-4 py-2 rounded"

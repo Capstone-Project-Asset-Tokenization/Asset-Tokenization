@@ -29,23 +29,43 @@ function App() {
         <Route path="/verify-email" element={<VerifyUserEmail />} />
         <Route
           path="/asset-registration"
-          element={<PrivateRoute element={<AssetRegistration />} />}
+          element={
+            <PrivateRoute>
+              <AssetRegistration />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/asset-verification"
-          element={<PrivateRoute element={<AssetVerification />} />}
+          element={
+            <PrivateRoute>
+              <AssetVerification />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/asset-verification-detail"
-          element={<PrivateRoute element={<AssetDetail />} />}
+          element={
+            <PrivateRoute>
+              <AssetDetail />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/user-management"
-          element={<PrivateRoute element={<UserManagement />} />}
+          element={
+            <PrivateRoute>
+              <UserManagement />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/edit-asset/:id"
-          element={<PrivateRoute element={<EditAssetDetails />} />}
+          element={
+            <PrivateRoute>
+              <EditAssetDetails />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/signup"
@@ -59,11 +79,19 @@ function App() {
         />
         <Route
           path="/profile"
-          element={<PrivateRoute element={<ProfilePage />} />}
+          element={
+            <PrivateRoute>
+              <ProfilePage />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/asset-marketplace"
-          element={<PrivateRoute element={<AssetMarketPlace />} />}
+          element={
+            <PrivateRoute>
+              <AssetMarketPlace />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/connect-wallet"
@@ -79,7 +107,7 @@ function App() {
   );
 }
 
-const PrivateRoute = ({ element: Element, ...rest }) => {
+const PrivateRoute = ({ children }) => {
   const auth = useSelector((state) => state.auth);
   const isVerified = auth.user?.isVerified;
 
@@ -91,7 +119,7 @@ const PrivateRoute = ({ element: Element, ...rest }) => {
     return <Navigate to="/verify-email" />;
   }
 
-  return <Route {...rest} element={Element} />;
+  return children;
 };
 
 export default App;
