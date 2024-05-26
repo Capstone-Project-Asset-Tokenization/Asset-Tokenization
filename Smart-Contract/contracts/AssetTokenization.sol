@@ -26,8 +26,6 @@ contract AssetTokenizationPlatform  {
 
     struct AssetUpdateData {
         string name;
-        string symbol;
-        uint8 decimals;
         uint256 totalSupply;
         uint256 tokenPrice;
         AssetCategory category;
@@ -97,8 +95,6 @@ contract AssetTokenizationPlatform  {
 
     function createAsset(
         string memory name,
-        string memory symbol,
-        uint8 decimals,
         uint256 initialSupply,
         uint256 tokenPrice,
         AssetCategory category,
@@ -106,12 +102,15 @@ contract AssetTokenizationPlatform  {
         string[] memory images,
         string[] memory supportingDocuments
     ) external onlyRegisteredUser {
+        uint8 decimals = 0;
+        string memory symbol = "ETH";
+
         assets[assetCount] = Asset({
             ID:assetCount,
             name: name,
             symbol: symbol,
             decimals: decimals,
-            totalSupply: initialSupply * 10 ** uint256(decimals),
+            totalSupply: initialSupply,
             tokenPrice: tokenPrice,
             verificationStatus: VerificationStatus.Pending,
             category: category,
@@ -120,9 +119,9 @@ contract AssetTokenizationPlatform  {
             supportingDocuments: supportingDocuments,
             creator:msg.sender
         });
-        balances[assetCount][msg.sender]=initialSupply * 10 ** uint256(decimals);
-        allowances[assetCount][msg.sender][msg.sender]=initialSupply * 10 ** uint256(decimals);
-        availableTokens[assetCount] = initialSupply * 10 ** uint256(decimals);
+        balances[assetCount][msg.sender]=initialSupply;
+        allowances[assetCount][msg.sender][msg.sender]=initialSupply;
+        availableTokens[assetCount] = initialSupply;
         locked[assetCount][msg.sender]=false;
         emit AssetCreated(assetCount, name, symbol, decimals, initialSupply, tokenPrice, msg.sender);
         assetCount++;
@@ -135,9 +134,7 @@ contract AssetTokenizationPlatform  {
         Asset storage asset = assets[assetID];
 
         asset.name = data.name;
-        asset.symbol = data.symbol;
-        asset.decimals = data.decimals;
-        asset.totalSupply = data.totalSupply * 10 ** uint256(data.decimals);
+        asset.totalSupply = data.totalSupply;
         asset.tokenPrice = data.tokenPrice;
         asset.category = data.category;
         asset.description = data.description;
@@ -174,6 +171,26 @@ contract AssetTokenizationPlatform  {
                 _transfer(assetId, usersAddressList[i], recipient, transferAmount);
                 remainingAmount -= transferAmount;
                 if (remainingAmount == 0) {
+                if (assets[assetId].category == AssetCategory.Artwork) {
+                    assets[assetId].creator = recipient;
+                } else {
+                    uint8 decimals = 0;
+                    assets[assetCount] = Asset({
+                        ID: assetCount,
+                        name: assets[assetId].name,
+                        symbol: assets[assetId].symbol,
+                        decimals: decimals,
+                        totalSupply: amount,
+                        tokenPrice: assets[assetId].tokenPrice,
+                        verificationStatus: VerificationStatus.Verified,
+                        category: assets[assetId].category,
+                        description: assets[assetId].description,
+                        images: assets[assetId].images,
+                        supportingDocuments: assets[assetId].supportingDocuments,
+                        creator: recipient
+                    });
+                    assetCount++;
+                }
                     break;
                 }
             }

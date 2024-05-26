@@ -32,14 +32,14 @@ const AssetRegistration = () => {
   const [assetName, setAssetName] = useState("");
   const [description, setDescription] = useState("");
   const [tokenPrice, setTokenPrice] = useState(0);
-  const [totalSupply, setTotalSupply] = useState(0);
-  const [category, setCategory] = useState(0); // Default category
+  const [totalSupply, setTotalSupply] = useState(1);
+  const [category, setCategory] = useState("1"); // Default category
   const [supportingFiles, setSupportingFiles] = useState([]);
   const supportingFilesInputRef = useRef(null);
   const [assetImages, setAssetImages] = useState([]);
   const assetImagesInputRef = useRef(null);
-  const [symbol, setSymbol] = useState("");
-  const [decimal, setDecimal] = useState(0);
+  // const [symbol, setSymbol] = useState("");
+  // const [decimal, setDecimal] = useState(0);
   const [imageFileUploadError, setImageFileUploadError] = useState(null);
   const [uploadedFiles, setUploadedFiles] = useState([]);
   const [uploadedImages, setUploadedImages] = useState([]);
@@ -53,6 +53,7 @@ const AssetRegistration = () => {
     useUploadSingleFileMutation();
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [isSingleToken, setIsSingleToken] = useState(true);
   // const {
   //   data,
   //   error: queryError,
@@ -121,9 +122,9 @@ const AssetRegistration = () => {
         tokenPrice,
         category,
         assetImages,
-        symbol,
+        // symbol,
         totalSupply,
-        decimal,
+        // decimal,
         supportingFiles
       );
       if (
@@ -131,9 +132,9 @@ const AssetRegistration = () => {
         !description ||
         !(tokenPrice > 0) ||
         !assetImages.length ||
-        !symbol ||
+        // !symbol ||
         !(totalSupply > 0) ||
-        !(decimal > 0) ||
+        // !(decimal > 0) ||
         !supportingFiles.length
       ) {
         setLoading(false);
@@ -244,9 +245,9 @@ const AssetRegistration = () => {
       tokenPrice,
       category,
       assetImages,
-      symbol,
+      // symbol,
       totalSupply,
-      decimal,
+      // decimal,
       supportingFiles,
       uploadFiles,
       uploadImages,
@@ -273,11 +274,11 @@ const AssetRegistration = () => {
       try {
         const transactionResponse = await contractWithSigner.createAsset(
           assetName,
-          symbol,
-          Number(decimal),
+          // symbol,
+          // Number(decimal),
           Number(totalSupply),
           Number(tokenPrice),
-          category,
+          Number(category),
           description,
           uploadedImages,
           uploadedFiles
@@ -302,8 +303,8 @@ const AssetRegistration = () => {
     uploadedFiles,
     uploadedImages,
     assetName,
-    symbol,
-    decimal,
+    // symbol,
+    // decimal,
     totalSupply,
     tokenPrice,
     category,
@@ -317,9 +318,9 @@ const AssetRegistration = () => {
     setCategory(0);
     setSupportingFiles([]);
     setAssetImages([]);
-    setSymbol("");
+    // setSymbol("");
     setTotalSupply(0);
-    setDecimal(0);
+    // setDecimal(0);
     setUploadedFiles([]);
     setUploadedImages([]);
   };
@@ -460,32 +461,40 @@ const AssetRegistration = () => {
                   <div className="mb-4  w-full">
                     <label
                       className="block mb-2 text-sm font-bold text-gray-400"
-                      htmlFor="price"
+                      htmlFor="token"
                     >
                       Total Supply
+                      <span className="text-xs text-gray-400">
+                        {" "}
+                        (Number of Tokens)
+                      </span>
                     </label>
-                    <input
-                      id="price"
-                      className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
-                      type="number"
-                      placeholder="Set Price In ETH"
-                      value={totalSupply}
-                      onChange={(e) => {
-                        if (
-                          e.target.value < 0 ||
-                          e.target.value.toString().startsWith("0") ||
-                          e.target.value.toString().includes("-")
-                        ) {
-                          setTotalSupply(0);
-                        } else {
-                          setTotalSupply(e.target.value);
-                        }
-                      }}
-                    />
+                    {isSingleToken ? (
+                      <input
+                        disabled
+                        id="tokenOne"
+                        className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                        type="number"
+                        placeholder="Set number of tokens"
+                        defaultValue={1}
+                      />
+                    ) : (
+                      <input
+                        id="token"
+                        className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                        type="number"
+                        placeholder="Set number of tokens"
+                        value={totalSupply}
+                        onChange={(e) => {
+                          const val = e.target.value;
+                          setTotalSupply(val > 0 ? val : 1);
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
                 <div className="flex space-x-4 justify-between">
-                  <div className="mb-4 w-full">
+                  {/* <div className="mb-4 w-full">
                     <label
                       className="block mb-2 text-sm font-bold text-gray-400"
                       htmlFor="symbol"
@@ -510,8 +519,8 @@ const AssetRegistration = () => {
                         }
                       }}
                     />
-                  </div>
-                  <div className="mb-4 w-full">
+                  </div> */}
+                  {/* <div className="mb-4 w-full">
                     <label
                       className="block mb-2 text-sm font-bold text-gray-400"
                       htmlFor="symbol"
@@ -526,7 +535,7 @@ const AssetRegistration = () => {
                       value={symbol}
                       onChange={(e) => setSymbol(e.target.value)}
                     />
-                  </div>
+                  </div> */}
                   {/* <div className="mb-4 w-full">
                     <label
                       className="block mb-2 text-sm font-bold text-gray-400"
@@ -565,12 +574,16 @@ const AssetRegistration = () => {
                     id="category"
                     className="bg-[#303030] rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                     value={category}
-                    onChange={(e) => setCategory(e.target.value)}
+                    onChange={(e) => {
+                      const newCategory = e.target.value;
+                      setIsSingleToken(newCategory === "1"); //"1" for single-token categories
+                      setCategory(newCategory);
+                    }}
                   >
-                    <option value={0}>REAL ESTATE</option>
-                    <option value={1}>ART-WORKS</option>
-                    <option value={2}>INTELLECTUAL PROPERTY</option>
-                    <option value={3}>OTHER</option>
+                    <option value="0">REAL ESTATE</option>
+                    <option value="1">ART-WORKS</option>
+                    <option value="2">INTELLECTUAL PROPERTY</option>
+                    <option value="3">OTHER</option>
                   </select>
                 </div>
               </div>

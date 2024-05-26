@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
+import { ethers } from "ethers";
 import AssetCard from "../Components/AssetCard";
 import SearchForm from "../Components/SearchForm";
 import { getAssetContractInstance } from "../../../config/contractInstances";
 import { SpinLoader } from "../../../components/common/spinner/spinLoader";
 import AssetDetail from "./AssetDetailPage";
+import { createAssetObjFromContract } from "../../../utils/contractToObject";
 import { useGetUsersInfoFromWalletQuery } from "../../../stores/auth/authAPI";
 
 const Marketplace = () => {
@@ -28,18 +30,19 @@ const Marketplace = () => {
   const fetchAssets = async () => {
     try {
       const [contract, contractWithSigner] = await getAssetContractInstance();
-      const statuses = [0, 1, 2];
-      let allAssets = [];
-
-      for (let status of statuses) {
-        const fetchedAssets = await contractWithSigner.getAssetsByFilter(
-          status
-        );
-        allAssets = [...allAssets, ...fetchedAssets];
-      }
-
+      let fetchedAssets = await contractWithSigner.getAssetsByFilter(1);
+      // fetch assets that are not the user's
+      console.log("current address", window.ethereum.selectedAddress);
+      fetchedAssets = fetchedAssets.map((asset) =>
+        asset.creator !== ethers.getAddress(window.ethereum.selectedAddress)
+          ? asset
+          : null
+      );
+      fetchedAssets = fetchedAssets.filter((asset) => asset !== null);
+      console.log(fetchedAssets, "fetchedAssets");
+      setAssets(fetchedAssets);
+      setDisplayedAssets(fetchedAssets);
       const addresses = allAssets.map((asset) => asset.creator);
-      setAssets(allAssets);
       setOwnerAddresses(addresses);
     } catch (error) {
       console.error("Error fetching assets from blockchain:", error);

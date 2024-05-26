@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { dummyUserAvatar } from "../../../assets/avatar";
 
 const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
+  console.log("asset", asset);
   return (
     <div
       className="flex flex-col shadow-lg rounded-[20px] overflow-hidden h-[450px] cursor-pointer"
