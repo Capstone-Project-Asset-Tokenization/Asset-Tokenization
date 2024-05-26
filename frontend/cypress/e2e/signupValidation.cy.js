@@ -30,7 +30,7 @@ describe("Registration Form Validation", () => {
     cy.contains("Password is required").should("be.visible");
 
     // Fill out the email field with an invalid email
-    cy.get('input[name="email"]').type("invalid email");
+    cy.get('input[name="usernameOrEmail"]').type("invalid email");
 
     // Submit the form
     cy.get('button[type="submit"]').click();
