@@ -57,19 +57,7 @@ export let AssetContractABI = [
         type: "string",
       },
       {
-        indexed: false,
-        internalType: "string",
-        name: "symbol",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "uint256",
-        name: "decimals",
-        type: "uint256",
-      },
-      {
-        indexed: false,
+        indexed: true,
         internalType: "uint256",
         name: "totalSupply",
         type: "uint256",
@@ -104,18 +92,6 @@ export let AssetContractABI = [
         internalType: "string",
         name: "name",
         type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "string",
-        name: "symbol",
-        type: "string",
-      },
-      {
-        indexed: false,
-        internalType: "uint8",
-        name: "decimals",
-        type: "uint8",
       },
       {
         indexed: false,
@@ -561,16 +537,6 @@ export let AssetContractABI = [
         type: "string",
       },
       {
-        internalType: "string",
-        name: "symbol",
-        type: "string",
-      },
-      {
-        internalType: "uint8",
-        name: "decimals",
-        type: "uint8",
-      },
-      {
         internalType: "uint256",
         name: "initialSupply",
         type: "uint256",
@@ -959,40 +925,6 @@ export let AssetContractABI = [
         name: "assetId",
         type: "uint256",
       },
-      {
-        internalType: "address",
-        name: "sender",
-        type: "address",
-      },
-      {
-        internalType: "address",
-        name: "recipient",
-        type: "address",
-      },
-      {
-        internalType: "uint256",
-        name: "amount",
-        type: "uint256",
-      },
-    ],
-    name: "transferFrom",
-    outputs: [
-      {
-        internalType: "bool",
-        name: "",
-        type: "bool",
-      },
-    ],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        internalType: "uint256",
-        name: "assetId",
-        type: "uint256",
-      },
     ],
     name: "unlockTokens",
     outputs: [],
@@ -1012,16 +944,6 @@ export let AssetContractABI = [
             internalType: "string",
             name: "name",
             type: "string",
-          },
-          {
-            internalType: "string",
-            name: "symbol",
-            type: "string",
-          },
-          {
-            internalType: "uint8",
-            name: "decimals",
-            type: "uint8",
           },
           {
             internalType: "uint256",
@@ -1096,7 +1018,6 @@ export let AssetContractABI = [
     type: "function",
   },
 ];
-
 export const UserContractABI = [
   {
     inputs: [],
