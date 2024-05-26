@@ -89,6 +89,7 @@ export default function ConnectWallet({
           providers.
         </p>
         <button
+          data-testid="connect-wallet"
           onClick={connectMetaMask}
           className="border bg-neutral-800 border-primary-main flex rounded-xl mt-10 px-6 py-2 space-x-2 items-center justify-between"
         >
@@ -112,6 +113,7 @@ export default function ConnectWallet({
 
         {defaultAccount && (
           <button
+          data-testid="complete-registration"
             onClick={completeRegisteration}
             className="bg-primary-main hover:bg-primary-dark rounded py-2 px-4 mt-6 w-[250px]"
           >
