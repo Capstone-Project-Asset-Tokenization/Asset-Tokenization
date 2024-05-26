@@ -42,7 +42,7 @@ const Marketplace = () => {
       console.log(fetchedAssets, "fetchedAssets");
       setAssets(fetchedAssets);
       setDisplayedAssets(fetchedAssets);
-      const addresses = allAssets.map((asset) => asset.creator);
+      const addresses = fetchedAssets.map((asset) => asset.creator);
       setOwnerAddresses(addresses);
     } catch (error) {
       console.error("Error fetching assets from blockchain:", error);
@@ -146,6 +146,42 @@ const Marketplace = () => {
 
   if (error) {
     return <div>Error: {error}</div>;
+  }
+
+  if (displayedAssets.length === 0) {
+    return (
+      <div className="flex flex-col items-center justify-center h-screen text-white">
+        <h1
+          className="text-4xl font-bold mb-6 text-red-500 font-sans
+        "
+        >
+          No assets found
+        </h1>
+        <p
+          className="text-xl text-red-300
+        "
+        >
+          There are no assets available at the moment. Please check back later.
+        </p>
+        <p className="text-xl text-red-300 mt-4">
+          <span
+            className="text-red-300 font-bold
+          "
+          >
+            Note:{" "}
+          </span>
+          If you are the owner of an asset, you can create a new one by clicking
+        </p>
+        <button
+          className="bg-[#FFA500] text-white px-4 py-2 rounded-md mt-4"
+          onClick={() => {
+            window.location.href = "/asset-registration";
+          }}
+        >
+          Get Started
+        </button>
+      </div>
+    );
   }
 
   return (
