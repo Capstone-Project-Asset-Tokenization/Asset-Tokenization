@@ -6,20 +6,26 @@ import { getAssetContractInstance } from "../../../config/contractInstances";
 import { SpinLoader } from "../../../components/common/spinner/spinLoader";
 import AssetDetail from "./AssetDetailPage";
 import { createAssetObjFromContract } from "../../../utils/contractToObject";
+import { useGetUsersInfoFromWalletQuery } from "../../../stores/auth/authAPI";
 
 const Marketplace = () => {
   const [assets, setAssets] = useState([]);
+  const [combinedData, setCombinedData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [displayedAssets, setDisplayedAssets] = useState([]);
   const [error, setError] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState(null);
+  const [ownerAddresses, setOwnerAddresses] = useState([]);
 
-  // const ownerAddresses = assets.map(asset => {
-  //     return asset.creator
-  // })
-
-  // const {data:users, error:userFetchErro,isLoading:fetchingUsers} = useGetUsersInfoFromWalletQuery(ownerAddresses)
+  // Use the hook at the top level
+  const {
+    data: users,
+    error: userFetchError,
+    isLoading: fetchingUsers,
+  } = useGetUsersInfoFromWalletQuery(ownerAddresses, {
+    skip: ownerAddresses.length === 0,
+  });
 
   const fetchAssets = async () => {
     try {
@@ -36,6 +42,8 @@ const Marketplace = () => {
       console.log(fetchedAssets, "fetchedAssets");
       setAssets(fetchedAssets);
       setDisplayedAssets(fetchedAssets);
+      const addresses = allAssets.map((asset) => asset.creator);
+      setOwnerAddresses(addresses);
     } catch (error) {
       console.error("Error fetching assets from blockchain:", error);
       setError(error.message);
@@ -66,11 +74,12 @@ const Marketplace = () => {
       ? categoryMapping[criteria.category]
       : null;
 
-    const filtered = assets.filter((asset) => {
+    const filtered = combinedData.filter((asset) => {
+      const assetCategory = parseInt(asset.category);
       return (
         (!criteria.name ||
           asset.name.toLowerCase().includes(criteria.name.toLowerCase())) &&
-        (!categoryValue || asset.category === categoryValue) &&
+        (categoryValue === null || assetCategory === categoryValue) &&
         (!criteria.minPrice ||
           parseFloat(asset.tokenPrice) >= parseFloat(criteria.minPrice)) &&
         (!criteria.maxPrice ||
@@ -103,19 +112,42 @@ const Marketplace = () => {
     };
   }, []);
 
-  console.log(displayedAssets);
-  // fullAssetsData = displayedAssets.map((asset,index)=>{
-  //     return {
-  //         ...asset,
-  //         ownerInfo:"users[index]"
-  //     }
-  // })
-  if (loading)
+  useEffect(() => {
+    if (assets.length > 0) {
+      const combined = assets.map((asset, index) => ({
+        id: asset[0],
+        name: asset[1],
+        currency: asset[2],
+        totalSupply: asset[3],
+        tokenPrice: asset[4],
+        availableSupply: asset[5],
+        category: asset[6],
+        status: asset[7],
+        description: asset[8],
+        images: asset[9],
+        documents: asset[10],
+        creator: asset[11],
+        ownerInfo: users ? users[index] : null,
+      }));
+      setCombinedData(combined);
+      setDisplayedAssets(combined);
+    }
+    // } else if (userFetchError) {
+    //   setError(userFetchError.message || 'An error occurred while fetching user data.');
+    // }
+  }, [assets, users, userFetchError]);
+
+  if (loading || fetchingUsers)
     return (
       <div>
         <SpinLoader />
       </div>
     );
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
+
   return (
     <div className="flex flex-col text-white">
       <div className="bg-[#2B2B2B] p-6 mb-20">
