@@ -106,7 +106,9 @@ const AssetDetail = ({ asset, onClose }) => {
                 </span>
               </p>
               <p className="text-xl mb-5 opacity-50 font-mono">
-                You will be able to view the asset details after the purchase
+                This asset have a total of{" "}
+                <span className="font-bold">{Number(asset.totalSupply)}</span>{" "}
+                tokens available
               </p>
               {isSingleToken ? null : (
                 <>

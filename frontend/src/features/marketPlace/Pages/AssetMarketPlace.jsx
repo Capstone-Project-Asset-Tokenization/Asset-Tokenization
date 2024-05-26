@@ -115,18 +115,18 @@ const Marketplace = () => {
   useEffect(() => {
     if (assets.length > 0) {
       const combined = assets.map((asset, index) => ({
-        id: asset[0],
-        name: asset[1],
-        currency: asset[2],
-        totalSupply: asset[3],
-        tokenPrice: asset[4],
-        availableSupply: asset[5],
-        category: asset[6],
-        status: asset[7],
-        description: asset[8],
-        images: asset[9],
-        documents: asset[10],
-        creator: asset[11],
+        id: asset[0], // ID
+        name: asset[1], // name
+        symbol: asset[2], // symbol
+        decimals: asset[3], // decimals
+        totalSupply: asset[4], // totalSupply
+        tokenPrice: asset[5], // tokenPrice
+        verificationStatus: asset[6], // verificationStatus
+        category: asset[7], // category
+        description: asset[8], // description
+        images: asset[9], // images
+        supportingDocuments: asset[10], // supportingDocuments
+        creator: asset[11], // creator
         ownerInfo: users ? users[index] : null,
       }));
       setCombinedData(combined);
