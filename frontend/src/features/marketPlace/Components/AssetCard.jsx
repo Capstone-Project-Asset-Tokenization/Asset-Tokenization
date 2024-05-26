@@ -51,7 +51,7 @@ const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
           <div>
             <span className="opacity-50 font-mono font-thin">Total Supply</span>
             <p className="font-light pt-1">
-              {asset.totalSupply.toLocaleString()} Units
+              {asset.availableSupply.toLocaleString()} Units
             </p>
           </div>
           <div>
