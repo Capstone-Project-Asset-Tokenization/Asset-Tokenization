@@ -36,19 +36,22 @@ const Registration = () => {
     setSmartContractRegistratonErrorResponse,
   ] = React.useState("");
 
+  let [bcRegisterationState, setBCRegisterationState] = React.useState({
+    loading: false
+  });
   const [
     register,
     {
-      isLoading: registrationLoading,
-      isSuccess: registrationSucess,
-      isError: registrationBKError,
+      isLoading: backendRegistrationLoading,
+      isSuccess: backendRegistrationSucess,
+      isError: backendRegistrationError,
       error: registratonBKErrorResponse,
     },
   ] = useRegisterMutation();
-  console.log("registrationSucess", registrationSucess);
-  console.log("registrationBKError", registrationBKError);
+  console.log("registrationSucess", backendRegistrationSucess);
+  console.log("registrationBKError", backendRegistrationError);
   console.log("registratonBKErrorResponse", registratonBKErrorResponse);
-  let registrationError = registrationBKError || smartContractRegistrationError;
+  let registrationError = backendRegistrationError || smartContractRegistrationError;
   let registrationErrorResponse =
     registratonBKErrorResponse || smartContractRegistratonErrorResponse;
   const handleProfileSubmit = async (values, { setSubmitting }) => {
@@ -66,15 +69,21 @@ const Registration = () => {
   };
 
   const handleBlockChainRegistration = async () => {
-    if (registrationSucess) {
+    if (backendRegistrationSucess) {
       let [userContract, userContractwithSigner] =
         await getUserContractInstance();
 
       try {
+        setBCRegisterationState({
+          loading: true,
+        });
         let response = await userContractwithSigner.registerUser();
         console.log("user registration response", response);
         navigate("/signin");
       } catch (error) {
+        setBCRegisterationState({
+          loading: false,
+        })
         console.log("user registration error", error);
         // registrationError = true
         setSmartContractRegistrationError(true);
@@ -87,7 +96,7 @@ const Registration = () => {
 
   useEffect(() => {
     handleBlockChainRegistration();
-  }, [registrationSucess]);
+  }, [backendRegistrationSucess]);
   return (
     <div className="">
       <ol className="lg:flex items-center w-full space-y-4 space-x-9 lg:space-y-0">
@@ -138,13 +147,13 @@ const Registration = () => {
                   values
                     ? values
                     : {
-                        firstName: "",
-                        lastName: "",
-                        email: "",
-                        password: "",
-                        confirmPassword: "",
-                        nationalID: "",
-                      }
+                      firstName: "",
+                      lastName: "",
+                      email: "",
+                      password: "",
+                      confirmPassword: "",
+                      nationalID: "",
+                    }
                 }
                 validationSchema={RegistrationSchema}
                 onSubmit={handleProfileSubmit}
@@ -236,10 +245,10 @@ const Registration = () => {
 
                     <button
                       type="submit"
-                      disabled={registrationLoading}
+                      disabled={backendRegistrationLoading}
                       className="w-full bg-primary-main hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
-                      {registrationLoading ? "Registering..." : "Next"}
+                      {backendRegistrationLoading ? "Registering..." : "Next"}
                     </button>
                   </Form>
                 )}
@@ -255,7 +264,7 @@ const Registration = () => {
             handleback={handleBack}
             handleSubmit={handleSubmit}
             setWallet={setWalletAddress}
-            registrationLoading={registrationLoading}
+            registrationLoading={backendRegistrationLoading || bcRegisterationState.loading}
             registrationError={registrationError}
             registratonErrorResponse={smartContractRegistratonErrorResponse}
             registratonBKErrorResponse={registratonBKErrorResponse}
