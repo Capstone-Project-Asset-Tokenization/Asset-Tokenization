@@ -7,6 +7,7 @@ import {
   InternalServerError,
   NotFoundError,
 } from "../utils/error/customErrors";
+import { sendMail } from "./emailService";
 
 export default class UserServie {
   private userRepository: UserRepository;
@@ -61,14 +62,27 @@ export default class UserServie {
     }
     return user;
   }
-  async login(email: string, password: string) {
+  async login(email: string, password: string, requestVerification: boolean) {
     let user = await this.userRepository.getUserByEmail(email);
+
     if (!user) {
       throw new NotFoundError("There is no user with this email");
     }
 
     if (!(await user.comparePassword(password))) {
       throw new CustomError(401, "Wrong password");
+    }
+
+    if (!user.isVerified) {
+      console.log(requestVerification, "requested?", user);
+      if (requestVerification) {
+        sendMail(email, user.emailToken);
+      }
+
+      throw new CustomError(
+        401,
+        "Email is not verified. Please check your email"
+      );
     }
 
     return generateToken({

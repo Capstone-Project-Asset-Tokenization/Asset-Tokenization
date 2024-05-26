@@ -1,4 +1,6 @@
 import React from "react";
+import { useSelector } from "react-redux";
+import { Routes, Route, Navigate } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import Navbar from "./components/layout/Navbar";
@@ -9,9 +11,6 @@ import Login from "./features/authentication/Pages/Login";
 import AssetMarketPlace from "./features/marketPlace/Pages/AssetMarketPlace";
 import AssetVerification from "./features/assetVerification/pages/AssetVerification";
 import AssetDetail from "./features/assetVerification/pages/assetDetail";
-// import Footer from "./components/layout/Footer";
-import { useSelector } from "react-redux";
-import { Navigate,Routes,Route } from "react-router-dom";
 import ConnectWallet from "./features/authentication/Pages/ConnectWalet";
 import UserManagement from "./features/userManagement/pages/userManagement";
 import AssetDetailPage from "./features/marketPlace/Pages/AssetDetailPage";
@@ -20,61 +19,33 @@ import ProfilePage from "./features/profile/pages";
 import VerifyUserEmail from "./pages/verifyEmail";
 
 function App() {
-  let auth = useSelector((state) => state.auth);
-
-  // get user from local storage
-  let authData = JSON.parse(localStorage.getItem("authData"));
+  const auth = useSelector((state) => state.auth);
 
   return (
     <div className="bg-[#2B2B2B]">
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />
+        <Route path="/verify-email" element={<VerifyUserEmail />} />
         <Route
           path="/asset-registration"
-          element={
-            auth.isAuthenticated ? (
-              <AssetRegistration />
-            ) : (
-              <Navigate to="/signin" />
-            )
-          }
+          element={<PrivateRoute element={<AssetRegistration />} />}
         />
         <Route
           path="/asset-verification"
-          element={
-            auth.isAuthenticated ? (
-              <AssetVerification />
-            ) : (
-              <Navigate to="/signin" />
-            )
-          }
+          element={<PrivateRoute element={<AssetVerification />} />}
         />
         <Route
           path="/asset-verification-detail"
-          element={
-            auth.isAuthenticated ? <AssetDetail /> : <Navigate to="/signin" />
-          }
+          element={<PrivateRoute element={<AssetDetail />} />}
         />
         <Route
           path="/user-management"
-          element={
-            auth.isAuthenticated ? (
-              <UserManagement />
-            ) : (
-              <Navigate to="/signin" />
-            )
-          }
+          element={<PrivateRoute element={<UserManagement />} />}
         />
         <Route
           path="/edit-asset/:id"
-          element={
-            auth.isAuthenticated ? (
-              <EditAssetDetails />
-            ) : (
-              <Navigate to="/signin" />
-            )
-          }
+          element={<PrivateRoute element={<EditAssetDetails />} />}
         />
         <Route
           path="/signup"
@@ -84,17 +55,16 @@ function App() {
         />
         <Route
           path="/signin"
-          element={
-            auth.isAuthenticated ? <Navigate to="/" /> : <Login />
-          }
+          element={auth.isAuthenticated ? <Navigate to="/" /> : <Login />}
         />
         <Route
           path="/profile"
-          element={
-            auth.isAuthenticated ? <ProfilePage /> : <Navigate to="/signin" />
-          }
+          element={<PrivateRoute element={<ProfilePage />} />}
         />
-        <Route path="/asset-marketplace" element={<AssetMarketPlace />} />
+        <Route
+          path="/asset-marketplace"
+          element={<PrivateRoute element={<AssetMarketPlace />} />}
+        />
         <Route
           path="/connect-wallet"
           element={
@@ -102,12 +72,26 @@ function App() {
           }
         />
         <Route path="/asset/:id" element={<AssetDetailPage />} />
-        <Route path="/verify-email" element={<VerifyUserEmail />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
     </div>
   );
 }
+
+const PrivateRoute = ({ element: Element, ...rest }) => {
+  const auth = useSelector((state) => state.auth);
+  const isVerified = auth.user?.isVerified;
+
+  if (!auth.isAuthenticated) {
+    return <Navigate to="/signin" />;
+  }
+
+  if (!isVerified) {
+    return <Navigate to="/verify-email" />;
+  }
+
+  return <Route {...rest} element={Element} />;
+};
 
 export default App;
