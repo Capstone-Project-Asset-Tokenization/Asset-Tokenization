@@ -14,7 +14,8 @@ function VerifyUserEmail() {
         const params = new URLSearchParams(location.search);
         const emailToken = params.get("emailToken");
         const response = await axios.patch(
-          `http://localhost:5001/api/user/verifyemail`,
+          
+          `${import.meta.env.VITE_APP_BASE_URL}/user/verifyemail`,
           {
             emailToken: emailToken,
           }

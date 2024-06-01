@@ -6,7 +6,7 @@ Cypress.on('uncaught:exception', (err, runnable) => {
 describe("Search Functionality", () => {
   
   beforeEach(() => {
-    cy.request("POST", "http://localhost:5001/api/user/login", {
+    cy.request("POST", `${import.meta.env.VITE_APP_BASE_URL}/user/login`, {
       email: "jebessadejene2021@gmail.com",
       password: "12345678",
       requestVerification: false,
