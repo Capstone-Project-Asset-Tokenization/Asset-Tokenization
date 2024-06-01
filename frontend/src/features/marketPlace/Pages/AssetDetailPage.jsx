@@ -10,6 +10,7 @@ import sprite from "../../../assets/sprite.svg";
 import "../../../customCarousel.css";
 import { useGetUsersInfoFromWalletQuery } from "../../../stores/auth/authAPI";
 import { useSelector } from "react-redux";
+import { ethers } from "ethers";
 
 const AssetDetail = ({ asset, onClose }) => {
   const categoryMapping = {
@@ -19,9 +20,12 @@ const AssetDetail = ({ asset, onClose }) => {
     3: "Other",
   };
 
-  const [isSingleToken, setIsSingleToken] = useState(asset.category === 1);
+  const [isSingleToken, setIsSingleToken] = useState(
+    Number(asset.category) === 1
+  );
+  console.log("isSingleToken", isSingleToken);
   const [buyModelOpen, setBuyModelOpen] = useState(false);
-  const [newPrice, setNewPrice] = useState(asset.tokenPrice);
+  const [newPrice, setNewPrice] = useState(Number(asset.tokenPrice));
   const [tokenCount, setTokenCount] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -64,15 +68,32 @@ const AssetDetail = ({ asset, onClose }) => {
   const handleBuyToken = async () => {
     try {
       setLoading(true);
-      const address = window.ethereum.selectedAddress;
-      const [assetContract, assetContractWithSigner] =
-        await getAssetContractInstance();
-      const tx = await assetContractWithSigner.transfer(
+
+      // Ensure the address is correctly retrieved
+      const address = ethers.getAddress(window.ethereum.selectedAddress);
+      console.log("address", address);
+      if (!address) throw new Error("No Ethereum address selected");
+
+      // Ensure the contract instances are correctly retrieved
+      const [contract, contractWithSigner] = await getAssetContractInstance();
+      if (!contractWithSigner)
+        throw new Error("Failed to get contract with signer");
+      const paymentAmount = ethers.parseUnits(
+        (Number(tokenCount) * Number(asset.tokenPrice)).toString(),
+        "ether"
+      );
+      // Ensure the transfer method is correctly called
+      const tx = await contractWithSigner.transfer(
         asset.ID,
         address,
-        Number(tokenCount)
+        Number(tokenCount),
+        {
+          value: paymentAmount.toString(),
+        }
       );
-      await tx.wait();
+      if (!tx) throw new Error("Transaction failed");
+
+      console.log(tx);
       setBuyModelOpen(false);
       setLoading(false);
     } catch (error) {
@@ -80,6 +101,17 @@ const AssetDetail = ({ asset, onClose }) => {
       setError("Error buying token, please try again!");
       setLoading(false);
     }
+  };
+
+  const handleBuyConfirmation = () => {
+    handleBuyToken()
+      .then(() => {
+        console.log("Token bought successfully");
+      })
+      .catch((error) => {
+        console.error("Error buying token--:", error);
+        setError("Error buying token, please try again!");
+      });
   };
 
   if (!asset) return <div>No asset found</div>;
@@ -130,12 +162,16 @@ const AssetDetail = ({ asset, onClose }) => {
                 Total Price : <span className="font-bold">{newPrice} ETH</span>
               </label>
               <button
-                onClick={handleBuyToken}
-                className="bg-primary-main text-white px-4 py-2 rounded flex items-center justify-center"
+                onClick={handleBuyConfirmation}
+                className="bg-primary-main text-white px-4 py-2 rounded flex items-center justify-center position-relative bottom-0"
                 disabled={loading}
               >
                 {loading ? (
-                  <div className="flex items-center justify-center w-12 h-12 text-gray-200 animate-spin dark:text-gray-400 fill-blue-600">
+                  <div
+                    className="flex items-center justify-center w-12 h-12 text-gray-200 animate-spin dark:text-gray-400 fill-blue-600
+                  
+                  "
+                  >
                     <svg
                       aria-hidden="true"
                       className="w-12 h-12 text-gray-200 animate-spin dark:text-gray-400 fill-blue-600"

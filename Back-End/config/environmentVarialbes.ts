@@ -1,7 +1,7 @@
 export const EnvConfig = {
   PORT: process.env.PORT || 5000,
   MONGODB_URL:
-    process.env.MONGODB_URL || "mongodb://localhost/asset-tokenization",
+    process.env.DATABASE_URL || "mongodb://localhost/asset-tokenization",
   JWT_SECRET: process.env.JWT_SECRET || "something",
   CLOUD_NAME: process.env.CLOUD_NAME || "drjsgceky",
   CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY || "342699666849659",
@@ -18,4 +18,5 @@ export const EnvConfig = {
   ADMIN_LASTNAME: process.env.ADMIN_LASTNAME || "Kebede",
   EMAIL_USERNAME: process.env.EMAIL_USERNAME || "jebessadejene2017@gmail.com",
   EMAIL_SENDER_PASSWORD: process.env.EMAIL_USERNAME || "vlvl zcgr bqhu rrku",
+  EMAIL_TOKEN: process.env.ADMIN_EMAIL_TOKEN || "assdfrrghhyhgyjnhvbkdvbwkvbksdkvbsncsdkbvdhbksvdkb",
 };

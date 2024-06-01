@@ -8,6 +8,7 @@
 // https://on.cypress.io/custom-commands
 // ***********************************************
 //
+import "cypress-file-upload";
 //
 // -- This is a parent command --
 // Cypress.Commands.add('login', (email, password) => { ... })
@@ -25,10 +26,9 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 // Custom command example
-Cypress.Commands.add('login', (username, password) => {
-    cy.visit('/login');
-    cy.get('input[name="username"]').type(username);
-    cy.get('input[name="password"]').type(password);
-    cy.get('button[type="submit"]').click();
-  });
-  
+Cypress.Commands.add("login", (username, password) => {
+  cy.visit("/login");
+  cy.get('input[name="username"]').type(username);
+  cy.get('input[name="password"]').type(password);
+  cy.get('button[type="submit"]').click();
+});
