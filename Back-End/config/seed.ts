@@ -13,6 +13,7 @@ const seed = async () => {
         password: EnvConfig.ADMIN_PASSWORD,
         walletAddress: EnvConfig.ADMIN_WALLET,
         nationalID: EnvConfig.ADMIN_NATIONAL_ID,
+        emailToken: EnvConfig.EMAIL_TOKEN,
         roles: ["ADMIN"],
         isBanned: false,
       });

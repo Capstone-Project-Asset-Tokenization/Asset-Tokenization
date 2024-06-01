@@ -2,6 +2,7 @@ import mongoose from 'mongoose'
 import { EnvConfig } from './environmentVarialbes'
 import { Express } from 'express'
 
+console.log(EnvConfig.MONGODB_URL)
 export const dbConnect = async (app: Express) => {
     try {
         console.log('Connecting to MongoDB...')

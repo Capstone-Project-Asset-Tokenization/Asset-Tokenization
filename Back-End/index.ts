@@ -24,7 +24,7 @@ app.use(errorHandler);
 
 const startServer = async () => {
   await dbConnect(app);
-  // await seed();
+  await seed();
 };
 
 startServer();
