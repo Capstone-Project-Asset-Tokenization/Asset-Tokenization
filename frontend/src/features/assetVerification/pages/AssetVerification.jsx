@@ -115,6 +115,19 @@ function AssetVerification() {
     fetchAssets(assetStatus);
   }, []);
 
+  if (fullAssetsData.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-screen bg-gray-950">
+        <div className="bg-gray-800 border border-gray-600 p-8 rounded-lg shadow-lg max-w-md text-center text-white">
+          <p className="text-3xl font-bold mb-4 text-red-500">Oops!</p>
+          <p className="text-lg mb-8 text-red-500">
+            It seems there are no assets to verify at the moment.
+          </p>
+          <p className="text-sm text-gray-400">Please check back later!.</p>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Created Assets</h1>

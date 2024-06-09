@@ -23,6 +23,7 @@ export default function ConnectWallet({
   registratonBKErrorResponse,
   smartContractRegistratonErrorResponse,
 }) {
+  console.log("ConnectWallet error", registratonBKErrorResponse);
   const [errorMessage, setErrorMessage] = useState(null);
   const [defaultAccount, setDefaultAccount] = useState(null);
   const [userBalance, setUserBalance] = useState(null);
@@ -113,7 +114,7 @@ export default function ConnectWallet({
 
         {defaultAccount && (
           <button
-          data-testid="complete-registration"
+            data-testid="complete-registration"
             onClick={completeRegisteration}
             className="bg-primary-main hover:bg-primary-dark rounded py-2 px-4 mt-6 w-[250px]"
           >
@@ -126,7 +127,7 @@ export default function ConnectWallet({
             role="alert"
           >
             <span className="font-medium">Registration Failed!</span>{" "}
-            {registratonBKErrorResponse?.data.msg ??
+            {registratonBKErrorResponse?.error ??
               smartContractRegistratonErrorResponse}
           </div>
         )}
