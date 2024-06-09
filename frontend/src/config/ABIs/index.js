@@ -1120,6 +1120,11 @@ export const UserContractABI = [
             name: "promotedBy",
             type: "address",
           },
+          {
+            internalType: "address",
+            name: "userAddress",
+            type: "address",
+          },
         ],
         internalType: "struct UserManagement.User[]",
         name: "",
@@ -1145,6 +1150,11 @@ export const UserContractABI = [
           {
             internalType: "address",
             name: "promotedBy",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "userAddress",
             type: "address",
           },
         ],
@@ -1195,6 +1205,11 @@ export const UserContractABI = [
             name: "promotedBy",
             type: "address",
           },
+          {
+            internalType: "address",
+            name: "userAddress",
+            type: "address",
+          },
         ],
         internalType: "struct UserManagement.User[]",
         name: "",
@@ -1228,6 +1243,11 @@ export const UserContractABI = [
           {
             internalType: "address",
             name: "promotedBy",
+            type: "address",
+          },
+          {
+            internalType: "address",
+            name: "userAddress",
             type: "address",
           },
         ],
@@ -1334,6 +1354,11 @@ export const UserContractABI = [
       {
         internalType: "address",
         name: "promotedBy",
+        type: "address",
+      },
+      {
+        internalType: "address",
+        name: "userAddress",
         type: "address",
       },
     ],
