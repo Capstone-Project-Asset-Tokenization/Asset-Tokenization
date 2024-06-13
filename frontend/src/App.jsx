@@ -17,6 +17,8 @@ import AssetDetailPage from "./features/marketPlace/Pages/AssetDetailPage";
 import EditAssetDetails from "./features/editAssetDetails/pages/editAssetDetails";
 import ProfilePage from "./features/profile/pages";
 import VerifyUserEmail from "./pages/verifyEmail";
+import RequestReset from "./features/authentication/Pages/RequestPassword";
+import ResetPassword from "./features/authentication/Pages/ResetPassword";
 
 function App() {
   const auth = useSelector((state) => state.auth);
@@ -99,6 +101,8 @@ function App() {
             auth.isAuthenticated ? <Navigate to="/" /> : <ConnectWallet />
           }
         />
+        <Route path="/request-reset" element={<RequestReset />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/asset/:id" element={<AssetDetailPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>

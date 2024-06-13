@@ -1,5 +1,4 @@
-// User.ts
-import { Document, Schema, model, Types, Model } from "mongoose";
+import { Document, Schema, model, Model, UpdateQuery } from "mongoose";
 import { IUser } from "../types/user";
 import bcrypt from "bcrypt";
 
@@ -24,16 +23,13 @@ const userSchema = new Schema<IUser, IUserModel>(
     },
     password: { type: String },
     isVerified: { type: Boolean, default: false },
-
-    emailToken: {
-      type: String,
-    },
+    emailToken: { type: String },
     isBanned: { type: Boolean, default: false },
   },
   { timestamps: true }
 );
 
-// add password hash method
+// Add password hash method for save
 userSchema.pre<IUserDocument>("save", async function (next) {
   if (this.isModified("password")) {
     this.password = await bcrypt.hash(this.password, 10);
@@ -41,14 +37,24 @@ userSchema.pre<IUserDocument>("save", async function (next) {
   next();
 });
 
-// add password compare method
+// Add password hash method for findOneAndUpdate
+userSchema.pre('findOneAndUpdate', async function (next) {
+  const update = this.getUpdate();
+  
+  if (update) {
+    const updateDoc = update as UpdateQuery<IUserDocument>;
+    if (updateDoc.password) {
+      updateDoc.password = await bcrypt.hash(updateDoc.password, 10);
+    }
+  }
+
+  next();
+});
+
+// Add password compare method
 userSchema.methods.comparePassword = async function (password: string) {
   return await bcrypt.compare(password, this.password);
 };
-
-// // filter unique constraint for optional field
-// userSchema.index({ phoneNumber: 1 }, { unique: true, partialFilterExpression: { phoneNumber: { $exists: true } } });
-// userSchema.index({ walletAddress: 1 }, { unique: true, partialFilterExpression: { walletAddress: { $exists: true } } });
 
 const User = model<IUser, IUserModel>("User", userSchema);
 

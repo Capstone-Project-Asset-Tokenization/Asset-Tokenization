@@ -19,4 +19,5 @@ export const EnvConfig = {
   EMAIL_USERNAME: process.env.EMAIL_USERNAME || "jebessadejene2017@gmail.com",
   EMAIL_SENDER_PASSWORD: process.env.EMAIL_USERNAME || "vlvl zcgr bqhu rrku",
   EMAIL_TOKEN: process.env.ADMIN_EMAIL_TOKEN || "assdfrrghhyhgyjnhvbkdvbwkvbksdkvbsncsdkbvdhbksvdkb",
+  FRONTEND_BASE_URL : process.env.FRONTEND_BASE_URL || "http://localhost:5173",
 };

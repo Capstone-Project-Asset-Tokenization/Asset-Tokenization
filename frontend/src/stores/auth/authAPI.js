@@ -73,6 +73,27 @@ export const authAPI = createApi({
         };
       },
     }),
+
+    requestReset: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/user/request-reset`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+
+    resetPassword: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/user/reset-password`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+    }),
+
     unbanUser: builder.mutation({
       query: (data) => {
         return {
@@ -81,7 +102,7 @@ export const authAPI = createApi({
           body: {},
         };
       },
-    })
+    }),
   }),
 });
 
@@ -92,5 +113,7 @@ export const {
   useGetUsersInfoFromWalletQuery,
   useUpdateRoleMutation,
   useBanUserMutation,
-  useUnbanUserMutation
+  useUnbanUserMutation,
+  useRequestResetMutation,
+  useResetPasswordMutation,
 } = authAPI;

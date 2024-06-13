@@ -2,6 +2,7 @@ import UserRepository from "../repositories/userRepository";
 import { RegistrationInput } from "../types/user";
 import { generateToken } from "../utils/authentication/generateToken";
 import { verifyToken } from "../utils/authentication/verifyToken";
+import { sendResetMail } from "../utils/email/templates/passwordResetTemplate";
 import {
   CustomError,
   InternalServerError,
@@ -53,6 +54,26 @@ export default class UserServie {
     }
 
     return await this.userRepository.updateIsVerified(user.email);
+  }
+
+  async requestReset(email: string) {
+    let user = await this.userRepository.getUserByEmail(email);
+    if (!user) {
+      throw new NotFoundError("There is no user with this email");
+    }
+
+    const token = generateToken({ ...user });
+    sendResetMail(email, token);
+    return token;
+  }
+
+  async resetPassword(newPassword: string, token: string) {
+    let user = verifyToken(token);
+    if (!user) {
+      throw new CustomError(401, "Invalid token");
+    }
+
+    return await this.userRepository.updatePassword(user._id, newPassword);
   }
 
   async getUserByEmail(email: string) {

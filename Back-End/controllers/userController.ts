@@ -29,7 +29,11 @@ export default class UserController {
   login = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
       let { email, password, requestVerification } = req.body;
-      let token = await this.userService.login(email, password, requestVerification);
+      let token = await this.userService.login(
+        email,
+        password,
+        requestVerification
+      );
       let user = await this.userService.getUserByEmail(email);
       res.status(200).json({ token, user });
     }
@@ -43,6 +47,22 @@ export default class UserController {
       res.status(200).json(email);
     }
   );
+
+  requestReset = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+      let { email } = req.body;
+      let user = await this.userService.requestReset(email);
+      res.status(200).json(user);
+    }
+  );
+
+  resetPassword = catchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
+      let { newPassword, token } = req.body;
+      let user = await this.userService.resetPassword(newPassword, token);
+      res.status(200).json(user);
+    }
+  )
 
   getUser = catchAsyncError(
     async (req: CustomRequest, res: Response, next: NextFunction) => {
@@ -63,8 +83,8 @@ export default class UserController {
   getUsersByWalletAddresses = catchAsyncError(
     async (req: CustomRequest, res: Response, next: NextFunction) => {
       let walletAddresses = req.query.walletAddresses as string[];
-      console.log(typeof walletAddresses)
-      if (typeof walletAddresses === 'string') {
+      console.log(typeof walletAddresses);
+      if (typeof walletAddresses === "string") {
         walletAddresses = [walletAddresses];
       }
       let users = await this.userService.getUsersByWalletAddresses(

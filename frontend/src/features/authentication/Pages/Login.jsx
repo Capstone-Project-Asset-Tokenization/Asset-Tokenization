@@ -140,11 +140,12 @@ const Login = () => {
                   <button
                     type="submit"
                     disabled={loginLoading}
-                    className="w-full bg-primary-main hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                    className="w-full bg-primary-main hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline mb-4"
                   >
                     {loginLoading ? "Signing In..." : "Sign In"}
                   </button>
                 </div>
+                <a className="text-gray-400 hover:text-gray-50" href="/request-reset">Forgot password?</a>
               </Form>
             )}
           </Formik>

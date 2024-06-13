@@ -30,20 +30,42 @@ export default class UserRepository {
     );
   }
 
- public async getUsersByWalletAddresses(walletAddresses: string[]): Promise<(any)[]> {
-  console.log(walletAddresses)
-  const users = await User.find({
-    walletAddress: { $in: walletAddresses }
-  }).exec();
-  const userMap = new Map(users.map(user => [user.walletAddress, user]));
-  return walletAddresses.map(address => userMap.get(address) || null);
-}
+  public async updatePassword(userId: string, newPassword: string) {
+    try {
+      return await User.findOneAndUpdate(
+        { _id: userId },
+        { password: newPassword},
+        { new: true }
+      );
+    } catch (error) {
+      console.error("Error updating password:", error);
+      throw error; // Propagate the error or handle it as needed
+    }
+  }
+
+  public async getUsersByWalletAddresses(
+    walletAddresses: string[]
+  ): Promise<any[]> {
+    console.log(walletAddresses);
+    const users = await User.find({
+      walletAddress: { $in: walletAddresses },
+    }).exec();
+    const userMap = new Map(users.map((user) => [user.walletAddress, user]));
+    return walletAddresses.map((address) => userMap.get(address) || null);
+  }
 
   public async verifyEmail(emailToken: string) {
-    console.log("verifying email with token sent....", emailToken)
+    console.log("verifying email with token sent....", emailToken);
     let user = await User.findOne({ where: { emailToken: emailToken } });
     if (!user) {
       throw new Error("Invalid email token");
+    }
+  }
+
+  public async requestReset(email: string) {
+    let user = await User.findOne({ where: { email } });
+    if (!user) {
+      throw new Error("There is no user with this email");
     }
   }
 
