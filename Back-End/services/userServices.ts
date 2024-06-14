@@ -68,12 +68,14 @@ export default class UserServie {
   }
 
   async resetPassword(newPassword: string, token: string) {
-    let user = verifyToken(token);
+    let user: any = verifyToken(token);
+
     if (!user) {
       throw new CustomError(401, "Invalid token");
     }
 
-    return await this.userRepository.updatePassword(user._id, newPassword);
+    console.log(user?._doc)
+    return await this.userRepository.updatePassword(user?._doc._id, newPassword);
   }
 
   async getUserByEmail(email: string) {
