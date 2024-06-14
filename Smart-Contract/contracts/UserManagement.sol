@@ -7,6 +7,7 @@ contract UserManagement {
         bool isRegistered;
         bool isBanned;
         address promotedBy;
+        address userAddress;
     }
 
     mapping(address => User) public users;
@@ -34,7 +35,8 @@ contract UserManagement {
             isAdmin: true,
             isRegistered: true,
             isBanned: false,
-            promotedBy: address(0)
+            promotedBy: address(0),
+            userAddress:msg.sender
         });
         usersAddressList.push(msg.sender);
         
@@ -53,7 +55,9 @@ contract UserManagement {
             isAdmin: true,
             isRegistered: true,
             isBanned: false,
-            promotedBy: msg.sender
+            promotedBy: msg.sender,
+            userAddress:msg.sender
+
         });
         emit UserPromoted(userAddress, msg.sender);
     }
@@ -98,8 +102,8 @@ contract UserManagement {
                 count=count+1;
             }
         }
-        address[] memory admins = new address[](count);
-        address[] memory promoters = new address[](count);
+        User[] memory admins = new User[](count);
+        User[] memory promoters = new User[](count);
         count = 0;
         for (uint256 i = 0; i < usersAddressList.length; i++) {
             if (users[usersAddressList[i]].isAdmin) {
@@ -118,7 +122,7 @@ contract UserManagement {
                 count=count+1;
             }
         }
-        address[] memory bannedUsers = new address[](count);
+        User[] memory bannedUsers = new User[](count);
         count = 0;
         for (uint256 i = 0; i < usersAddressList.length; i++) {
             if (users[usersAddressList[i]].isBanned) {
@@ -130,7 +134,7 @@ contract UserManagement {
     }
 
     function getRegisteredUsers() external view returns (User[] memory) {
-        address[] memory registeredUsers = new address[](usersAddressList.length);
+        User[] memory registeredUsers = new User[](usersAddressList.length);
         uint256 count = 0;
         for (uint256 i = 0; i < usersAddressList.length; i++) {
             if (users[usersAddressList[i]].isRegistered) {
