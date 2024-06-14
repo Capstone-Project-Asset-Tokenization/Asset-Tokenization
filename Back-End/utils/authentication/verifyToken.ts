@@ -5,9 +5,9 @@ import { UnauthorizedError } from "../error/customErrors";
 
 export const verifyToken = (token: string): UserToken => {
   try {
-    const decodedToken = jwt.verify(token, EnvConfig.JWT_SECRET) as any;
-    return decodedToken._doc as UserToken;
+      return jwt.verify(token, EnvConfig.JWT_SECRET) as UserToken
   } catch (error) {
-    throw new UnauthorizedError();
+      throw new UnauthorizedError()
   }
-};
+}
+
