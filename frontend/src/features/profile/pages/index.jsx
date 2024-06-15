@@ -1,14 +1,204 @@
 import React, { useEffect, useState } from "react";
 import { RiArrowLeftLine, RiEdit2Line } from "react-icons/ri"; // Import the pen icon
-import { useGetUserQuery } from "../../../stores/auth/authAPI";
+import {
+  useChangePasswordMutation,
+  useGetUserQuery,
+  useUpdateProfileMutation,
+} from "../../../stores/auth/authAPI";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
 import { SpinLoader } from "../../../components/common/spinner/spinLoader";
 import { getAssetContractInstance } from "../../../config/contractInstances";
-import { assert, ethers } from "ethers";
 import AssetCard from "../../marketPlace/Components/AssetCard";
 import QRCode from "react-qr-code";
 import AssetDetail from "../../marketPlace/Pages/AssetDetailPage";
+
+const RegistrationSchema = Yup.object().shape({
+  firstName: Yup.string().required("First Name is required"),
+  lastName: Yup.string().required("Last Name is required"),
+  email: Yup.string().email("Invalid email").required("Email is required"),
+  nationalID: Yup.string().required("Legal ID No. is required"),
+});
+
+const validationSchema = Yup.object().shape({
+  oldPassword: Yup.string()
+    .required("old password is required")
+    .min(6, "Password must be at least 6 characters"),
+  newPassword: Yup.string().required("New your password"),
+});
+
+const ProfileEdit = ({
+  userData,
+  setIsEditing,
+  handleProfileSubmit,
+  backendRegistrationLoading,
+}) => {
+  return (
+    <div className="flex w-full mb-20 md:w-1/2 justify-center">
+      <div className="w-full max-w-md px-6">
+        <div className="flex items-center cursor-pointer space-x-4 mb-5">
+          <RiArrowLeftLine
+            onClick={() => setIsEditing(false)}
+            aria-label="Back"
+          />
+          <h2 className="font-sans font-semibold text-white text-3xl">
+            Profile
+          </h2>
+        </div>
+        <Formik
+          initialValues={userData}
+          validationSchema={RegistrationSchema}
+          onSubmit={handleProfileSubmit}
+        >
+          {({ isSubmitting }) => (
+            <Form className="bg-transparent">
+              <div className="mb-4">
+                <Field
+                  type="email"
+                  name="email"
+                  placeholder="Email Address"
+                  disabled
+                  className="text-neutral-700 disabled:text-gray-500 border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                />
+                <ErrorMessage
+                  name="email"
+                  component="div"
+                  className="text-red-500 text-xs italic"
+                />
+              </div>
+              <div className="mb-4">
+                <Field
+                  type="text"
+                  name="firstName"
+                  placeholder="First Name"
+                  className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                />
+                <ErrorMessage
+                  name="firstName"
+                  component="div"
+                  className="text-red-500 text-xs italic"
+                />
+              </div>
+              <div className="mb-4">
+                <Field
+                  type="text"
+                  name="lastName"
+                  placeholder="Last Name"
+                  className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                />
+                <ErrorMessage
+                  name="lastName"
+                  component="div"
+                  className="text-red-500 text-xs italic"
+                />
+              </div>
+
+              <div className="mb-6">
+                <Field
+                  type="text"
+                  name="nationalID"
+                  placeholder="Legal ID No"
+                  className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                />
+                <ErrorMessage
+                  name="nationalID"
+                  component="div"
+                  className="text-red-500 text-xs italic"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={backendRegistrationLoading}
+                className="w-full mt-5 mb-3 bg-primary-main hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              >
+                {backendRegistrationLoading ? "Updating..." : "Update"}
+              </button>
+            </Form>
+          )}
+        </Formik>
+      </div>
+    </div>
+  );
+};
+
+const ChangePassword = ({
+  userData,
+  setIsPasswordChange,
+  handlePasswordSubmit,
+  isLoading,
+  isSuccess,
+  error,
+}) => {
+  return (
+    <div className="w-[40%] ">
+      <div className="w-full p-8 rounded-lg shadow-lg">
+        <div>
+          <button onClick={() => setIsPasswordChange(false)}>Back</button>
+          <h2 className="text-3xl font-semibold text-white mb-6">
+            Change Your Password
+          </h2>
+          <Formik
+            initialValues={userData}
+            validationSchema={validationSchema}
+            onSubmit={handlePasswordSubmit}
+          >
+            {({ isSubmitting }) => (
+              <Form>
+                <div className="mb-4">
+                  <Field
+                    type="password"
+                    name="oldPassword"
+                    placeholder="Old Password"
+                    className="bg-neutral-800 mb-4 text-white border-0 outline-none p-2 px-3 rounded w-full"
+                  />
+                  <ErrorMessage
+                    name="oldPassword"
+                    component="div"
+                    className="text-red-500 text-xs italic mt-1"
+                  />
+                </div>
+
+                <div className="mb-4">
+                  <Field
+                    type="password"
+                    name="newPassword"
+                    placeholder="New Password"
+                    className="bg-neutral-800 mb-4 text-white border-0 outline-none p-2 px-3 rounded w-full"
+                  />
+                  <ErrorMessage
+                    name="newPassword"
+                    component="div"
+                    className="text-red-500 text-xs italic mt-1"
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                >
+                  {isLoading ? "Submitting" : "Submit"}
+                </button>
+
+                {isSuccess && (
+                  <div className="mt-6 text-green-500">
+                    Password has been successfully changed.
+                  </div>
+                )}
+
+                {error && (
+                  <div className="mt-6 text-red-500">
+                    {error?.data?.msg ||
+                      "An error occurred. Please try again later."}
+                  </div>
+                )}
+              </Form>
+            )}
+          </Formik>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const ProfilePage = () => {
   const {
@@ -18,13 +208,26 @@ const ProfilePage = () => {
     refetch,
   } = useGetUserQuery();
   const [isEditing, setIsEditing] = useState(false);
-  const [editedUserData, setEditedUserData] = useState({ ...userData });
   const [tabChange, setTabChange] = useState(false);
   const [userAssets, setUserAssets] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
   const [isCopied, setIsCopied] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState(null);
+  const [isPasswordChange, setIsPasswordChange] = useState(false);
+  const [
+    updateProfile,
+    { isLoading, data, isSuccess, isError, error: updateError },
+  ] = useUpdateProfileMutation();
+
+  const [
+    changePassword,
+    {
+      isSuccess: isPasswordChanged,
+      isLoading: isloadingPass,
+      error: passwordError,
+    },
+  ] = useChangePasswordMutation();
 
   const tabs = [
     { label: "Pending" },
@@ -32,12 +235,11 @@ const ProfilePage = () => {
     { label: "Declined" },
   ];
 
-  const RegistrationSchema = Yup.object().shape({
-    firstName: Yup.string().required("First Name is required"),
-    lastName: Yup.string().required("Last Name is required"),
-    email: Yup.string().email("Invalid email").required("Email is required"),
-    nationalID: Yup.string().required("Legal ID No. is required"),
-  });
+  useEffect(() => {
+    if (isSuccess) {
+      refetch();
+    }
+  }, [isSuccess]);
 
   useEffect(() => {
     setTabChange(true);
@@ -64,12 +266,27 @@ const ProfilePage = () => {
     setTimeout(() => setIsCopied(false), 2000); // Reset the copied state after 2 seconds
   };
 
-  const handleProfileSubmit = (e) => {
-    console.log("handleprofile");
+  const handleProfileSubmit = (values) => {
+    console.log("handleprofile", values);
+    updateProfile({
+      userId: values._id,
+      data: {
+        firstName: values.firstName,
+        lastName: values.lastName,
+        nationalID: values.nationalID,
+      },
+    });
+
+    setIsEditing(false);
   };
 
-  const handleSaveClick = () => {
-    setIsEditing(false); // Update userData with edited data
+  const handlePasswordSubmit = (values) => {
+    changePassword({
+      userId: userData._id,
+      newPassword: values.newPassword,
+      oldPassword: values.oldPassword,
+    });
+    // setIsPasswordChange(false);
   };
 
   const openModal = (asset) => {
@@ -91,90 +308,31 @@ const ProfilePage = () => {
       <div className="flex flex-wrap md:flex-nowrap">
         <div className="flex items-center mb-4 space-x-9"></div>
         {isEditing ? (
-          <div className="max-w-lg mx-auto  p-3 rounded-lg shadow">
-            <div className="flex items-center cursor-pointer space-x-4">
-              <RiArrowLeftLine onClick={() => setIsEditing(false)} />
-              <h2 className="text-lg font-semibold mr-2">Profile</h2>
-            </div>
-            <Formik
-              initialValues={{
-                ...userData,
-              }}
-              validationSchema={RegistrationSchema}
-              onSubmit={handleProfileSubmit}
-            >
-              {({ isSubmitting }) => (
-                <Form className="bg-transparent">
-                  <div className="mb-4">
-                    <Field
-                      type="text"
-                      name="firstName"
-                      placeholder="Frist Name"
-                      className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
-                    />
-                    <ErrorMessage
-                      name="firstName"
-                      component="div"
-                      className="text-red-500 text-xs italic"
-                    />
-                  </div>
-                  <div className="mb-4">
-                    <Field
-                      type="text"
-                      name="lastName"
-                      placeholder="Last Name"
-                      className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
-                    />
-                    <ErrorMessage
-                      name="lastName"
-                      component="div"
-                      className="text-red-500 text-xs italic"
-                    />
-                  </div>
-
-                  <div className="mb-4">
-                    <Field
-                      disabled
-                      type="email"
-                      name="email"
-                      placeholder="Email Address"
-                      className="bg-[#292929] text-neutral-700 border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
-                    />
-                    <ErrorMessage
-                      name="email"
-                      component="div"
-                      className="text-red-500 text-xs italic"
-                    />
-                  </div>
-
-                  <div className="mb-6">
-                    <Field
-                      type="text"
-                      name="nationalID"
-                      placeholder="Legal ID No"
-                      className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
-                    />
-                    <ErrorMessage
-                      name="nationalID"
-                      component="div"
-                      className="text-red-500 text-xs italic"
-                    />
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={true}
-                    className="w-full bg-neutral-700 text-neutral-600 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-                  >
-                    Update
-                  </button>
-                </Form>
-              )}
-            </Formik>
+          <div className="flex-auto flex justify-center mt-8 w-full md:w-1/2 md:pr-4">
+            <ProfileEdit
+              userData={userData}
+              setIsEditing={setIsEditing}
+              handleProfileSubmit={handleProfileSubmit}
+              backendRegistrationLoading={isLoading}
+            />
+            {/* {isPasswordChange && (
+             
+            )} */}
+          </div>
+        ) : isPasswordChange ? (
+          <div className="flex justify-center w-full">
+            <ChangePassword
+              setIsPasswordChange={setIsPasswordChange}
+              userData={userData}
+              handlePasswordSubmit={handlePasswordSubmit}
+              isLoading={isloadingPass}
+              isSuccess={isPasswordChanged}
+              error={passwordError}
+            />
           </div>
         ) : userData?.roles?.includes("ADMIN") ? (
           <div className="flex-auto w-full md:w-1/2 md:pr-4">
-            <div className="max-w-lg mx-auto  p-3 rounded-lg shadow">
+            <div className="max-w-lg mx-auto p-3 rounded-lg shadow">
               <div className="flex items-center space-x-4">
                 <div className="flex-shrink-0">
                   <img
@@ -183,16 +341,16 @@ const ProfilePage = () => {
                     className="h-24 w-24 rounded-full object-cover border-2 border-gray-300"
                   />
                 </div>
-                <div className="flex-grow">
+                <div className="flex-grow p-32">
                   <div>
                     <h3 className="text-xl font-semibold">
                       {userData?.firstName} {userData?.lastName}
                     </h3>
                     {!isEditing && (
-                      <span className="text-gray-500">
+                      <span className="text-gray-500 p-32">
                         Edit Profile
                         <RiEdit2Line
-                          className="text-primary-main items-end inline  m-3 cursor-pointer"
+                          className="text-primary-main bg-red-400 items-end inline m-3 cursor-pointer"
                           size={20}
                           onClick={handleEditClick}
                         />
@@ -201,7 +359,7 @@ const ProfilePage = () => {
                   </div>
                   <p className="text-gray-500">{userData?.email}</p>
                   <p className="text-gray-500">ID: {userData?.nationalID}</p>
-                  <p className="text-gray-500  break-all">
+                  <p className="text-gray-500 break-all">
                     Wallet: {userData?.walletAddress}
                   </p>
                 </div>
@@ -221,18 +379,39 @@ const ProfilePage = () => {
         ) : (
           <div className="container mx-auto mt-8 mb-14">
             <div className="flex justify-center space-x-10 items-center w-full bg-neutral-800 py-10">
-              {" "}
               <div className="flex justify-center flex-col items-center space-y-4">
                 <img
                   src="https://avatar.iran.liara.run/public/boy?username=Ash"
                   alt={`${userData?.firstName} ${userData?.lastName}`}
                   className="h-60 w-30 rounded-full object-cover border-2 border-gray-300"
                 />
+                {!isEditing && (
+                  <div
+                    onClick={handleEditClick}
+                    className="text-gray-500 flex justify-center items-center space-x-1 cursor-pointer"
+                  >
+                    <p> Edit Profile</p>
+                    <RiEdit2Line
+                      className="text-primary-main items-end inline"
+                      size={20}
+                    />
+                  </div>
+                )}
+                {!isPasswordChange && (
+                  <div
+                    onClick={() => setIsPasswordChange(true)}
+                    className="text-gray-500 flex justify-center items-center space-x-1 cursor-pointer"
+                  >
+                    <p> Change password?</p>
+                    <RiEdit2Line
+                      className="text-primary-main items-end inline"
+                      size={20}
+                    />
+                  </div>
+                )}
               </div>
-              <div className="flex  justify-around items-center space-x-60">
-                {" "}
+              <div className="flex justify-around items-center space-x-60">
                 <div>
-                  {" "}
                   <h3 className="text-5xl font-bold text-gray-100 uppercase">
                     {userData?.firstName} {userData?.lastName}
                   </h3>
@@ -267,11 +446,9 @@ const ProfilePage = () => {
                       value={userData?.walletAddress || ""}
                     />
                     <div className="text-gray-500 text-xl px-4 font-bold">
-                      {" "}
-                      Wallet Address{" "}
+                      Wallet Address
                     </div>
                   </div>
-
                   <div className="flex space-x-2 mt-4">
                     <p className="text-gray-400 text-base">
                       {userData?.walletAddress}
@@ -286,11 +463,9 @@ const ProfilePage = () => {
                 </div>
               </div>
             </div>
-
             <div className="">
               <div className="p-6 shadow rounded-lg">
                 <h4 className="text-3xl font-bold my-10 mb-5">My Assets</h4>
-
                 <div className="rounded-lg shadow-md p-6">
                   <div className="flex justify-around mb-4">
                     {tabs.map((tab, index) => (
@@ -308,18 +483,14 @@ const ProfilePage = () => {
                     ))}
                   </div>
                 </div>
-
                 {tabChange && (
                   <div className="min-h-52">
-                    {" "}
                     <SpinLoader />
                   </div>
                 )}
-
                 {!tabChange && userAssets?.length > 0 && (
                   <div className="flex">
                     {userAssets.map((asset, index) => {
-                      console.log(typeof asset[6]);
                       return (
                         <div
                           className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
@@ -351,49 +522,3 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-
-const RealEstateCard = ({
-  image,
-  title,
-  totalSupply,
-  price,
-  onEdit,
-  onDelete,
-  onViewDetails,
-}) => {
-  return (
-    <div className="max-w-sm rounded overflow-hidden shadow-lg bg-gray-800 text-white">
-      <img className="w-full" src={image} alt={title} />
-      <div className="px-6 py-4">
-        <div className="font-bold text-xl mb-2">{title}</div>
-        <p className="text-gray-400 text-base">
-          <span className="font-semibold">Total Supply:</span> {totalSupply}{" "}
-          Units
-        </p>
-        <p className="text-gray-400 text-base">
-          <span className="font-semibold">Price:</span> {price} ETH
-        </p>
-      </div>
-      <div className="px-6 pt-4 pb-2 flex justify-between items-center">
-        <button
-          onClick={onViewDetails}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-        >
-          View Details
-        </button>
-        <button
-          onClick={onEdit}
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Edit
-        </button>
-        <button
-          onClick={onDelete}
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Delete
-        </button>
-      </div>
-    </div>
-  );
-};

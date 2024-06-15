@@ -34,7 +34,7 @@ export default class UserRepository {
     try {
       return await User.findOneAndUpdate(
         { _id: userId },
-        { password: newPassword},
+        { password: newPassword },
         { new: true }
       );
     } catch (error) {
