@@ -83,13 +83,12 @@ export default class UserController {
   getUsersByWalletAddresses = catchAsyncError(
     async (req: CustomRequest, res: Response, next: NextFunction) => {
       let walletAddresses = req.query.walletAddresses as string[];
-      console.log(typeof walletAddresses);
       if (typeof walletAddresses === "string") {
         walletAddresses = [walletAddresses];
-      }
-      let users = await this.userService.getUsersByWalletAddresses(
-        walletAddresses
-      );
+        }
+        let users = await this.userService.getUsersByWalletAddresses(
+          walletAddresses
+          );
       res.status(200).json(users);
     }
   );

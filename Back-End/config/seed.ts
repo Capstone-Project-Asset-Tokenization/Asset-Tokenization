@@ -11,7 +11,7 @@ const seed = async () => {
         lastName: EnvConfig.ADMIN_LASTNAME,
         email: EnvConfig.ADMIN_EMAIL,
         password: EnvConfig.ADMIN_PASSWORD,
-        walletAddress: EnvConfig.ADMIN_WALLET,
+        walletAddress: EnvConfig.ADMIN_WALLET.toLowerCase(),
         nationalID: EnvConfig.ADMIN_NATIONAL_ID,
         emailToken: EnvConfig.EMAIL_TOKEN,
         roles: ["ADMIN"],

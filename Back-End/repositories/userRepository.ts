@@ -34,7 +34,7 @@ export default class UserRepository {
     try {
       return await User.findOneAndUpdate(
         { _id: userId },
-        { password: newPassword},
+        { password: newPassword },
         { new: true }
       );
     } catch (error) {
@@ -46,7 +46,9 @@ export default class UserRepository {
   public async getUsersByWalletAddresses(
     walletAddresses: string[]
   ): Promise<any[]> {
-    console.log(walletAddresses);
+
+
+    walletAddresses = walletAddresses.map((address) => address.toLowerCase());
     const users = await User.find({
       walletAddress: { $in: walletAddresses },
     }).exec();

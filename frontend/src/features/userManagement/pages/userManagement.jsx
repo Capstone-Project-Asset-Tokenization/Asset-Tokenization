@@ -392,16 +392,16 @@ function UserManagement() {
                         <div className="text-base font-semibold">
                           {user.userMetaData?.firstName +
                             " " +
-                            user.userMetaData.lastName}
+                            user.userMetaData?.lastName}
                         </div>
                         <div className="font-normal text-gray-500">
-                          {user.email}
+                          {user?.email}
                         </div>
                       </div>
                     </th>
-                    <td className="px-6 py-4">{user.userMetaData.email}</td>
+                    <td className="px-6 py-4">{user.userMetaData?.email}</td>
                     <td className="px-6 py-4">
-                      {user.userMetaData.nationalID}
+                      {user.userMetaData?.nationalID}
                     </td>
                     <td className="px-6 py-4">
                       {user.isBanned ? "Yes" : "No"}

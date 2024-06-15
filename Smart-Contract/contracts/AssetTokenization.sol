@@ -49,7 +49,7 @@ contract AssetTokenizationPlatform  {
     UserManagement public userManagement;
 
 
-    event AssetCreated(uint256 indexed assetId, string name, string symbol, uint256 decimals, uint256 totalSupply, uint256 tokenPrice, address indexed creator);
+    event AssetCreated(uint256 indexed assetId, string name, string symbol, uint256 totalSupply, uint256 tokenPrice, address indexed creator);
     event Transfer(uint256 indexed assetId, address indexed from, address indexed to, uint256 value);
     event TransferTo(uint256 indexed assetId, address indexed to, uint256 value);
     event Approval(uint256 indexed assetId, address indexed owner, address indexed spender, uint256 value);
@@ -57,7 +57,7 @@ contract AssetTokenizationPlatform  {
     event TokensLocked(uint256 indexed assetId, address indexed tokenHolder, bool locked);
     event TokensUnlocked(uint256 indexed assetId, address indexed tokenHolder, bool unlocked);
     event AssetVerificationDeclined(uint256 indexed assetId, address indexed verifier);
-    event AssetUpdated(uint256 indexed assetID,string name,string symbol,uint8 decimals,uint256 totalSupply,uint256 tokenPrice,AssetCategory category,string description,string[] images,string[] supportingDocuments,address updater);
+    event AssetUpdated(uint256 indexed assetID,string name,string symbol,uint256 decimals,uint256 totalSupply,uint256 tokenPrice,AssetCategory category,string description,string[] images,string[] supportingDocuments,address updater);
 
     modifier onlyAssetCreator(uint256 assetID) {
         require(msg.sender == assets[assetID].creator, "Only asset creator can update the asset");
@@ -123,7 +123,7 @@ contract AssetTokenizationPlatform  {
         allowances[assetCount][msg.sender][msg.sender]=initialSupply;
         availableTokens[assetCount] = initialSupply;
         locked[assetCount][msg.sender]=false;
-        emit AssetCreated(assetCount, name, symbol, decimals, initialSupply, tokenPrice, msg.sender);
+        emit AssetCreated(assetCount, name, symbol, initialSupply, tokenPrice, msg.sender);
         assetCount++;
     }
 
@@ -143,7 +143,7 @@ contract AssetTokenizationPlatform  {
         // update verification status to pending after updating asset
         asset.verificationStatus = VerificationStatus.Pending;
 
-        emit AssetUpdated(assetID, data.name, data.symbol, data.decimals, data.totalSupply, data.tokenPrice, data.category, data.description, data.images, data.supportingDocuments, msg.sender);
+        emit AssetUpdated(assetID, data.name, asset.symbol, asset.decimals, data.totalSupply, data.tokenPrice, data.category, data.description, data.images, data.supportingDocuments, msg.sender);
     }
 
 
@@ -170,23 +170,24 @@ contract AssetTokenizationPlatform  {
                 }
                 _transfer(assetId, usersAddressList[i], recipient, transferAmount);
                 remainingAmount -= transferAmount;
+                Asset memory asset = assets[assetId];
                 if (remainingAmount == 0) {
-                if (assets[assetId].category == AssetCategory.Artwork) {
-                    assets[assetId].creator = recipient;
+                if (asset.category == AssetCategory.Artwork) {
+                    asset.creator = recipient;
                 } else {
                     uint8 decimals = 0;
                     assets[assetCount] = Asset({
                         ID: assetCount,
-                        name: assets[assetId].name,
-                        symbol: assets[assetId].symbol,
+                        name: asset.name,
+                        symbol: asset.symbol,
                         decimals: decimals,
                         totalSupply: amount,
-                        tokenPrice: assets[assetId].tokenPrice,
+                        tokenPrice: asset.tokenPrice,
                         verificationStatus: VerificationStatus.Verified,
-                        category: assets[assetId].category,
-                        description: assets[assetId].description,
-                        images: assets[assetId].images,
-                        supportingDocuments: assets[assetId].supportingDocuments,
+                        category: asset.category,
+                        description: asset.description,
+                        images: asset.images,
+                        supportingDocuments: asset.supportingDocuments,
                         creator: recipient
                     });
                     assetCount++;

@@ -44,12 +44,14 @@ const ProfilePage = () => {
     const fetchUserAssets = async () => {
       const [contract, contractWithSigner] = await getAssetContractInstance();
       const address = window.ethereum.selectedAddress;
+      console.log("about to fetch new user assets")
       const userAssets = await contractWithSigner.getUserAssetsByFilter(
         address,
         activeTab
       );
       setTabChange(false);
       setUserAssets(userAssets);
+      console.log('user assets',userAssets)
     };
     fetchUserAssets().then(() => console.log("done"));
   }, [activeTab]);

@@ -83,8 +83,9 @@ const AssetDetail = ({ asset, onClose }) => {
         "ether"
       );
       // Ensure the transfer method is correctly called
+      console.log('asset',asset,'asset.ID', asset.id, 'address', address, 'tokenCount', tokenCount, 'paymentAmount', paymentAmount.toString());
       const tx = await contractWithSigner.transfer(
-        asset.ID,
+        1,
         address,
         Number(tokenCount),
         {
@@ -270,8 +271,17 @@ const AssetDetail = ({ asset, onClose }) => {
                 Number(asset.totalSupply) <= 10 ? "text-red-500" : ""
               }`}
             >
-              Available Tokens for this asset are :{" "}
+              Total tokens for this asset are :{" "}
               <span className="font-bold">{Number(asset.totalSupply)}</span>
+            </p>
+            <div className="h-8"></div>
+            <p
+              className={`text-xl opacity-50 font-mono ${
+                Number(asset.totalSupply) <= 10 ? "text-red-500" : ""
+              }`}
+            >
+              Available Tokens for purchase are :{" "}
+              <span className="font-bold">{Number(asset.availableToken)}</span>
             </p>
           </div>
           <div>

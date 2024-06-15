@@ -115,19 +115,19 @@ function AssetVerification() {
     fetchAssets(assetStatus);
   }, []);
 
-  if (fullAssetsData.length === 0) {
-    return (
-      <div className="flex justify-center items-center h-screen bg-gray-950">
-        <div className="bg-gray-800 border border-gray-600 p-8 rounded-lg shadow-lg max-w-md text-center text-white">
-          <p className="text-3xl font-bold mb-4 text-red-500">Oops!</p>
-          <p className="text-lg mb-8 text-red-500">
-            It seems there are no assets to verify at the moment.
-          </p>
-          <p className="text-sm text-gray-400">Please check back later!.</p>
-        </div>
-      </div>
-    );
-  }
+  // if (fullAssetsData.length === 0) {
+  //   return (
+  //     <div className="flex justify-center items-center h-screen bg-gray-950">
+  //       <div className="bg-gray-800 border border-gray-600 p-8 rounded-lg shadow-lg max-w-md text-center text-white">
+  //         <p className="text-3xl font-bold mb-4 text-red-500">Oops!</p>
+  //         <p className="text-lg mb-8 text-red-500">
+  //           It seems there are no assets to verify at the moment.
+  //         </p>
+  //         <p className="text-sm text-gray-400">Please check back later!.</p>
+  //       </div>
+  //     </div>
+  //   );
+  // }
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold mb-4">Created Assets</h1>
@@ -138,9 +138,8 @@ function AssetVerification() {
           <li onClick={() => handleAssetStatusChange(1)} className="me-2">
             <a
               href="#"
-              className={`inline-block p-4 border-b-2  rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${
-                assetStatus == 1 ? "border-grey-600" : "border-transparent"
-              }`}
+              className={`inline-block p-4 border-b-2  rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${assetStatus == 1 ? "border-grey-600" : "border-transparent"
+                }`}
             >
               Verified
             </a>
@@ -148,9 +147,8 @@ function AssetVerification() {
           <li onClick={() => handleAssetStatusChange(0)} className="me-2">
             <a
               href="#"
-              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${
-                assetStatus == 0 ? "border-grey-600" : "border-transparent"
-              }`}
+              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${assetStatus == 0 ? "border-grey-600" : "border-transparent"
+                }`}
             >
               Unverified
             </a>
@@ -158,9 +156,8 @@ function AssetVerification() {
           <li onClick={() => handleAssetStatusChange(2)} className="me-2">
             <a
               href="#"
-              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${
-                assetStatus == 2 ? "border-grey-600" : "border-transparent"
-              }`}
+              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${assetStatus == 2 ? "border-grey-600" : "border-transparent"
+                }`}
             >
               Declined
             </a>
@@ -234,7 +231,7 @@ function AssetVerification() {
               </tr>
             </thead>
             <tbody>
-              {fullAssetsData.map((asset, index) => {
+              {fullAssetsData.length !== 0 && fullAssetsData.map((asset, index) => {
                 return (
                   <tr
                     key={index}
@@ -294,7 +291,8 @@ function AssetVerification() {
                               Reject
                             </span>
                           </button>
-                        </>
+                        </
+                        >
                       ) : Number(asset.verificationStatus) === 1 ? (
                         <button
                           onClick={() => rejectHandler(asset.ID)}
@@ -318,9 +316,23 @@ function AssetVerification() {
                   </tr>
                 );
               })}
+            
             </tbody>
           </table>
         )}
+        {
+          fullAssetsData.length === 0 && (
+            <div className="flex justify-center items-center py-8 bg-gray-950">
+              <div className="bg-gray-800 border border-gray-600 p-8 rounded-lg shadow-lg max-w-md text-center text-white">
+                <p className="text-3xl font-bold mb-4 text-red-500">Oops!</p>
+                <p className="text-lg mb-8 text-red-500">
+                  It seems there are no assets to verify at the moment.
+                </p>
+                <p className="text-sm text-gray-400">Please check back later!.</p>
+              </div>
+            </div>
+          )
+        }
         <nav
           className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
           aria-label="Table navigation"
