@@ -94,6 +94,26 @@ export const authAPI = createApi({
       },
     }),
 
+    updateProfile: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/user/update-profile`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+    }),
+
+    changePassword: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/user/change-password`,
+          method: "PATCH",
+          body: data,
+        };
+      },
+    }),
+
     unbanUser: builder.mutation({
       query: (data) => {
         return {
@@ -116,4 +136,6 @@ export const {
   useUnbanUserMutation,
   useRequestResetMutation,
   useResetPasswordMutation,
+  useUpdateProfileMutation,
+  useChangePasswordMutation
 } = authAPI;

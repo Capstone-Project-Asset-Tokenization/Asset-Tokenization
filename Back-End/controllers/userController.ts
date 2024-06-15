@@ -64,6 +64,28 @@ export default class UserController {
     }
   )
 
+  updateProfile = catchAsyncError(
+    async (req: CustomRequest, res: Response, next: NextFunction) => {
+      let { userId, data } = req.body;
+      console.log(userId,data,"the data")
+      let user = await this.userService.updateProfile(userId, data);
+      res.status(200).json(user);
+    }
+  );
+
+  changePassword = catchAsyncError(
+    async (req: CustomRequest, res: Response, next: NextFunction) => {
+      let { userId, newPassword, oldPassword } = req.body;
+      console.log(userId,newPassword,oldPassword,"in controller")
+      let user = await this.userService.changePassword(
+        userId,
+        newPassword,
+        oldPassword
+      );
+      res.status(200).json(user);
+    }
+  );
+
   getUser = catchAsyncError(
     async (req: CustomRequest, res: Response, next: NextFunction) => {
       let user = await this.userService.getUserByEmail(req.email!);

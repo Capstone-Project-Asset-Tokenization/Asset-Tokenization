@@ -78,6 +78,26 @@ export default class UserServie {
     return await this.userRepository.updatePassword(user?._doc._id, newPassword);
   }
 
+  async updateProfile(userId: string, data: any) {
+    return await this.userRepository.updateUserById(userId, data);
+  }
+
+
+  async changePassword(userId: string, newPassword: string, oldPassword: string) {
+    let user = await this.userRepository.getUserById(userId);
+
+    if(!user){
+      throw new NotFoundError("User not found");
+    }
+
+    if (!(await user.comparePassword(oldPassword))) {
+      throw new CustomError(401, "Wrong password");
+    }
+
+    return await this.userRepository.updatePassword(userId, newPassword);
+  }
+
+
   async getUserByEmail(email: string) {
     let user = await this.userRepository.getUserByEmail(email);
     if (!user) {
