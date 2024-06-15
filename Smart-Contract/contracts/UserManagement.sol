@@ -46,6 +46,7 @@ contract UserManagement {
         require(!users[msg.sender].isRegistered, "User already registered");
         users[msg.sender].isRegistered = true;
         users[msg.sender].isBanned = false;
+        users[msg.sender].userAddress = msg.sender;
         usersAddressList.push(msg.sender);
         emit UserRegistered(msg.sender, false, address(0));
     }

@@ -9,6 +9,22 @@ contract AssetTokenizationPlatform  {
     enum VerificationStatus { Pending, Verified, Declined }
     enum AssetCategory { RealEstate, Artwork, IntellectualProperty, Other }
 
+    struct AssetDetailResponse {
+        uint256 ID;
+        string name;
+        string symbol;
+        uint256 decimals;
+        uint256 totalSupply;
+        uint256 tokenPrice;
+        VerificationStatus verificationStatus;
+        AssetCategory category;
+        string description;
+        string[] images;
+        string[] supportingDocuments;
+        address creator;
+        uint256 availableToken;
+    }
+
     struct Asset {
         uint256 ID;
         string name;
@@ -286,7 +302,7 @@ contract AssetTokenizationPlatform  {
     }
 
     // function to get list of assets based on filter such as are verified,unverified,all
-    function getAssetsByFilter(VerificationStatus filter) external view returns (Asset[] memory) {
+    function getAssetsByFilter(VerificationStatus filter) external view returns (AssetDetailResponse [] memory) {
         // get assets count based on filter
         uint256 filteredAssetCount = 0;
         for (uint256 i = 0; i < assetCount; i++) {
@@ -295,18 +311,33 @@ contract AssetTokenizationPlatform  {
             }
         }
         // create array of assets based on filter
-        Asset[] memory filteredAssets = new Asset[](filteredAssetCount);
+        AssetDetailResponse[] memory filteredAssets = new AssetDetailResponse[](filteredAssetCount);
         uint256 count = 0;
         for (uint256 i = 0; i < assetCount; i++) {
             if (assets[i].verificationStatus == filter) {
-                filteredAssets[count] = assets[i];
+                // filteredAssets[count] = assets[i];
+                filteredAssets[count] = AssetDetailResponse({
+                    ID:assets[i].ID,
+                    name:assets[i].name,
+                    symbol:assets[i].symbol,
+                    decimals:assets[i].decimals,
+                    totalSupply:assets[i].totalSupply,
+                    tokenPrice:assets[i].tokenPrice,
+                    verificationStatus:assets[i].verificationStatus,
+                    category:assets[i].category,
+                    description:assets[i].description,
+                    images:assets[i].images,
+                    supportingDocuments:assets[i].supportingDocuments,
+                    creator:assets[i].creator,
+                    availableToken:availableTokens[i]
+                });
                 count++;
             }
         }
         return filteredAssets;
     }
     // function to get list of user assets based on filter such as are verified,unverified,all
-    function getUserAssetsByFilter(address user, VerificationStatus filter) external view returns (Asset[] memory) {
+    function getUserAssetsByFilter(address user, VerificationStatus filter) external view returns (AssetDetailResponse[] memory) {
         // get user assets count based on filter
         uint256 filteredAssetCount = 0;
         for (uint256 i = 0; i < assetCount; i++) {
@@ -315,11 +346,26 @@ contract AssetTokenizationPlatform  {
             }
         }
         // create array of user assets based on filter
-        Asset[] memory filteredAssets = new Asset[](filteredAssetCount);
+        AssetDetailResponse[] memory filteredAssets = new AssetDetailResponse[](filteredAssetCount);
         uint256 count = 0;
         for (uint256 i = 0; i < assetCount; i++) {
             if (assets[i].creator == user && assets[i].verificationStatus == filter) {
-                filteredAssets[count] = assets[i];
+                   // filteredAssets[count] = assets[i];
+                    filteredAssets[count] = AssetDetailResponse({
+                    ID:assets[i].ID,
+                    name:assets[i].name,
+                    symbol:assets[i].symbol,
+                    decimals:assets[i].decimals,
+                    totalSupply:assets[i].totalSupply,
+                    tokenPrice:assets[i].tokenPrice,
+                    verificationStatus:assets[i].verificationStatus,
+                    category:assets[i].category,
+                    description:assets[i].description,
+                    images:assets[i].images,
+                    supportingDocuments:assets[i].supportingDocuments,
+                    creator:assets[i].creator,
+                    availableToken:availableTokens[i]
+                });
                 count++;
             }
         }
