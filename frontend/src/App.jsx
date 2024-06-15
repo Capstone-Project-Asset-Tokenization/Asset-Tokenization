@@ -19,6 +19,7 @@ import ProfilePage from "./features/profile/pages";
 import VerifyUserEmail from "./pages/verifyEmail";
 import RequestReset from "./features/authentication/Pages/RequestPassword";
 import ResetPassword from "./features/authentication/Pages/ResetPassword";
+import AssetTransactionsTable from "./features/assetTransaction/assetTransaction";
 
 function App() {
   const auth = useSelector((state) => state.auth);
@@ -78,6 +79,14 @@ function App() {
         <Route
           path="/signin"
           element={auth.isAuthenticated ? <Navigate to="/" /> : <Login />}
+        />
+        <Route
+          path="/my-transactions"
+          element={
+            <PrivateRoute>
+              <AssetTransactionsTable />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/profile"

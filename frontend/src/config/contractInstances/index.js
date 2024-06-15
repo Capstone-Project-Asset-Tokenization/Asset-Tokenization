@@ -1,6 +1,6 @@
 import { ethers } from "ethers";
-import { AssetContractAddress, UserContractAddress } from "../contractAddress";
-import { AssetContractABI, UserContractABI } from "../ABIs";
+import { AssetContractAddress, UserContractAddress, TransactionContractAddress } from "../contractAddress";
+import { AssetContractABI, UserContractABI, TransactionContractABI } from "../ABIs";
 
 console.log("userABi", UserContractABI);
 console.log("userContract", UserContractAddress);
@@ -35,4 +35,23 @@ export const getAssetContractInstance = async () => {
     await provider.getSigner()
   );
   return [contract, contractWithSigner];
+};
+
+export const getTransactionContractInstance = async () => {
+  let provider = new ethers.BrowserProvider(window.ethereum);
+  let contract = await new ethers.Contract(
+    TransactionContractAddress,
+    TransactionContractABI,
+    provider.getSigner()
+  );
+  // let contractWithSigner = await contract.connect(provider.getSigner());
+
+  const signer = await provider.getSigner()
+  console.log('Signer', signer)
+  let contractWithSigner = await new ethers.Contract(
+    TransactionContractAddress,
+    TransactionContractABI,
+    signer
+  );
+  return [signer, contract, contractWithSigner];
 };
