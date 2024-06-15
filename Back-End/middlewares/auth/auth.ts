@@ -9,7 +9,7 @@ import { Request, Response, NextFunction } from 'express'
 
 export const authenticateUser = catchAsyncError(async (req: CustomRequest, res: Response, next: NextFunction) => {
     let token = req.headers.authorization?.split(' ')[1]
-
+    
     if (token) {
         let verified: UserToken = verifyToken(token)
         let userRepository = new UserRepository()

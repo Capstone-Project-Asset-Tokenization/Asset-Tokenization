@@ -128,6 +128,7 @@ const Marketplace = () => {
         supportingDocuments: asset[10], // supportingDocuments
         creator: asset[11], // creator
         ownerInfo: users ? users[index] : null,
+        availableToken:asset[12]
       }));
       setCombinedData(combined);
       setDisplayedAssets(combined);
