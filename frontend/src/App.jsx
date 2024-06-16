@@ -20,6 +20,7 @@ import VerifyUserEmail from "./pages/verifyEmail";
 import RequestReset from "./features/authentication/Pages/RequestPassword";
 import ResetPassword from "./features/authentication/Pages/ResetPassword";
 import AssetTransactionsTable from "./features/assetTransaction/assetTransaction";
+import AdminAssetTransactionsTable from "./features/assetTransaction/adminAssetTransaction";
 
 function App() {
   const auth = useSelector((state) => state.auth);
@@ -85,6 +86,14 @@ function App() {
           element={
             <PrivateRoute>
               <AssetTransactionsTable />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/all-transactions"
+          element={
+            <PrivateRoute>
+              <AdminAssetTransactionsTable />
             </PrivateRoute>
           }
         />
