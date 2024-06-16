@@ -37,7 +37,7 @@ const Registration = () => {
   ] = React.useState("");
 
   let [bcRegisterationState, setBCRegisterationState] = React.useState({
-    loading: false
+    loading: false,
   });
   const [
     register,
@@ -51,7 +51,8 @@ const Registration = () => {
   console.log("registrationSucess", backendRegistrationSucess);
   console.log("registrationBKError", backendRegistrationError);
   console.log("registratonBKErrorResponse", registratonBKErrorResponse);
-  let registrationError = backendRegistrationError || smartContractRegistrationError;
+  let registrationError =
+    backendRegistrationError || smartContractRegistrationError;
   let registrationErrorResponse =
     registratonBKErrorResponse || smartContractRegistratonErrorResponse;
   const handleProfileSubmit = async (values, { setSubmitting }) => {
@@ -83,7 +84,7 @@ const Registration = () => {
       } catch (error) {
         setBCRegisterationState({
           loading: false,
-        })
+        });
         console.log("user registration error", error);
         // registrationError = true
         setSmartContractRegistrationError(true);
@@ -147,13 +148,13 @@ const Registration = () => {
                   values
                     ? values
                     : {
-                      firstName: "",
-                      lastName: "",
-                      email: "",
-                      password: "",
-                      confirmPassword: "",
-                      nationalID: "",
-                    }
+                        firstName: "",
+                        lastName: "",
+                        email: "",
+                        password: "",
+                        confirmPassword: "",
+                        nationalID: "",
+                      }
                 }
                 validationSchema={RegistrationSchema}
                 onSubmit={handleProfileSubmit}
@@ -164,7 +165,7 @@ const Registration = () => {
                       <Field
                         type="text"
                         name="firstName"
-                        placeholder="Frist Name"
+                        placeholder="First Name"
                         className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
                       />
                       <ErrorMessage
@@ -264,7 +265,9 @@ const Registration = () => {
             handleback={handleBack}
             handleSubmit={handleSubmit}
             setWallet={setWalletAddress}
-            registrationLoading={backendRegistrationLoading || bcRegisterationState.loading}
+            registrationLoading={
+              backendRegistrationLoading || bcRegisterationState.loading
+            }
             registrationError={registrationError}
             registratonErrorResponse={smartContractRegistratonErrorResponse}
             registratonBKErrorResponse={registratonBKErrorResponse}
