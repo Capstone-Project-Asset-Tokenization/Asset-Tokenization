@@ -83,13 +83,15 @@ const AssetDetail = ({ asset, onClose }) => {
         "ether"
       );
       // Ensure the transfer method is correctly called
-      console.log('asset',asset,'asset.ID', asset.id, 'address', address, 'tokenCount', tokenCount, 'paymentAmount', paymentAmount.toString());
+      alert(paymentAmount,'paymentAmount')
+      console.log('asset',asset,'asset.ID', Number(asset.id), 'address', address, 'tokenCount', tokenCount, 'paymentAmount', paymentAmount.toString(),'token price',asset.tokenPrice);
       const tx = await contractWithSigner.transfer(
-        1,
+        Number(asset.id),
         address,
         Number(tokenCount),
+        // 3,
         {
-          value: paymentAmount.toString(),
+          value:Number(tokenCount) * Number(asset.tokenPrice),
         }
       );
       if (!tx) throw new Error("Transaction failed");

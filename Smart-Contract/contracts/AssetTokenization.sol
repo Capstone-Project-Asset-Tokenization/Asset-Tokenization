@@ -438,6 +438,8 @@ contract AssetTokenizationPlatform {
         if (recipient != assets[assetId].creator) {
             _lockTokens(assetId, recipient);
         }
+
+        
     }
 
     function _transferFrom(

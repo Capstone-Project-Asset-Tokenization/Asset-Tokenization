@@ -1,6 +1,9 @@
 import { ethers } from "ethers";
 import { AssetContractAddress, UserContractAddress, TransactionContractAddress } from "../contractAddress";
-import { AssetContractABI, UserContractABI, TransactionContractABI } from "../ABIs";
+import { UserContractABI } from "../ABIs/userABI";
+import { AssetContractABI } from "../ABIs/assetABI";
+import { TransactionContractABI } from "../ABIs/transactionABI";
+// import { AssetContractABI, UserContractABI, TransactionContractABI } from "../ABIs";
 
 console.log("userABi", UserContractABI);
 console.log("userContract", UserContractAddress);
