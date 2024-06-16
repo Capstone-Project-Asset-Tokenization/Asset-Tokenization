@@ -1,5 +1,5 @@
 import React from "react";
-import "animate.css";
+// import "animate.css";
 import { IoRocketOutline } from "react-icons/io5";
 import LandingCard from "../components/landing/LandingCard";
 import { Link } from "react-router-dom";

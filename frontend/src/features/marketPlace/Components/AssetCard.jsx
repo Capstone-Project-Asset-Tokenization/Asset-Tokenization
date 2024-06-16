@@ -21,7 +21,7 @@ const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
   fetchedAssets.ownerInfo = users ? users[0] : null;
   return (
     <div
-      className="flex flex-col shadow-lg rounded-[20px] overflow-hidden h-[450px] cursor-pointer"
+      className="bg-[#2B2B2B] shadow-lg rounded-lg overflow-hidden h-[420px] cursor-pointer"
       onClick={() => openModal(asset)}
     >
       <div className="h-48 w-full overflow-hidden">
@@ -31,32 +31,35 @@ const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
           alt={asset.name}
         />
       </div>
-      <div className="p-6 bg-[#2B2B2B] text-white flex flex-col justify-between flex-grow">
-        <h1 className="text-2xl font-sans font-semibold">{asset.name}</h1>
-        <div className="flex items-center gap-3 mt-2 mb-5">
-          <img
-            className="w-10 h-10 rounded-full object-cover"
-            src={dummyUserAvatar}
-            alt="Jese image"
-          />
-          <p className="text-lg font-mono font-thin">
-            {fetchedAssets.ownerInfo
-              ? fetchedAssets.ownerInfo.firstName +
-                " " +
-                fetchedAssets.ownerInfo.lastName
-              : "User not found"}
-          </p>
+      <div className="p-4 text-neutral flex flex-col justify-between flex-grow">
+        <div className="flex items-center justify-between border-neutral-700 border-b">
+          <h1 className="text-xl font-sans font-semibold">{asset.name}</h1>
+          <div className="flex items-center gap-3 mt-2 mb-5">
+            <img
+              className="w-8 h-8 rounded-full object-cover"
+              src={dummyUserAvatar}
+              alt="Jese image"
+            />
+            <p className="text text-neutral-400 ">
+              {fetchedAssets.ownerInfo
+                ? fetchedAssets.ownerInfo.firstName +
+                  " " +
+                  fetchedAssets.ownerInfo.lastName
+                : "Petros Beyene"}
+            </p>
+          </div>
         </div>
+
         <div className="my-3 flex justify-between">
           <div>
-            <span className="opacity-50 font-mono font-thin">Total Supply</span>
-            <p className="font-light pt-1">
+            <span className=" font-medium ">Total Supply</span>
+            <p className=" pt-1">
               {asset.totalSupply.toLocaleString()} Units
             </p>
           </div>
           <div>
-            <span className="opacity-50 font-mono font-thin">Price</span>
-            <p className="font-light pt-1">
+            <span className="font-medium ">Price</span>
+            <p className=" pt-1">
               {asset.tokenPrice.toLocaleString()} ETH
             </p>
           </div>
@@ -66,7 +69,7 @@ const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
           <button
             onClick={() => openModal(asset)}
             state={{ id: asset.ID }}
-            className="opacity-50 font-mono font-thin pt-6 cursor-pointer"
+            className=" pt-6 cursor-pointer"
           >
             See Details
           </button>
@@ -74,7 +77,7 @@ const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
             <Link
               to={`/edit-asset/${asset.ID}`}
               state={{ id: asset.ID }}
-              className="opacity-50 font-mono font-thin pt-6 cursor-pointer"
+              className="  pt-6 cursor-pointer"
             >
               Edit
             </Link>
