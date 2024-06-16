@@ -19,6 +19,7 @@ import ProfilePage from "./features/profile/pages";
 import VerifyUserEmail from "./pages/verifyEmail";
 import RequestReset from "./features/authentication/Pages/RequestPassword";
 import ResetPassword from "./features/authentication/Pages/ResetPassword";
+import FAQ from "./pages/FAQ";
 
 function App() {
   const auth = useSelector((state) => state.auth);
@@ -104,6 +105,7 @@ function App() {
         <Route path="/request-reset" element={<RequestReset />} />
         <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/asset/:id" element={<AssetDetailPage />} />
+        <Route path="/FAQ" element={<FAQ />} />
         <Route path="*" element={<NotFoundPage />} />
       </Routes>
       <Footer />
