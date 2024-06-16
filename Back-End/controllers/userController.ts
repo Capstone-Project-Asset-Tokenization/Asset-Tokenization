@@ -11,6 +11,7 @@ import { RegistrationInput } from "../types/user";
 import { CustomRequest } from "../types/customRequest";
 import { sendMail } from "../services/emailService";
 import crypto from "crypto";
+import { sendSupportMail } from "../services/supEmailService";
 
 export default class UserController {
   constructor(private userService: UserServie) {}
@@ -143,4 +144,15 @@ export default class UserController {
     let user = await this.userService.unbanUser(req.params.walletAddress);
     res.status(200).json(user);
   });
+
+  support = catchAsyncError(async (req: CustomRequest, res: Response) => {
+    let { email, name, description } = req.body;
+    try{
+      sendSupportMail(name, email, description);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to send message" });
+    }
+    res.status(200).json({ message: "Message sent" });
+  });
 }
+

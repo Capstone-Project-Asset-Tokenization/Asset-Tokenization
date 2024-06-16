@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSupportMutation } from "../stores/auth/authAPI";
 
 const faqData = {
   General: [
@@ -157,11 +158,15 @@ const CustomerSupportPage = () => {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const handleSubmit = (e) => {
+  const [support, { isLoading, isSuccess, isError, error }] =
+    useSupportMutation();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    // Simulate form submission
-    setTimeout(() => {
+
+    try {
+      await support({ name, email, description: issue }).unwrap();
       console.log("Reported issue:", { name, email, issue });
       setSubmitting(false);
       setSubmitted(true);
@@ -169,7 +174,10 @@ const CustomerSupportPage = () => {
       setName("");
       setEmail("");
       setIssue("");
-    }, 2000);
+    } catch (error) {
+      console.error("Failed to send support request:", error);
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -225,6 +233,12 @@ const CustomerSupportPage = () => {
             Your question has been submitted successfully!
           </div>
         )}
+        {isError && (
+          <div className="text-red-500 text-sm font-bold">
+            There was an error submitting your support request. Please try again
+            later.
+          </div>
+        )}
       </form>
       <div className="mt-6 pt-6">
         <a className="text-gray-500 mt-8" href="https://t.me/I4uGOD">
@@ -241,12 +255,13 @@ const ReportIssuePage = () => {
   const [issue, setIssue] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-
-  const handleSubmit = (e) => {
+  const [support, { isLoading, isSuccess, isError, error }] =
+    useSupportMutation();
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setSubmitting(true);
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      await support({ name, email, description: issue }).unwrap();
       console.log("Reported issue:", { name, email, issue });
       setSubmitting(false);
       setSubmitted(true);
@@ -254,7 +269,10 @@ const ReportIssuePage = () => {
       setName("");
       setEmail("");
       setIssue("");
-    }, 2000);
+    } catch (error) {
+      console.error("Failed report error:", error);
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -308,6 +326,11 @@ const ReportIssuePage = () => {
         {submitted && (
           <div className="mt-4 text-green-500 font-bold">
             Your issue has been submitted successfully!
+          </div>
+        )}
+        {isError && (
+          <div className="text-red-500 text-sm font-bold">
+            There was an error reporting an issue. Please try again later.
           </div>
         )}
       </form>
