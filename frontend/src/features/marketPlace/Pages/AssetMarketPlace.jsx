@@ -128,7 +128,7 @@ const Marketplace = () => {
         supportingDocuments: asset[10], // supportingDocuments
         creator: asset[11], // creator
         ownerInfo: users ? users[index] : null,
-        availableToken:asset[12]
+        availableToken: asset[12],
       }));
       setCombinedData(combined);
       setDisplayedAssets(combined);
@@ -138,70 +138,55 @@ const Marketplace = () => {
     // }
   }, [assets, users, userFetchError]);
 
-  if (loading || fetchingUsers)
-    return (
-      <div>
-        <SpinLoader />
-      </div>
-    );
-
   if (error) {
     return <div>Error: {error}</div>;
   }
 
-  if (displayedAssets.length === 0) {
-    return (
-      <div className="flex flex-col items-center justify-center h-screen text-white">
-        <h1
-          className="text-4xl font-bold mb-6 text-red-500 font-sans
-        "
-        >
-          No assets found
-        </h1>
-        <p
-          className="text-xl text-red-300
-        "
-        >
-          There are no assets available at the moment. Please check back later.
-        </p>
-        <p className="text-xl text-red-300 mt-4">
-          <span
-            className="text-red-300 font-bold
-          "
-          >
-            Note:{" "}
-          </span>
-          If you are the owner of an asset, you can create a new one by clicking
-        </p>
-        <button
-          className="bg-[#FFA500] text-white px-4 py-2 rounded-md mt-4"
-          onClick={() => {
-            window.location.href = "/asset-registration";
-          }}
-        >
-          Get Started
-        </button>
-      </div>
-    );
-  }
+  // if (displayedAssets.length === 0) {
+  //   return (
+
+  //   );
+  // }
 
   return (
-    <div className="flex flex-col text-white">
-      <div className="bg-[#2B2B2B] p-6 mb-20">
-        <h1 className="text-4xl md:text-6xl font-bold mb-6 font-sans pl-5">
+    <div className="flex flex-col text-neutral-400">
+      <div className="bg-[#2B2B2B] p-6 mb-10">
+        <h1 className="text-3xl mt-6 text-neutral-200 md:text-4xl font-bold mb-16 pl-5">
           Browse Marketplace
         </h1>
-        <p className="mb-6 text-2xl font-sans pl-5">
-          Browse more through our Marketplace.
+        <p className="text-lg text-neutral-400 pl-5">
+          Browse more through our marketplace.
         </p>
         <SearchForm onSearch={handleSearch} />
       </div>
-      <div className="bg-[#3B3B3B] w-full p-6 flex flex-wrap items-center justify-center">
-        {displayedAssets.map((asset, index) => (
-          <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2" key={index}>
-            <AssetCard asset={asset} openModal={openModal} />
+      {(loading || fetchingUsers) && (
+        <div className="flex h-[30vh] bg-[#303030] justify-center items-center w-full ">
+          <SpinLoader />
+        </div>
+      )}
+      {!loading && !fetchingUsers && displayedAssets.length === 0 && (
+        <div className="bg-[#303030]">
+          <div className="flex flex-col py-6 items-center justify-center  text-white">
+            <h1
+              className="text-3xl font-bold mb-6 text-neutral-300 font-sans
+              "
+            >
+              No assets found
+            </h1>
+            <p className="text-xl text-neutral-400">
+              There are no assets available at the moment.
+            </p>
           </div>
-        ))}
+        </div>
+      )}
+      <div className="bg-[#303030] w-full p-6 px-20 space-x-6 flex items-center justify-center">
+        {!loading &&
+          !fetchingUsers &&
+          displayedAssets.map((asset, index) => (
+            <div className="basis-1/4" key={index}>
+              <AssetCard asset={asset} openModal={openModal} />
+            </div>
+          ))}
       </div>
       {isModalOpen && (
         <AssetDetail asset={selectedAsset} onClose={closeModal} />

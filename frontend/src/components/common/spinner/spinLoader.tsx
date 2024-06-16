@@ -2,11 +2,11 @@ import React from "react";
 
 export const SpinLoader = () => {
   return (
-    <div className="flex items-center justify-center w-full h-[70vh]  bg-opacity-50 z-50">
+    <div className="flex items-center justify-center w-full bg-opacity-50 z-50">
       <div role="status">
         <svg
           aria-hidden="true"
-          className="w-12 h-12 text-gray-200 animate-spin dark:text-gray-400 fill-blue-600"
+          className="w-6 h-6 text-gray-200 animate-spin dark:text-gray-400 fill-blue-600"
           viewBox="0 0 100 101"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
