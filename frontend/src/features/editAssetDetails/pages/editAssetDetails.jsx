@@ -414,8 +414,8 @@ const EditAssetDetails = () => {
   }
   if (error !== null && error.includes("Asset does not exist")) {
     return (
-      <div className="container mx-auto px-4 min-h-screen flex items-center justify-center bg-gradient-to-r from-red-400 to-indigo-700">
-        <div className="w-full max-w-md py-16 px-8 bg-white shadow-lg rounded-lg">
+      <div className="container mx-auto px-4 min-h-screen flex items-center justify-center ">
+        <div className="w-full max-w-md py-16 px-8 bg-grey-700  shadow-lg rounded-lg">
           <div className="flex justify-center items-center mb-4">
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -441,7 +441,7 @@ const EditAssetDetails = () => {
           </p>
           <div className="text-center">
             <button
-              className="px-6 py-3 bg-blue-500 text-white rounded hover:bg-blue-600 focus:outline-none"
+              className="px-6 py-3 bg-primary-main text-white rounded hover:bg-purple-700 focus:outline-none"
               onClick={() => window.history.back()}
             >
               Go Back

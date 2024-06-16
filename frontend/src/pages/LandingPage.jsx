@@ -1,4 +1,5 @@
 import React from "react";
+// import "animate.css";
 import { IoRocketOutline } from "react-icons/io5";
 import LandingCard from "../components/landing/LandingCard";
 import { Link } from "react-router-dom";
@@ -17,7 +18,7 @@ const LandingPage = () => {
           <p className="mb-2">
             Tokenize and manage all your assets easily and quickly.
           </p>
-          <p> lorem ipsum dolor sit amet, consectetur.</p>
+          <p> Use simpler and cleanear ways .</p>
           <Link
             to={authState.isAuthenticated ? "/asset-registration" : "/signup"}
           >
@@ -43,8 +44,8 @@ const LandingPage = () => {
         </div>
         <div className="basis-1/2 justify-center items-center">
           <img
-            className="mx-auto animated-element"
-            src="../src/assets/landing_clip.png"
+            className="mx-auto animate__animated animate__fadeInUp "
+            src="../src/assets/Home.png"
             alt="clip image"
           />
           <div className="bg-background-secondary px-10 py-4 my-3 rounded-b-2xl ">
@@ -61,14 +62,14 @@ const LandingPage = () => {
 
         <div className="sm:flex space-y-6 sm:space-y-0 justify-between sm:space-x-10 mt-10">
           <LandingCard
-            title={"Crete your assets"}
+            title={"Create your assets"}
             description={
               "Create your own asset by providing all the necessary information"
             }
           />
 
           <LandingCard
-            title={"Create Asset Tokens"}
+            title={"Tokenize your assets"}
             description={"Tokenize your assets and own it digitally"}
           />
           <LandingCard

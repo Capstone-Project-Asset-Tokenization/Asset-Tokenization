@@ -8,22 +8,18 @@ import { useGetUsersInfoFromWalletQuery } from "../../../stores/auth/authAPI";
 import { Link } from "react-router-dom";
 import { dummyUserAvatar } from "../../../assets/avatar";
 import { enumMap } from "../../../utils/enumMap";
-import { useNavigate } from "react-router-dom";
 import { SpinLoader } from "../../../components/common/spinner/spinLoader";
-// import { getAssetContractInstance } from '../../../config/contractInstances/index'
 
 function AssetVerification() {
-  let [assets, setAssets] = useState([]);
-  let [fullAssetsData, setFullAssetsData] = useState([]);
+  const [assets, setAssets] = useState([]);
+  const [fullAssetsData, setFullAssetsData] = useState([]);
+  const [filteredAssetsData, setFilteredAssetsData] = useState([]);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [assetStatus, setAssetStatus] = useState(0);
+  const ownerAddresses = assets.map((asset) => asset.creator.toLowerCase());
 
-  let [error, setError] = useState("");
-  let [loading, setLoading] = useState(false);
-  let [assetStatus, setAssetStatus] = useState(0);
-  let ownerAddresses = assets.map((asset) => {
-    return asset.creator.toLowerCase();
-  });
-
-  let {
+  const {
     data: users,
     error: userFetchError,
     isLoading: fetchingUsers,
@@ -31,15 +27,15 @@ function AssetVerification() {
 
   console.log("userData", users);
 
-  let handleAssetStatusChange = (status) => {
+  const handleAssetStatusChange = (status) => {
     setAssetStatus(status);
     fetchAssets(status);
   };
 
-  let fetchAssets = async (verificationStatus = 1) => {
+  const fetchAssets = async (verificationStatus = 1) => {
     try {
       setLoading(true);
-      let [assetContract, assetContractWithSigner] =
+      const [assetContract, assetContractWithSigner] =
         await getAssetContractInstance();
       let response = await assetContractWithSigner.getAssetsByFilter(
         verificationStatus
@@ -50,7 +46,7 @@ function AssetVerification() {
         })
       );
       response = response.filter(
-        (item) => item.creator != "0x0000000000000000000000000000000000000000"
+        (item) => item.creator !== "0x0000000000000000000000000000000000000000"
       );
       setAssets(response);
       setLoading(false);
@@ -68,116 +64,64 @@ function AssetVerification() {
     }
   };
 
-  fullAssetsData = assets.map((asset, index) => {
-    return {
-      ...asset,
-      ownerInfo: users ? users[index] : "",
-    };
-  });
-
-  let approveHandler = async (assetId) => {
-    let [assetContract, assetContractWithSigner] =
-      await getAssetContractInstance();
-
-    try {
-      setLoading(true);
-      let response = await assetContractWithSigner.verifyAsset(assetId, 1);
-      console.log("asset verification response", response);
-      // navigate("/asset-verification");
-      fetchAssets(assetStatus);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log("asset verification error", error);
-      setError(error.message.split('"')[1]);
-    }
-  };
-
-  let rejectHandler = async (assetId) => {
-    let [assetContract, assetContractWithSigner] =
-      await getAssetContractInstance();
-
-    try {
-      setLoading(true);
-      let response = await assetContractWithSigner.verifyAsset(assetId, 2);
-      console.log("asset verification response", response);
-      // navigate("/asset-verification");
-      fetchAssets(assetStatus);
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      console.log("asset verification error", error);
-      setError(error.message.split('"')[1]);
-    }
-  };
-
   useEffect(() => {
     fetchAssets(assetStatus);
-  }, []);
+  }, [assetStatus]);
 
-  // if (fullAssetsData.length === 0) {
-  //   return (
-  //     <div className="flex justify-center items-center h-screen bg-gray-950">
-  //       <div className="bg-gray-800 border border-gray-600 p-8 rounded-lg shadow-lg max-w-md text-center text-white">
-  //         <p className="text-3xl font-bold mb-4 text-red-500">Oops!</p>
-  //         <p className="text-lg mb-8 text-red-500">
-  //           It seems there are no assets to verify at the moment.
-  //         </p>
-  //         <p className="text-sm text-gray-400">Please check back later!.</p>
-  //       </div>
-  //     </div>
-  //   );
-  // }
+  useEffect(() => {
+    setFullAssetsData(
+      assets.map((asset, index) => ({
+        ...asset,
+        ownerInfo: users ? users[index] : "",
+      }))
+    );
+  }, [assets, users]);
+
+  const handleSearch = (e) => {
+    const filteredData = fullAssetsData.filter((asset) => {
+      const name = asset.name.toLowerCase();
+      const ownerName = asset.ownerInfo
+        ? `${asset.ownerInfo.firstName} ${asset.ownerInfo.lastName}`.toLowerCase()
+        : "";
+      return (
+        name.includes(e.target.value.toLowerCase()) ||
+        ownerName.includes(e.target.value.toLowerCase())
+      );
+    });
+    setFilteredAssetsData(filteredData);
+  };
+
+  const tabs = [
+    { label: "All" },
+    { label: "Verified" },
+    { label: "Unverified" },
+    { label: "Declined" },
+  ];
+
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-3xl font-bold mb-4">Created Assets</h1>
-      {/* four tabs with name Today, This week, This month and All time */}
+      <h1 className="text-3xl font-bold my-10">Created Assets</h1>
 
-      <div className="text-sm font-medium text-center text-gray-500 border-b border-gray-200 dark:text-gray-400 dark:border-gray-700">
-        <ul className="flex flex-wrap -mb-px justify-around">
-          <li onClick={() => handleAssetStatusChange(1)} className="me-2">
-            <a
-              href="#"
-              className={`inline-block p-4 border-b-2  rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${assetStatus == 1 ? "border-grey-600" : "border-transparent"
-                }`}
-            >
-              Verified
-            </a>
-          </li>
-          <li onClick={() => handleAssetStatusChange(0)} className="me-2">
-            <a
-              href="#"
-              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${assetStatus == 0 ? "border-grey-600" : "border-transparent"
-                }`}
-            >
-              Unverified
-            </a>
-          </li>
-          <li onClick={() => handleAssetStatusChange(2)} className="me-2">
-            <a
-              href="#"
-              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${assetStatus == 2 ? "border-grey-600" : "border-transparent"
-                }`}
-            >
-              Declined
-            </a>
-          </li>
-          <li onClick={() => handleAssetStatusChange(1)} className="me-2">
-            <a
-              href="#"
-              className={`inline-block p-4 border-b-2 border-transparent rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300`}
-            >
-              All
-            </a>
-          </li>
-        </ul>
+      <div className="flex justify-around my-8">
+        {tabs.map((tab, index) => (
+          <button
+            key={index}
+            className={`py-2 w-full px-4 font-medium focus:outline-none ${
+              assetStatus === index
+                ? "text-purple-600 border-b-2 border-purple-600"
+                : "text-neutral-500 hover:text-neutral-300"
+            }`}
+            onClick={() => handleAssetStatusChange(index)}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
-      {/* search bar with place holder of 'search by name' and category text on the middle of the search bar  */}
-      <div className="relative mt-6 mb-4">
+      <div className="relative mt-20 mb-8">
         <span className="absolute inset-y-0 left-0 flex items-center pl-3">
           <svg
-            className="w-5 h-5 text-gray-400"
+            className="w-5 h-5 text-neutral-400"
             viewBox="0 0 24 24"
             fill="none"
           >
@@ -193,19 +137,20 @@ function AssetVerification() {
 
         <input
           type="text"
-          className="w-full py-2 pl-10 pr-4 text-sm text-gray-700 placeholder-gray-400 bg-gray-100 border-2 border-gray-100 rounded-lg focus:outline-none focus:border-gray-200 dark:bg-transparent dark:text-gray-300 dark:placeholder-gray-600 dark:border-gray-600 dark:focus:border-gray-500"
+          className="w-full py-3 px-10 bg-[#303030] outline-none rounded-sm"
           placeholder="Search by name"
+          onChange={(e) => handleSearch(e)}
         />
       </div>
 
-      <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
+      <div className="relative overflow-x-auto mt-10 shadow-md sm:rounded-lg">
         {loading || fetchingUsers ? (
-          <div className="flex justify-center items-center">
+          <div className="flex justify-center h-80 items-center">
             <SpinLoader></SpinLoader>
           </div>
         ) : (
-          <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
-            <thead className="text-xs text-gray-700 uppercase bg-background-secondary dark:bg-background-secondary dark:text-gray-400">
+          <table className="w-full text-sm text-left rtl:text-right text-neutral-500 dark:text-neutral-400">
+            <thead className="text-xs h-16 text-neutral-700 uppercase bg-background-secondary dark:bg-background-secondary dark:text-neutral-400">
               <tr>
                 <th scope="col" className="p-4">
                   #
@@ -231,147 +176,148 @@ function AssetVerification() {
               </tr>
             </thead>
             <tbody>
-              {fullAssetsData.length !== 0 && fullAssetsData.map((asset, index) => {
-                return (
-                  <tr
-                    key={index}
-                    className="bg-white border-b dark:bg-background-primary dark:border-gray-700 hover:bg-background-secondary dark:hover:bg-background-secondary"
+              {(filteredAssetsData.length > 0
+                ? filteredAssetsData
+                : fullAssetsData
+              ).map((asset, index) => (
+                <tr
+                  key={index}
+                  className="bg-white border-b dark:bg-background-primary dark:border-neutral-700 hover:bg-background-secondary dark:hover:bg-background-secondary"
+                >
+                  <td className="w-4 p-4">{index + 1}</td>
+                  <th
+                    scope="row"
+                    className="flex items-center px-6 py-4 text-neutral-900 whitespace-nowrap dark:text-white"
                   >
-                    <td className="w-4 p-4">{index + 1}</td>
-                    <th
-                      scope="row"
-                      className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-                    >
-                      <img
-                        className="w-10 h-10 rounded-full object-cover "
-                        src={dummyUserAvatar}
-                        alt="Jese image"
-                      />
-                      <div className="ps-3">
-                        <div className="text-base font-semibold">
-                          {asset.ownerInfo?.firstName}
-                        </div>
-                        <div className="font-normal text-gray-500">
-                          {asset.email}
-                        </div>
+                    <img
+                      className="w-10 h-10 rounded-full object-cover "
+                      src={dummyUserAvatar}
+                      alt="User image"
+                    />
+                    <div className="ps-3">
+                      <div className="text-base font-semibold">
+                        {asset.ownerInfo?.firstName}
                       </div>
-                    </th>
-                    <td className="px-6 py-4">{asset.name}</td>
-                    <td className="px-6 py-4">{asset.category}</td>
-                    <td className="px-6 py-4">
-                      {enumMap.verificationStatus[asset.verificationStatus]}
-                    </td>
-                    <td className="px-6 py-4">
-                      <div className="flex items-center">
-                        <Link
-                          state={asset}
-                          to="/asset-verification-detail"
-                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                        >
-                          See Detail
-                        </Link>
+                      <div className="font-normal text-neutral-500">
+                        {asset.ownerInfo?.email}
                       </div>
-                    </td>
-                    <td className="px-6 py-4">
+                    </div>
+                  </th>
+                  <td className="px-6 py-4">{asset.name}</td>
+                  <td className="px-6 py-4">{asset.category}</td>
+                  <td className="px-6 py-4">
+                    {enumMap.verificationStatus[asset.verificationStatus]}
+                  </td>
+                  <td className="px-6 py-4">
+                    <div className="flex items-center">
+                      <Link
+                        state={asset}
+                        to="/asset-verification-detail"
+                        className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                      >
+                        See Detail
+                      </Link>
+                    </div>
+                  </td>
+                  <td className="py-4">
+                    <div className="flex justify-around ">
                       {Number(asset.verificationStatus) === 0 ? (
                         <>
                           <button
                             onClick={() => approveHandler(asset.ID)}
-                            className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+                            // className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-neutral-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
                           >
-                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            <span
+                              className="relative px-[41px] py-2.5 transition-all ease-in duration-75 text-white
+                           bg-primary-dark font-bold"
+                            >
                               Approve
                             </span>
                           </button>
                           <button
                             onClick={() => rejectHandler(asset.ID)}
-                            className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
+                            // className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-neutral-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
                           >
-                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            <span className="px-8 py-2.5 transition-all ease-in duration-75 bg-neutral-800 border border-red-400">
                               Reject
                             </span>
                           </button>
-                        </
-                        >
+                        </>
                       ) : Number(asset.verificationStatus) === 1 ? (
                         <button
                           onClick={() => rejectHandler(asset.ID)}
-                          className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
+                          // className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-neutral-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
                         >
-                          <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                          <span className=" px-8 py-2.5 transition-all ease-in duration-75 bg-neutral-800 border border-red-400">
                             Reject
                           </span>
                         </button>
                       ) : (
                         <button
                           onClick={() => approveHandler(asset.ID)}
-                          className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+                          // className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-neutral-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
                         >
-                          <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                          <span className=" px-8 py-2.5 transition-all ease-in duration-75 bg-neutral-800 border border-pirple-400">
                             Approve
                           </span>
                         </button>
                       )}
-                    </td>
-                  </tr>
-                );
-              })}
-            
+                    </div>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         )}
-        {
-          fullAssetsData.length === 0 && (
-            <div className="flex justify-center items-center py-8 bg-gray-950">
-              <div className="bg-gray-800 border border-gray-600 p-8 rounded-lg shadow-lg max-w-md text-center text-white">
-                <p className="text-3xl font-bold mb-4 text-red-500">Oops!</p>
-                <p className="text-lg mb-8 text-red-500">
-                  It seems there are no assets to verify at the moment.
-                </p>
-                <p className="text-sm text-gray-400">Please check back later!.</p>
-              </div>
+
+        {!loading && !fetchingUsers && fullAssetsData.length === 0 && (
+          <div className="flex justify-center items-center h-80 py-8 bg-neutral-800">
+            <div className="text-center">
+              <p className="text-lg mb-8 text-neutral-400">
+                It seems there are no assets to verify at the moment.
+              </p>
             </div>
-          )
-        }
+          </div>
+        )}
+
         <nav
           className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
           aria-label="Table navigation"
         >
-          <span className="text-sm font-normal text-gray-500 dark:text-gray-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
+          <span className="text-sm font-normal text-neutral-500 dark:text-neutral-400 mb-4 md:mb-0 block w-full md:inline md:w-auto">
             Showing{" "}
-            <span className="font-semibold text-gray-900 dark:text-white">
-              1-10
+            <span className="font-semibold text-neutral-900 dark:text-white">
+              {filteredAssetsData.length > 0 ? 1 : 0}-
+              {filteredAssetsData.length > 10 ? 10 : filteredAssetsData.length}
             </span>{" "}
             of{" "}
-            <span className="font-semibold text-gray-900 dark:text-white">
-              {fullAssetsData.length}
+            <span className="font-semibold text-neutral-900 dark:text-white">
+              {filteredAssetsData.length}
             </span>
           </span>
           <ul className="inline-flex -space-x-px rtl:space-x-reverse text-sm h-8">
             <li>
               <a
                 href="#"
-                className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-gray-300 rounded-s-lg hover:bg-background-secondary hover:text-gray-700 dark:bg-background-primary dark:border-gray-700 dark:text-gray-400 dark:hover:bg-background-secondary dark:hover:text-white"
+                className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-neutral-500 bg-white border border-neutral-300 rounded-s-lg hover:bg-background-secondary hover:text-neutral-700 dark:bg-background-primary dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-background-secondary dark:hover:text-white"
               >
                 Previous
               </a>
             </li>
-            {[1].map((item, index) => {
-              return (
-                <li key={index}>
-                  <a
-                    href="#"
-                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-background-secondary hover:text-gray-700 dark:bg-background-primary dark:border-gray-700 dark:text-gray-400 dark:hover:bg-background-secondary dark:hover:text-white"
-                  >
-                    {item}
-                  </a>
-                </li>
-              );
-            })}
+            {[1].map((item, index) => (
+              <li key={index}>
+                <a
+                  href="#"
+                  className="flex items-center justify-center px-3 h-8 leading-tight text-neutral-500 bg-white border border-neutral-300 hover:bg-background-secondary hover:text-neutral-700 dark:bg-background-primary dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-background-secondary dark:hover:text-white"
+                >
+                  {item}
+                </a>
+              </li>
+            ))}
             <li>
               <a
                 href="#"
-                className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-background-secondary hover:text-gray-700 dark:bg-background-primary dark:border-gray-700 dark:text-gray-400 dark:hover:bg-background-secondary dark:hover:text-white"
+                className="flex items-center justify-center px-3 h-8 leading-tight text-neutral-500 bg-white border border-neutral-300 rounded-e-lg hover:bg-background-secondary hover:text-neutral-700 dark:bg-background-primary dark:border-neutral-700 dark:text-neutral-400 dark:hover:bg-background-secondary dark:hover:text-white"
               >
                 Next
               </a>

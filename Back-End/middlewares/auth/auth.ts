@@ -22,7 +22,7 @@ export const authenticateUser = catchAsyncError(async (req: CustomRequest, res: 
         req.userRoles = existingUser.roles
         req.email = existingUser.email
         req.walletAddress = existingUser.walletAddress
-        req.userID = existingUser._id
+        req.userID = existingUser._id as string
         next()
     } else {
         throw new UnauthorizedError()

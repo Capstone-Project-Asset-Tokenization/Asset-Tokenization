@@ -10,6 +10,7 @@ const userService = new UserServie(userRepository)
 const userController = new UserController(userService)
 
 userRouter.post('/register', userController.register)
+userRouter.post('/support', userController.support)
 userRouter.post('/login', userController.login)
 userRouter.patch('/verifyemail', userController.verifyEmail)
 userRouter.post('/request-reset', userController.requestReset)
