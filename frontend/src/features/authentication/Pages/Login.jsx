@@ -145,7 +145,12 @@ const Login = () => {
                     {loginLoading ? "Signing In..." : "Sign In"}
                   </button>
                 </div>
-                <a className="text-gray-400 hover:text-gray-50" href="/request-reset">Forgot password?</a>
+                <a
+                  className="text-gray-400 hover:text-gray-50"
+                  href="/request-reset"
+                >
+                  Forgot password?
+                </a>
               </Form>
             )}
           </Formik>
