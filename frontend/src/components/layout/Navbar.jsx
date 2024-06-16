@@ -50,11 +50,6 @@ const Navbar = () => {
       protected: false,
     },
     {
-      name: "Profile",
-      link: "/profile",
-      protected: true,
-    },
-    {
       name: "My Transactions",
       link: "/my-transactions",
       protected: true,
@@ -62,6 +57,11 @@ const Navbar = () => {
     {
       name: "All Transactions",
       link: "/all-transactions",
+      protected: true,
+    },
+    {
+      name: "Profile",
+      link: "/profile",
       protected: true,
     },
     {
