@@ -61,6 +61,19 @@ const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
             </p>
           </div>
         </div>
+        <div>
+          {asset.assetLocked ? (
+            <div className="flex items-center gap-2">
+              <span className="opacity-50 font-mono font-thin">Locked</span>
+              <span className="text-red-500">Yes</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <span className="opacity-50 font-mono font-thin">Locked</span>
+              <span className="text-green-500">No</span>
+            </div>
+          )}
+        </div>
 
         <div className="flex justify-between">
           <button

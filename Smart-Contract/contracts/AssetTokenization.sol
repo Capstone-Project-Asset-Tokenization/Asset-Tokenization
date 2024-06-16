@@ -239,7 +239,7 @@ contract AssetTokenizationPlatform {
         onlyAssetCreator(assetID)
     {
         require(assets[assetID].totalSupply==balances[assetID][msg.sender],"Asset owned by others");
-        
+
         Asset storage asset = assets[assetID];
 
         asset.name = data.name;
@@ -251,6 +251,10 @@ contract AssetTokenizationPlatform {
         asset.supportingDocuments = data.supportingDocuments;
         // update verification status to pending after updating asset
         asset.verificationStatus = VerificationStatus.Pending;
+        
+        balances[assetID][msg.sender] = data.totalSupply;
+        allowances[assetID][msg.sender][msg.sender] = data.totalSupply;
+        availableTokens[assetID]=data.totalSupply;
 
         emit AssetUpdated(
             assetID,
@@ -308,7 +312,7 @@ contract AssetTokenizationPlatform {
             .getAllUserAddresses();
         uint256 remainingAmount = amount;
         for (uint256 i = 0; i < usersAddressList.length; i++) {
-            if (!locked[assetId][usersAddressList[i]]) {
+            if (!locked[assetId][usersAddressList[i]] && balances[assetId][usersAddressList[i]]>0) {
                 uint256 transferAmount = balances[assetId][usersAddressList[i]];
                 if (transferAmount > remainingAmount) {
                     transferAmount = remainingAmount;
