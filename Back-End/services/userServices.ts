@@ -25,7 +25,7 @@ export default class UserServie {
 
     if (user.phoneNumber)
       existingUser = await this.userRepository.getUserByPhoneNumber(
-        user.phoneNumber
+        user.phoneNumber as string ?? ""
       );
 
     if (existingUser) {
