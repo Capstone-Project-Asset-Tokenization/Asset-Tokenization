@@ -62,7 +62,7 @@ export default class UserServie {
       throw new NotFoundError("There is no user with this email");
     }
 
-    const token = generateToken({ ...user });
+    const token = generateToken({ _id: user._id, email: user.email, roles: user.roles, walletAddress: user.walletAddress });
     sendResetMail(email, token);
     return token;
   }
