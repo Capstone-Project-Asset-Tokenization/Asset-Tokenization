@@ -61,6 +61,9 @@ const authSlice = createSlice({
       state.token = null;
       state.roles = [];
       localStorage.removeItem("authData");
+      localStorage.removeItem("user");
+      localStorage.removeItem("token");
+      localStorage.removeItem("walletAddress");
     },
     // setRoles: (state, action) => {
     //   state.roles = action.payload;
