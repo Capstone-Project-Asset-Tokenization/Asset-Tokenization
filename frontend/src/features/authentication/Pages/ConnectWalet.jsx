@@ -128,7 +128,7 @@ export default function ConnectWallet({
           >
             <span className="font-medium">Registration Failed!</span>{" "}
             {registratonBKErrorResponse?.error ??
-              smartContractRegistratonErrorResponse}
+              registratonBKErrorResponse.data.msg}
           </div>
         )}
       </div>
