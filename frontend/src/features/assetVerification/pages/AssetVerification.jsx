@@ -138,9 +138,8 @@ function AssetVerification() {
           <li onClick={() => handleAssetStatusChange(1)} className="me-2">
             <a
               href="#"
-              className={`inline-block p-4 border-b-2  rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${
-                assetStatus == 1 ? "border-grey-600" : "border-transparent"
-              }`}
+              className={`inline-block p-4 border-b-2  rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${assetStatus == 1 ? "border-grey-600" : "border-transparent"
+                }`}
             >
               Verified
             </a>
@@ -148,9 +147,8 @@ function AssetVerification() {
           <li onClick={() => handleAssetStatusChange(0)} className="me-2">
             <a
               href="#"
-              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${
-                assetStatus == 0 ? "border-grey-600" : "border-transparent"
-              }`}
+              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${assetStatus == 0 ? "border-grey-600" : "border-transparent"
+                }`}
             >
               Unverified
             </a>
@@ -158,9 +156,8 @@ function AssetVerification() {
           <li onClick={() => handleAssetStatusChange(2)} className="me-2">
             <a
               href="#"
-              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${
-                assetStatus == 2 ? "border-grey-600" : "border-transparent"
-              }`}
+              className={`inline-block p-4 border-b-2 rounded-t-lg hover:text-gray-600 hover:border-gray-300 dark:hover:text-gray-300 ${assetStatus == 2 ? "border-grey-600" : "border-transparent"
+                }`}
             >
               Declined
             </a>
@@ -234,78 +231,50 @@ function AssetVerification() {
               </tr>
             </thead>
             <tbody>
-              {fullAssetsData.length !== 0 &&
-                fullAssetsData.map((asset, index) => {
-                  return (
-                    <tr
-                      key={index}
-                      className="bg-white border-b dark:bg-background-primary dark:border-gray-700 hover:bg-background-secondary dark:hover:bg-background-secondary"
+              {fullAssetsData.length !== 0 && fullAssetsData.map((asset, index) => {
+                return (
+                  <tr
+                    key={index}
+                    className="bg-white border-b dark:bg-background-primary dark:border-gray-700 hover:bg-background-secondary dark:hover:bg-background-secondary"
+                  >
+                    <td className="w-4 p-4">{index + 1}</td>
+                    <th
+                      scope="row"
+                      className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
                     >
-                      <td className="w-4 p-4">{index + 1}</td>
-                      <th
-                        scope="row"
-                        className="flex items-center px-6 py-4 text-gray-900 whitespace-nowrap dark:text-white"
-                      >
-                        <img
-                          className="w-10 h-10 rounded-full object-cover "
-                          src={dummyUserAvatar}
-                          alt="Jese image"
-                        />
-                        <div className="ps-3">
-                          <div className="text-base font-semibold">
-                            {asset.ownerInfo?.firstName}
-                          </div>
-                          <div className="font-normal text-gray-500">
-                            {asset.email}
-                          </div>
+                      <img
+                        className="w-10 h-10 rounded-full object-cover "
+                        src={dummyUserAvatar}
+                        alt="Jese image"
+                      />
+                      <div className="ps-3">
+                        <div className="text-base font-semibold">
+                          {asset.ownerInfo?.firstName}
                         </div>
-                      </th>
-                      <td className="px-6 py-4">{asset.name}</td>
-                      <td className="px-6 py-4">{asset.category}</td>
-                      <td className="px-6 py-4">
-                        {enumMap.verificationStatus[asset.verificationStatus]}
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center">
-                          <Link
-                            state={asset}
-                            to="/asset-verification-detail"
-                            className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
-                          >
-                            See Detail
-                          </Link>
+                        <div className="font-normal text-gray-500">
+                          {asset.email}
                         </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        {Number(asset.verificationStatus) === 0 ? (
-                          <>
-                            <button
-                              onClick={() => approveHandler(asset.ID)}
-                              className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
-                            >
-                              <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                                Approve
-                              </span>
-                            </button>
-                            <button
-                              onClick={() => rejectHandler(asset.ID)}
-                              className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
-                            >
-                              <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                                Reject
-                              </span>
-                            </button>
-                          </>
-                        ) : Number(asset.verificationStatus) === 1 ? (
-                          <button
-                            onClick={() => rejectHandler(asset.ID)}
-                            className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
-                          >
-                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
-                              Reject
-                            </span>
-                          </button>
-                        ) : (
+                      </div>
+                    </th>
+                    <td className="px-6 py-4">{asset.name}</td>
+                    <td className="px-6 py-4">{asset.category}</td>
+                    <td className="px-6 py-4">
+                      {enumMap.verificationStatus[asset.verificationStatus]}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center">
+                        <Link
+                          state={asset}
+                          to="/asset-verification-detail"
+                          className="font-medium text-blue-600 dark:text-blue-500 hover:underline"
+                        >
+                          See Detail
+                        </Link>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      {Number(asset.verificationStatus) === 0 ? (
+                        <>
                           <button
                             onClick={() => approveHandler(asset.ID)}
                             className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
@@ -314,25 +283,56 @@ function AssetVerification() {
                               Approve
                             </span>
                           </button>
-                        )}
-                      </td>
-                    </tr>
-                  );
-                })}
+                          <button
+                            onClick={() => rejectHandler(asset.ID)}
+                            className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
+                          >
+                            <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                              Reject
+                            </span>
+                          </button>
+                        </
+                        >
+                      ) : Number(asset.verificationStatus) === 1 ? (
+                        <button
+                          onClick={() => rejectHandler(asset.ID)}
+                          className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-primary-main to-pink-500 group-hover:from-primary-main group-hover:to-pink-500 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800"
+                        >
+                          <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            Reject
+                          </span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => approveHandler(asset.ID)}
+                          className="relative inline-flex items-center justify-center p-0.5 mb-2 me-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-green-400 to-blue-600 group-hover:from-green-400 group-hover:to-blue-600 hover:text-white dark:text-white focus:ring-4 focus:outline-none focus:ring-green-200 dark:focus:ring-green-800"
+                        >
+                          <span className="relative px-5 py-2.5 transition-all ease-in duration-75 bg-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                            Approve
+                          </span>
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                );
+              })}
+            
             </tbody>
           </table>
         )}
-        {fullAssetsData.length === 0 && (
-          <div className="flex justify-center items-center py-8 bg-gray-950">
-            <div className="bg-gray-800 border border-gray-600 p-8 rounded-lg shadow-lg max-w-md text-center text-white">
-              <p className="text-3xl font-bold mb-4 text-red-500">Oops!</p>
-              <p className="text-lg mb-8 text-red-500">
-                It seems there are no assets to verify at the moment.
-              </p>
-              <p className="text-sm text-gray-400">Please check back later!.</p>
+        {
+          fullAssetsData.length === 0 && (
+            <div className="flex justify-center items-center py-8 bg-gray-950">
+              <div className="bg-gray-800 border border-gray-600 p-8 rounded-lg shadow-lg max-w-md text-center text-white">
+                <p className="text-3xl font-bold mb-4 text-red-500">Oops!</p>
+                <p className="text-lg mb-8 text-red-500">
+                  It seems there are no assets to verify at the moment.
+                </p>
+                <p className="text-sm text-gray-400">Please check back later!.</p>
+              </div>
             </div>
-          </div>
-        )}
+          )
+        }
         <nav
           className="flex items-center flex-column flex-wrap md:flex-row justify-between pt-4"
           aria-label="Table navigation"
