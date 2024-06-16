@@ -1,4 +1,4 @@
-export let AssetContractABI =[
+export let AssetContractABI = [
 	{
 		"inputs": [
 			{
@@ -1468,7 +1468,6 @@ export const UserContractABI = [
 		"type": "function"
 	}
 ];
-
 
 export const TransactionContractABI = [
 	{
