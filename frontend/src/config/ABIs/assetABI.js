@@ -1132,4 +1132,4 @@ export let AssetContractABI =[
 		"stateMutability": "nonpayable",
 		"type": "function"
 	}
-]
+];

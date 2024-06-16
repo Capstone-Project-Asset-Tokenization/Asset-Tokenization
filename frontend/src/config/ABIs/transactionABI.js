@@ -224,4 +224,4 @@ export const TransactionContractABI =[
 		"stateMutability": "view",
 		"type": "function"
 	}
-]
+];

@@ -364,4 +364,4 @@ export const UserContractABI =[
 		"stateMutability": "view",
 		"type": "function"
 	}
-]
+];
