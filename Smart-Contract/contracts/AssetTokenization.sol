@@ -34,6 +34,24 @@ contract AssetTokenizationPlatform {
         uint256 availableToken;
     }
 
+    struct UserAssetDetailResponse {
+        uint256 ID;
+        string name;
+        string symbol;
+        uint256 decimals;
+        uint256 totalSupply;
+        uint256 tokenPrice;
+        VerificationStatus verificationStatus;
+        AssetCategory category;
+        string description;
+        string[] images;
+        string[] supportingDocuments;
+        address creator;
+        uint256 availableToken;
+        uint256 ownedTokens;
+        bool assetLocked;
+    }
+
     struct Asset {
         uint256 ID;
         string name;
@@ -79,6 +97,11 @@ contract AssetTokenizationPlatform {
         uint256 totalSupply,
         uint256 tokenPrice,
         address indexed creator
+    );
+    event PaymentRecived(
+        uint256 indexed assetId,
+        address sender,
+        uint256 amount
     );
     event Transfer(
         uint256 indexed assetId,
@@ -226,6 +249,7 @@ contract AssetTokenizationPlatform {
         asset.supportingDocuments = data.supportingDocuments;
         // update verification status to pending after updating asset
         asset.verificationStatus = VerificationStatus.Pending;
+        
 
         emit AssetUpdated(
             assetID,
@@ -274,6 +298,7 @@ contract AssetTokenizationPlatform {
             "Insufficient available tokens"
         );
 
+        emit PaymentRecived(assetId,msg.sender,msg.value);
         // up until the required amount of tokens are transferred, keep transferring tokens from unlocked accounts
         address[] memory usersAddressList = userManagement
             .getAllUserAddresses();
@@ -297,28 +322,7 @@ contract AssetTokenizationPlatform {
                     recipient,
                     transferAmount
                 );
-                Asset memory asset = assets[assetId];
                 if (remainingAmount == 0) {
-                    if (asset.category == AssetCategory.Artwork) {
-                        asset.creator = recipient;
-                    } else {
-                        uint8 decimals = 0;
-                        assets[assetCount] = Asset({
-                            ID: assetCount,
-                            name: asset.name,
-                            symbol: asset.symbol,
-                            decimals: decimals,
-                            totalSupply: amount,
-                            tokenPrice: asset.tokenPrice,
-                            verificationStatus: VerificationStatus.Verified,
-                            category: asset.category,
-                            description: asset.description,
-                            images: asset.images,
-                            supportingDocuments: asset.supportingDocuments,
-                            creator: recipient
-                        });
-                        assetCount++;
-                    }
                     break;
                 }
             }
@@ -439,7 +443,14 @@ contract AssetTokenizationPlatform {
             _lockTokens(assetId, recipient);
         }
 
-        
+        // Convert the recipient address to a payable address
+        address payable payableSender = payable(sender);
+
+        // Transfer Ether to the specified recipient
+        (bool sent, ) = payableSender.call{
+            value: amount * assets[assetId].tokenPrice
+        }("");
+        require(sent, "Failed to send Ether");
     }
 
     function _transferFrom(
@@ -507,7 +518,7 @@ contract AssetTokenizationPlatform {
     function getUserAssetsByFilter(address user, VerificationStatus filter)
         external
         view
-        returns (AssetDetailResponse[] memory)
+        returns (UserAssetDetailResponse[] memory)
     {
         // get user assets count based on filter
         uint256 filteredAssetCount = 0;
@@ -520,17 +531,19 @@ contract AssetTokenizationPlatform {
             }
         }
         // create array of user assets based on filter
-        AssetDetailResponse[] memory filteredAssets = new AssetDetailResponse[](
-            filteredAssetCount
-        );
+        UserAssetDetailResponse[]
+            memory filteredAssets = new UserAssetDetailResponse[](
+                filteredAssetCount
+            );
         uint256 count = 0;
         for (uint256 i = 0; i < assetCount; i++) {
             if (
-                assets[i].creator == user &&
+                (assets[i].creator == user ||
+                    balances[assets[i].ID][user] > 0) &&
                 assets[i].verificationStatus == filter
             ) {
                 // filteredAssets[count] = assets[i];
-                filteredAssets[count] = AssetDetailResponse({
+                filteredAssets[count] = UserAssetDetailResponse({
                     ID: assets[i].ID,
                     name: assets[i].name,
                     symbol: assets[i].symbol,
@@ -543,7 +556,9 @@ contract AssetTokenizationPlatform {
                     images: assets[i].images,
                     supportingDocuments: assets[i].supportingDocuments,
                     creator: assets[i].creator,
-                    availableToken: availableTokens[i]
+                    availableToken: availableTokens[i],
+                    ownedTokens: balances[assets[i].ID][user],
+                    assetLocked:locked[assets[i].ID][user]
                 });
                 count++;
             }

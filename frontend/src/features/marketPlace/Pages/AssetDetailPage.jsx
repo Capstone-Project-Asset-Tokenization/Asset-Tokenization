@@ -91,7 +91,7 @@ const AssetDetail = ({ asset, onClose }) => {
         Number(tokenCount),
         // 3,
         {
-          value:Number(tokenCount) * Number(asset.tokenPrice),
+          value:(Number(tokenCount) * Number(asset.tokenPrice)),
         }
       );
       if (!tx) throw new Error("Transaction failed");
