@@ -9,7 +9,6 @@ import {
   useUploadSingleFileMutation,
   // useRegisterAssetQuery,
 } from "../../../stores/asset/assetApi";
-import { ethers } from "ethers";
 // import Web3 from "web3";
 // import { assetContractABI } from "../../../config/config";
 import { SpinLoader } from "../../../components/common/spinner/spinLoader";
@@ -30,7 +29,6 @@ import { getAssetContractInstance } from "../../../config/contractInstances/inde
 //   }
 // };
 const EditAssetDetails = () => {
-  const [notMine, setNotMine] = useState(false);
   const assetId = window.location.pathname.split("/")[2];
   console.log(assetId, "assetId");
   const [assetName, setAssetName] = useState("");
@@ -99,15 +97,6 @@ const EditAssetDetails = () => {
           preview: url,
         }));
         setIsSingleToken(assetData[6] === 1);
-        if (
-          assetData.creator !=
-          ethers.getAddress(window.ethereum.selectedAddress)
-        ) {
-          setNotMine(true);
-          console.log("errprr:");
-          console.log(assetData.creator);
-          console.log(ethers.getAddress(window.ethereum.selectedAddress));
-        }
         const initialState = {
           assetName: assetData[1],
           description: assetData[8],
@@ -423,11 +412,7 @@ const EditAssetDetails = () => {
   if (loading) {
     return <SpinLoader />;
   }
-
-  if (
-    (error !== null && error.includes("Asset does not exist")) ||
-    notMine == true
-  ) {
+  if (error !== null && error.includes("Asset does not exist")) {
     return (
       <div className="container mx-auto px-4 min-h-screen flex items-center justify-center ">
         <div className="w-full max-w-md py-16 px-8 bg-grey-700  shadow-lg rounded-lg">
