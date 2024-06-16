@@ -246,14 +246,14 @@ const ProfilePage = () => {
     const fetchUserAssets = async () => {
       const [contract, contractWithSigner] = await getAssetContractInstance();
       const address = window.ethereum.selectedAddress;
-      console.log("about to fetch new user assets")
+      console.log("about to fetch new user assets");
       const userAssets = await contractWithSigner.getUserAssetsByFilter(
         address,
         activeTab
       );
       setTabChange(false);
       setUserAssets(userAssets);
-      console.log('user assets',userAssets)
+      console.log("user assets", userAssets);
     };
     fetchUserAssets().then(() => console.log("done"));
   }, [activeTab]);
@@ -302,7 +302,11 @@ const ProfilePage = () => {
   };
 
   if (isGettingUser) {
-    return <SpinLoader />;
+    return (
+      <div className=" my-auto flex flex-col justify-center h-[50vh]">
+        <SpinLoader />
+      </div>
+    );
   }
 
   return (
@@ -333,191 +337,208 @@ const ProfilePage = () => {
             />
           </div>
         ) : userData?.roles?.includes("ADMIN") ? (
-          <div className="flex-auto w-full md:w-1/2 md:pr-4">
-            <div className="max-w-lg mx-auto p-3 rounded-lg shadow">
-              <div className="flex items-center space-x-4">
-                <div className="flex-shrink-0">
-                  <img
-                    src="https://avatar.iran.liara.run/public/boy?username=Ash"
-                    alt={`${userData?.firstName} ${userData?.lastName}`}
-                    className="h-24 w-24 rounded-full object-cover border-2 border-gray-300"
-                  />
-                </div>
-                <div className="flex-grow p-32">
-                  <div>
-                    <h3 className="text-xl font-semibold">
-                      {userData?.firstName} {userData?.lastName}
-                    </h3>
-                    {!isEditing && (
-                      <span className="text-gray-500 p-32">
-                        Edit Profile
-                        <RiEdit2Line
-                          className="text-primary-main bg-red-400 items-end inline m-3 cursor-pointer"
-                          size={20}
-                          onClick={handleEditClick}
-                        />
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-gray-500">{userData?.email}</p>
-                  <p className="text-gray-500">ID: {userData?.nationalID}</p>
-                  <p className="text-gray-500 break-all">
-                    Wallet: {userData?.walletAddress}
-                  </p>
-                </div>
-              </div>
-              <div className="mt-4 flex justify-start">
-                {userData?.roles?.map((role, index) => (
-                  <span
-                    key={index}
-                    className="inline-block bg-purple-300 text-purple-800 text-xs font-semibold mr-2 px-3 py-1 rounded-full"
-                  >
-                    {role.toUpperCase()}
-                  </span>
-                ))}
-              </div>
-            </div>
-          </div>
+          <UserProfile
+            userData={userData}
+            handleEditClick={handleEditClick}
+            isEditing={isEditing}
+            setIsPasswordChange={setIsPasswordChange}
+            isPasswordChange={isPasswordChange}
+            tabs={tabs}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            tabChange={tabChange}
+            userAssets={userAssets}
+            openModal={openModal}
+            isModalOpen={isModalOpen}
+            selectedAsset={selectedAsset}
+            closeModal={closeModal}
+            copyToClipboard={copyToClipboard}
+            isCopied={isCopied}
+            isAdmin = {true}
+          />
         ) : (
-          <div className="container mx-auto mt-8 mb-14">
-            <div className="flex justify-center space-x-10 items-center w-full bg-neutral-800 py-10">
-              <div className="flex justify-center flex-col items-center space-y-4">
-                <img
-                  src="https://avatar.iran.liara.run/public/boy?username=Ash"
-                  alt={`${userData?.firstName} ${userData?.lastName}`}
-                  className="h-60 w-30 rounded-full object-cover border-2 border-gray-300"
-                />
-                {!isEditing && (
-                  <div
-                    onClick={handleEditClick}
-                    className="text-gray-500 flex justify-center items-center space-x-1 cursor-pointer"
-                  >
-                    <p> Edit Profile</p>
-                    <RiEdit2Line
-                      className="text-primary-main items-end inline"
-                      size={20}
-                    />
-                  </div>
-                )}
-                {!isPasswordChange && (
-                  <div
-                    onClick={() => setIsPasswordChange(true)}
-                    className="text-gray-500 flex justify-center items-center space-x-1 cursor-pointer"
-                  >
-                    <p> Change password?</p>
-                    <RiEdit2Line
-                      className="text-primary-main items-end inline"
-                      size={20}
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="flex justify-around items-center space-x-60">
-                <div>
-                  <h3 className="text-5xl font-bold text-gray-100 uppercase">
-                    {userData?.firstName} {userData?.lastName}
-                  </h3>
-                  <p className="text-gray-400 text-base my-3">
-                    {userData?.email}
-                  </p>
-                  <p className="text-gray-400 text-base mb-6">
-                    Legal ID: {userData?.nationalID}
-                  </p>
-                  {userData?.roles?.map((role, index) => (
-                    <span
-                      key={index}
-                      className="inline-block bg-purple-200 text-purple-800 text-sm font-semibold px-3 py-1 rounded-full"
-                    >
-                      {role.toUpperCase()}
-                    </span>
-                  ))}
-                </div>
-                <div>
-                  <div className="flex justify-center items-center">
-                    <QRCode
-                      style={{
-                        border: "2px solid #6b21a8",
-                        borderRadius: 10,
-                        borderColor: "#6b21a8",
-                        padding: 10,
-                      }}
-                      bgColor="transparent"
-                      fgColor="#6b21a8"
-                      size={150}
-                      eyeRadius={[20, 20, 20, 20]}
-                      value={userData?.walletAddress || ""}
-                    />
-                    <div className="text-gray-500 text-xl px-4 font-bold">
-                      Wallet Address
-                    </div>
-                  </div>
-                  <div className="flex space-x-2 mt-4">
-                    <p className="text-gray-400 text-base">
-                      {userData?.walletAddress}
-                    </p>
-                    <button
-                      onClick={() => copyToClipboard(userData?.walletAddress)}
-                      className="bg-purple-800 text-white text-xs py-1.5 px-3 rounded focus:outline-none focus:shadow-outline"
-                    >
-                      {isCopied ? "Copied!" : "Copy"}
-                    </button>
-                  </div>
-                </div>
+          <UserProfile
+            userData={userData}
+            handleEditClick={handleEditClick}
+            isEditing={isEditing}
+            setIsPasswordChange={setIsPasswordChange}
+            isPasswordChange={isPasswordChange}
+            tabs={tabs}
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            tabChange={tabChange}
+            userAssets={userAssets}
+            openModal={openModal}
+            isModalOpen={isModalOpen}
+            selectedAsset={selectedAsset}
+            closeModal={closeModal}
+            copyToClipboard={copyToClipboard}
+            isCopied={isCopied}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const UserProfile = ({
+  userData,
+  handleEditClick,
+  isEditing,
+  setIsPasswordChange,
+  isPasswordChange,
+  tabs,
+  activeTab,
+  setActiveTab,
+  tabChange,
+  userAssets,
+  openModal,
+  isModalOpen,
+  selectedAsset,
+  closeModal,
+  copyToClipboard,
+  isCopied,
+  isAdmin
+}) => {
+  return (
+    <div className="container mx-auto mt-8 mb-14">
+      <div className="flex justify-center space-x-10 items-center w-full bg-neutral-800 p-10 px-16">
+        <div className="flex justify-center flex-col items-center space-y-4">
+          <img
+            src="https://avatar.iran.liara.run/public/boy?username=Ash"
+            alt={`${userData?.firstName} ${userData?.lastName}`}
+            className="h-60 w-30 rounded-full object-cover border-2 border-gray-300"
+          />
+          {!isEditing && (
+            <div
+              onClick={handleEditClick}
+              className="text-gray-500 flex justify-center items-center space-x-1 cursor-pointer"
+            >
+              <p> Edit Profile</p>
+              <RiEdit2Line
+                className="text-primary-main items-end inline"
+                size={20}
+              />
+            </div>
+          )}
+          {!isPasswordChange && (
+            <div
+              onClick={() => setIsPasswordChange(true)}
+              className="text-gray-500 flex justify-center items-center space-x-1 cursor-pointer"
+            >
+              <p> Change password?</p>
+              <RiEdit2Line
+                className="text-primary-main items-end inline"
+                size={20}
+              />
+            </div>
+          )}
+        </div>
+        <div className="flex justify-around items-center space-x-60">
+          <div>
+            <h3 className="text-5xl font-bold text-gray-100 uppercase">
+              {userData?.firstName} {userData?.lastName}
+            </h3>
+            <p className="text-gray-400 text-base my-3">{userData?.email}</p>
+            <p className="text-gray-400 text-base mb-6">
+              Legal ID: {userData?.nationalID}
+            </p>
+            {userData?.roles?.map((role, index) => (
+              <span
+                key={index}
+                className="inline-block bg-purple-200 text-purple-800 text-sm font-semibold px-3 py-1 rounded-full"
+              >
+                {role.toUpperCase()}
+              </span>
+            ))}
+          </div>
+          <div>
+            <div className="flex justify-center items-center">
+              <QRCode
+                style={{
+                  border: "2px solid #6b21a8",
+                  borderRadius: 10,
+                  borderColor: "#6b21a8",
+                  padding: 10,
+                }}
+                bgColor="transparent"
+                fgColor="#6b21a8"
+                size={150}
+                eyeRadius={[20, 20, 20, 20]}
+                value={userData?.walletAddress || ""}
+              />
+              <div className="text-gray-500 text-xl px-4 font-bold">
+                Wallet Address
               </div>
             </div>
-            <div className="">
-              <div className="p-6 shadow rounded-lg">
-                <h4 className="text-3xl font-bold my-10 mb-5">My Assets</h4>
-                <div className="rounded-lg shadow-md p-6">
-                  <div className="flex justify-around mb-4">
-                    {tabs.map((tab, index) => (
-                      <button
-                        key={index}
-                        className={`py-2 w-full px-4 font-medium focus:outline-none ${
-                          activeTab === index
-                            ? "text-purple-600 border-b-2 border-purple-600"
-                            : "text-gray-500 hover:text-gray-300"
-                        }`}
-                        onClick={() => setActiveTab(index)}
-                      >
-                        {tab.label}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-                {tabChange && (
-                  <div className="min-h-52">
-                    <SpinLoader />
-                  </div>
-                )}
-                {!tabChange && userAssets?.length > 0 && (
-                  <div className="flex">
-                    {userAssets.map((asset, index) => {
-                      return (
-                        <div
-                          className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
-                          key={index}
-                        >
-                          <AssetCard
-                            asset={asset}
-                            openModal={openModal}
-                            isMyAsset={true}
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
-                {isModalOpen && (
-                  <AssetDetail asset={selectedAsset} onClose={closeModal} />
-                )}
-                {userAssets?.length === 0 && (
-                  <p>You currently have no assets.</p>
-                )}
-              </div>
+            <div className="flex space-x-2 mt-4">
+              <p className="text-gray-400 text-base">
+                {userData?.walletAddress}
+              </p>
+              <button
+                onClick={() => copyToClipboard(userData?.walletAddress)}
+                className="bg-purple-800 text-white text-xs py-1.5 px-3 rounded focus:outline-none focus:shadow-outline"
+              >
+                {isCopied ? "Copied!" : "Copy"}
+              </button>
             </div>
           </div>
-        )}
+        </div>
+      </div>
+      <div className="">
+        {
+          !isAdmin && <>
+          
+           <div className="p-6 shadow rounded-lg">
+          <h4 className="text-3xl font-bold my-10 mb-5">My Assets</h4>
+          <div className="rounded-lg shadow-md p-6">
+            <div className="flex justify-around mb-4">
+              {tabs.map((tab, index) => (
+                <button
+                  key={index}
+                  className={`py-2 w-full px-4 font-medium focus:outline-none ${
+                    activeTab === index
+                      ? "text-purple-600 border-b-2 border-purple-600"
+                      : "text-gray-500 hover:text-gray-300"
+                  }`}
+                  onClick={() => setActiveTab(index)}
+                >
+                  {tab.label}
+                </button>
+              ))}
+            </div>
+          </div>
+          {tabChange && (
+            <div className="min-h-52 flex justify-center h-[50vh]">
+              <SpinLoader />
+            </div>
+          )}
+          {!tabChange && userAssets?.length > 0 && (
+            <div className="flex">
+              {userAssets.map((asset, index) => {
+                return (
+                  <div
+                    className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-2"
+                    key={index}
+                  >
+                    <AssetCard
+                      asset={asset}
+                      openModal={openModal}
+                      isMyAsset={true}
+                    />
+                  </div>
+                );
+              })}
+            </div>
+          )}
+          {isModalOpen && (
+            <AssetDetail asset={selectedAsset} onClose={closeModal} />
+          )}
+          {!tabChange && userAssets?.length === 0 && <p className="flex items-center text-gray-400 flex-col justify-center h-[40vh]">You currently have no assets.</p>}
+        </div>
+          </>
+        }
+       
       </div>
     </div>
   );
