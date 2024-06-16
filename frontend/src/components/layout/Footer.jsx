@@ -33,8 +33,8 @@ const Footer = () => {
             </div>
             <div className="flex flex-col">
               <span className="font-semibold text-gray-400 uppercase mb-2">Contact Us</span>
-              <a href="#" className="text-gray-400 text-sm hover:text-gray-200 mb-1">Support</a>
-              <a href="#" className="text-gray-400 text-sm hover:text-gray-200">FAQs</a>
+              <a href="/FAQ" className="text-gray-400 text-sm hover:text-gray-200 mb-1">Support</a>
+              <a href="/FAQ" className="text-gray-400 text-sm hover:text-gray-200">FAQs</a>
             </div>
           </div>
         </div>
