@@ -25,7 +25,7 @@ function App() {
   const auth = useSelector((state) => state.auth);
 
   return (
-    <div className="bg-[#2B2B2B]">
+    <div className="bg-[#2B2B2B] flex flex-col min-h-screen ">
       <Navbar />
       <Routes>
         <Route path="/" element={<LandingPage />} />

@@ -3,7 +3,7 @@ import { FaDiscord, FaYoutube, FaTwitter, FaInstagram } from "react-icons/fa"; /
 
 const Footer = () => {
   return (
-    <footer className="bg-neutral-800 text-white py-12">
+    <footer className="bg-neutral-800 text-white py-12 ">
       <div className="max-w-6xl mx-auto px-4">
         <div className="flex justify-between flex-col md:flex-row">
           <div className="flex flex-col">

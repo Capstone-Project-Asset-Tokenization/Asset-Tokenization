@@ -291,7 +291,7 @@ const AssetRegistration = () => {
         console.log("Asset created successfully!");
         resetForm();
       } catch (error) {
-        setError("Asset created successfully");
+        setError("Sorry an the asset is not created ");
         setLoading(false);
         resetForm();
       }
