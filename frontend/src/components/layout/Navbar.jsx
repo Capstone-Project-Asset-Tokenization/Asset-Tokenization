@@ -94,9 +94,9 @@ const Navbar = () => {
   }, [authState.isAuthenticated]);
 
   return (
-    <nav className=" shadow-lg text-white border-b-1.7 ">
-      <div className="mx-4">
-        <div className="flex justify-between">
+    <nav className=" shadow-lg border-neutral-700 text-white ">
+      <div className="mx-4 shadow-sm">
+        <div className="flex justify-between shadow-md">
           <Link to="/" className="p-1">
             <div className="w-36 object-contain">
               <img
