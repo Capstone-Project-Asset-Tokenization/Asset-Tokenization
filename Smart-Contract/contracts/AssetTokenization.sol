@@ -238,6 +238,8 @@ contract AssetTokenizationPlatform {
         onlyRegisteredUser
         onlyAssetCreator(assetID)
     {
+        require(assets[assetID].totalSupply==balances[assetID][msg.sender],"Asset owned by others");
+        
         Asset storage asset = assets[assetID];
 
         asset.name = data.name;
@@ -249,7 +251,6 @@ contract AssetTokenizationPlatform {
         asset.supportingDocuments = data.supportingDocuments;
         // update verification status to pending after updating asset
         asset.verificationStatus = VerificationStatus.Pending;
-        
 
         emit AssetUpdated(
             assetID,
@@ -297,8 +298,11 @@ contract AssetTokenizationPlatform {
             availableTokens[assetId] >= amount,
             "Insufficient available tokens"
         );
+        
+        emit PaymentRecived(assetId, msg.sender, msg.value);
 
-        emit PaymentRecived(assetId,msg.sender,msg.value);
+        _unlockTokens(assetId, msg.sender);
+        
         // up until the required amount of tokens are transferred, keep transferring tokens from unlocked accounts
         address[] memory usersAddressList = userManagement
             .getAllUserAddresses();
@@ -327,6 +331,9 @@ contract AssetTokenizationPlatform {
                 }
             }
         }
+
+        _lockTokens(assetId, msg.sender);
+        availableTokens[assetId]-=amount;
 
         emit TransferTo(assetId, recipient, amount);
         return true;
@@ -439,10 +446,6 @@ contract AssetTokenizationPlatform {
         balances[assetId][sender] -= amount;
         balances[assetId][recipient] += amount;
 
-        if (recipient != assets[assetId].creator) {
-            _lockTokens(assetId, recipient);
-        }
-
         // Convert the recipient address to a payable address
         address payable payableSender = payable(sender);
 
@@ -524,7 +527,8 @@ contract AssetTokenizationPlatform {
         uint256 filteredAssetCount = 0;
         for (uint256 i = 0; i < assetCount; i++) {
             if (
-                assets[i].creator == user &&
+                (assets[i].creator == user ||
+                    balances[assets[i].ID][user] > 0) &&
                 assets[i].verificationStatus == filter
             ) {
                 filteredAssetCount++;
@@ -558,7 +562,7 @@ contract AssetTokenizationPlatform {
                     creator: assets[i].creator,
                     availableToken: availableTokens[i],
                     ownedTokens: balances[assets[i].ID][user],
-                    assetLocked:locked[assets[i].ID][user]
+                    assetLocked: locked[assets[i].ID][user]
                 });
                 count++;
             }

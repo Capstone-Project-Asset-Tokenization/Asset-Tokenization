@@ -1,33 +1,5 @@
 
-export const TransactionContractABI = [
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_assetId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "_from",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "_to",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_amount",
-				"type": "uint256"
-			}
-		],
-		"name": "logTransaction",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
+export const TransactionContractABI =[
 	{
 		"anonymous": false,
 		"inputs": [
@@ -183,6 +155,34 @@ export const TransactionContractABI = [
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_assetId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_from",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "logTransaction",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
