@@ -123,6 +123,15 @@ export const authAPI = createApi({
         };
       },
     }),
+    support: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/user/support`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
   }),
 });
 
@@ -137,5 +146,6 @@ export const {
   useRequestResetMutation,
   useResetPasswordMutation,
   useUpdateProfileMutation,
-  useChangePasswordMutation
+  useChangePasswordMutation,
+  useSupportMutation,
 } = authAPI;
