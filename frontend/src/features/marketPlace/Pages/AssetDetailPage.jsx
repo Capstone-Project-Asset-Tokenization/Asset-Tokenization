@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import { ethers } from "ethers";
 import { AiOutlineLoading3Quarters } from "react-icons/ai";
 
-const AssetDetail = ({ asset, onClose }) => {
+const AssetDetail = ({ asset, onClose, owner = false }) => {
   const categoryMapping = {
     0: "RealEstate",
     1: "Artwork",
@@ -66,6 +66,46 @@ const AssetDetail = ({ asset, onClose }) => {
     document.body.removeChild(anchor);
   };
 
+  const handleLockAsset = async () => {
+    try {
+      setLoading(true);
+      // Ensure the contract instances are correctly retrieved
+      const [contract, contractWithSigner] = await getAssetContractInstance();
+      if (!contractWithSigner)
+        throw new Error("Failed to get contract with signer");
+
+      const tx = await contractWithSigner.lockTokens(asset.ID);
+      if (!tx) throw new Error("Transaction failed");
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error locking token:", error);
+      setError("Error locking token, please try again!");
+      setLoading(false);
+    }
+
+  }
+
+  const handleUnlock = async () => {
+    try {
+      setLoading(true);
+      // Ensure the contract instances are correctly retrieved
+      const [contract, contractWithSigner] = await getAssetContractInstance();
+      if (!contractWithSigner)
+        throw new Error("Failed to get contract with signer");
+      const tx = await contractWithSigner.unlockTokens(asset.ID);
+      // if (!tx) throw new Error("Transaction failed");
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error unlocking token:", error);
+      setError("Error unlocking token, please try again!");
+      setLoading(false);
+    }
+  }
+
+
+
   const handleBuyToken = async () => {
     try {
       setLoading(true);
@@ -84,24 +124,14 @@ const AssetDetail = ({ asset, onClose }) => {
         "ether"
       );
       // Ensure the transfer method is correctly called
-      console.log(
-        "asset",
-        asset,
-        "asset.ID",
-        asset.id,
-        "address",
-        address,
-        "tokenCount",
-        tokenCount,
-        "paymentAmount",
-        paymentAmount.toString()
-      );
+      console.log('asset', asset, 'asset.ID', Number(asset.id), 'address', address, 'tokenCount', tokenCount, 'paymentAmount', paymentAmount.toString(), 'token price', asset.tokenPrice);
       const tx = await contractWithSigner.transfer(
-        1,
+        Number(asset.id),
         address,
         Number(tokenCount),
+        // 3,
         {
-          value: paymentAmount.toString(),
+          value: (Number(tokenCount) * Number(asset.tokenPrice)),
         }
       );
       if (!tx) throw new Error("Transaction failed");
@@ -364,7 +394,50 @@ const AssetDetail = ({ asset, onClose }) => {
               </div>
             </div>
           )}
+          <div>
+            <h3 className="font-bold opacity-50 mb-3">Category</h3>
+            <span className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-2 rounded">
+              {categoryMapping[asset.category]}
+            </span>
+          </div>
 
+          <div className="flex flex-col">
+            {asset.assetLocked ? (
+              <div className="flex items-center gap-2">
+                <span className="opacity-50 font-mono font-thin">Locked</span>
+                <span className="text-red-500">Yes</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <span className="opacity-50 font-mono font-thin">Locked</span>
+                <span className="text-green-500">No</span>
+              </div>
+            )}
+            <div className="h-5"></div>
+            <div>
+              {/* create button based on locked status */}
+              {asset.assetLocked ? (
+                <button
+                  className="bg-primary-main text-white px-4 py-2 rounded"
+                  onClick={() => {
+                    handleUnlock();
+                  }}
+                >
+                  Unlock Asset
+                </button>
+              ) : (
+                <button
+                  className="bg-primary-main text-white px-4 py-2 rounded"
+                  onClick={() => {
+                    handleLockAsset();
+                  }}
+                >
+                  Lock Asset
+                </button>
+              )}
+            </div>
+
+          </div>
           {!isMyAsset && !user.roles.includes("ADMIN") && (
             <button
               onClick={handleOpenBuyModal}

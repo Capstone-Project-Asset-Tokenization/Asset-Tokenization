@@ -19,6 +19,8 @@ import ProfilePage from "./features/profile/pages";
 import VerifyUserEmail from "./pages/verifyEmail";
 import RequestReset from "./features/authentication/Pages/RequestPassword";
 import ResetPassword from "./features/authentication/Pages/ResetPassword";
+import AssetTransactionsTable from "./features/assetTransaction/assetTransaction";
+import AdminAssetTransactionsTable from "./features/assetTransaction/adminAssetTransaction";
 import FAQ from "./pages/FAQ";
 
 function App() {
@@ -79,6 +81,22 @@ function App() {
         <Route
           path="/signin"
           element={auth.isAuthenticated ? <Navigate to="/" /> : <Login />}
+        />
+        <Route
+          path="/my-transactions"
+          element={
+            <PrivateRoute>
+              <AssetTransactionsTable />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/all-transactions"
+          element={
+            <PrivateRoute>
+              <AdminAssetTransactionsTable />
+            </PrivateRoute>
+          }
         />
         <Route
           path="/profile"

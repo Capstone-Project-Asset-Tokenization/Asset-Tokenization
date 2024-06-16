@@ -5,6 +5,11 @@ export let AssetContractABI =[
 				"internalType": "address",
 				"name": "_userManagementAddress",
 				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "_transactionRecordsAddress",
+				"type": "address"
 			}
 		],
 		"stateMutability": "nonpayable",
@@ -202,73 +207,29 @@ export let AssetContractABI =[
 		"type": "event"
 	},
 	{
+		"anonymous": false,
 		"inputs": [
 			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "initialSupply",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "tokenPrice",
-				"type": "uint256"
-			},
-			{
-				"internalType": "enum AssetTokenizationPlatform.AssetCategory",
-				"name": "category",
-				"type": "uint8"
-			},
-			{
-				"internalType": "string",
-				"name": "description",
-				"type": "string"
-			},
-			{
-				"internalType": "string[]",
-				"name": "images",
-				"type": "string[]"
-			},
-			{
-				"internalType": "string[]",
-				"name": "supportingDocuments",
-				"type": "string[]"
-			}
-		],
-		"name": "createAsset",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
+				"indexed": true,
 				"internalType": "uint256",
 				"name": "assetId",
 				"type": "uint256"
-			}
-		],
-		"name": "declineAssetVerification",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
+			},
 			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"indexed": false,
 				"internalType": "uint256",
-				"name": "assetId",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],
-		"name": "lockTokens",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
+		"name": "PaymentRecived",
+		"type": "event"
 	},
 	{
 		"anonymous": false,
@@ -321,35 +282,6 @@ export let AssetContractABI =[
 		"type": "event"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "assetId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "recipient",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "transfer",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -381,40 +313,6 @@ export let AssetContractABI =[
 		"type": "event"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "assetId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "sender",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "recipient",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "amount",
-				"type": "uint256"
-			}
-		],
-		"name": "transferFrom",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			}
-		],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -438,92 +336,6 @@ export let AssetContractABI =[
 		],
 		"name": "TransferTo",
 		"type": "event"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "assetId",
-				"type": "uint256"
-			}
-		],
-		"name": "unlockTokens",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "assetID",
-				"type": "uint256"
-			},
-			{
-				"components": [
-					{
-						"internalType": "string",
-						"name": "name",
-						"type": "string"
-					},
-					{
-						"internalType": "uint256",
-						"name": "totalSupply",
-						"type": "uint256"
-					},
-					{
-						"internalType": "uint256",
-						"name": "tokenPrice",
-						"type": "uint256"
-					},
-					{
-						"internalType": "enum AssetTokenizationPlatform.AssetCategory",
-						"name": "category",
-						"type": "uint8"
-					},
-					{
-						"internalType": "string",
-						"name": "description",
-						"type": "string"
-					},
-					{
-						"internalType": "string[]",
-						"name": "images",
-						"type": "string[]"
-					},
-					{
-						"internalType": "string[]",
-						"name": "supportingDocuments",
-						"type": "string[]"
-					}
-				],
-				"internalType": "struct AssetTokenizationPlatform.AssetUpdateData",
-				"name": "data",
-				"type": "tuple"
-			}
-		],
-		"name": "updateAsset",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "assetId",
-				"type": "uint256"
-			},
-			{
-				"internalType": "enum AssetTokenizationPlatform.VerificationStatus",
-				"name": "status",
-				"type": "uint8"
-			}
-		],
-		"name": "verifyAsset",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
 	},
 	{
 		"inputs": [
@@ -604,6 +416,25 @@ export let AssetContractABI =[
 				"type": "uint256"
 			}
 		],
+		"name": "assetVerifiers",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
 		"name": "assets",
 		"outputs": [
 			{
@@ -654,25 +485,6 @@ export let AssetContractABI =[
 			{
 				"internalType": "address",
 				"name": "creator",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "assetVerifiers",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
 				"type": "address"
 			}
 		],
@@ -763,6 +575,62 @@ export let AssetContractABI =[
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "initialSupply",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "tokenPrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "enum AssetTokenizationPlatform.AssetCategory",
+				"name": "category",
+				"type": "uint8"
+			},
+			{
+				"internalType": "string",
+				"name": "description",
+				"type": "string"
+			},
+			{
+				"internalType": "string[]",
+				"name": "images",
+				"type": "string[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "supportingDocuments",
+				"type": "string[]"
+			}
+		],
+		"name": "createAsset",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "assetId",
+				"type": "uint256"
+			}
+		],
+		"name": "declineAssetVerification",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -1013,14 +881,37 @@ export let AssetContractABI =[
 						"internalType": "uint256",
 						"name": "availableToken",
 						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "ownedTokens",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "assetLocked",
+						"type": "bool"
 					}
 				],
-				"internalType": "struct AssetTokenizationPlatform.AssetDetailResponse[]",
+				"internalType": "struct AssetTokenizationPlatform.UserAssetDetailResponse[]",
 				"name": "",
 				"type": "tuple[]"
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "assetId",
+				"type": "uint256"
+			}
+		],
+		"name": "lockTokens",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -1068,359 +959,11 @@ export let AssetContractABI =[
 	},
 	{
 		"inputs": [],
-		"name": "userManagement",
+		"name": "transactionRecords",
 		"outputs": [
 			{
-				"internalType": "contract UserManagement",
+				"internalType": "contract TransactionRecords",
 				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	}
-];
-export const UserContractABI =[
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			}
-		],
-		"name": "banUser",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			}
-		],
-		"name": "depromoteAdmin",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			}
-		],
-		"name": "promoteToAdmin",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "registerUser",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			}
-		],
-		"name": "unbanUser",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"stateMutability": "nonpayable",
-		"type": "constructor"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "user",
-				"type": "address"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "promotedBy",
-				"type": "address"
-			}
-		],
-		"name": "UserPromoted",
-		"type": "event"
-	},
-	{
-		"anonymous": false,
-		"inputs": [
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "user",
-				"type": "address"
-			},
-			{
-				"indexed": false,
-				"internalType": "bool",
-				"name": "isAdmin",
-				"type": "bool"
-			},
-			{
-				"indexed": true,
-				"internalType": "address",
-				"name": "promotedBy",
-				"type": "address"
-			}
-		],
-		"name": "UserRegistered",
-		"type": "event"
-	},
-	{
-		"inputs": [],
-		"name": "getAdminsWithPromoterDetails",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "bool",
-						"name": "isAdmin",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "isRegistered",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "isBanned",
-						"type": "bool"
-					},
-					{
-						"internalType": "address",
-						"name": "promotedBy",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "userAddress",
-						"type": "address"
-					}
-				],
-				"internalType": "struct UserManagement.User[]",
-				"name": "",
-				"type": "tuple[]"
-			},
-			{
-				"components": [
-					{
-						"internalType": "bool",
-						"name": "isAdmin",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "isRegistered",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "isBanned",
-						"type": "bool"
-					},
-					{
-						"internalType": "address",
-						"name": "promotedBy",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "userAddress",
-						"type": "address"
-					}
-				],
-				"internalType": "struct UserManagement.User[]",
-				"name": "",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getAllUserAddresses",
-		"outputs": [
-			{
-				"internalType": "address[]",
-				"name": "",
-				"type": "address[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getBannedUsers",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "bool",
-						"name": "isAdmin",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "isRegistered",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "isBanned",
-						"type": "bool"
-					},
-					{
-						"internalType": "address",
-						"name": "promotedBy",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "userAddress",
-						"type": "address"
-					}
-				],
-				"internalType": "struct UserManagement.User[]",
-				"name": "",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [],
-		"name": "getRegisteredUsers",
-		"outputs": [
-			{
-				"components": [
-					{
-						"internalType": "bool",
-						"name": "isAdmin",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "isRegistered",
-						"type": "bool"
-					},
-					{
-						"internalType": "bool",
-						"name": "isBanned",
-						"type": "bool"
-					},
-					{
-						"internalType": "address",
-						"name": "promotedBy",
-						"type": "address"
-					},
-					{
-						"internalType": "address",
-						"name": "userAddress",
-						"type": "address"
-					}
-				],
-				"internalType": "struct UserManagement.User[]",
-				"name": "",
-				"type": "tuple[]"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "userAddress",
-				"type": "address"
-			}
-		],
-		"name": "getUser",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			},
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			},
-			{
-				"internalType": "bool",
-				"name": "",
-				"type": "bool"
-			},
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "users",
-		"outputs": [
-			{
-				"internalType": "bool",
-				"name": "isAdmin",
-				"type": "bool"
-			},
-			{
-				"internalType": "bool",
-				"name": "isRegistered",
-				"type": "bool"
-			},
-			{
-				"internalType": "bool",
-				"name": "isBanned",
-				"type": "bool"
-			},
-			{
-				"internalType": "address",
-				"name": "promotedBy",
-				"type": "address"
-			},
-			{
-				"internalType": "address",
-				"name": "userAddress",
 				"type": "address"
 			}
 		],
@@ -1431,19 +974,162 @@ export const UserContractABI =[
 		"inputs": [
 			{
 				"internalType": "uint256",
-				"name": "",
+				"name": "assetId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "recipient",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
 				"type": "uint256"
 			}
 		],
-		"name": "usersAddressList",
+		"name": "transfer",
 		"outputs": [
 			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "assetId",
+				"type": "uint256"
+			},
+			{
 				"internalType": "address",
+				"name": "sender",
+				"type": "address"
+			},
+			{
+				"internalType": "address",
+				"name": "recipient",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			}
+		],
+		"name": "transferFrom",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "assetId",
+				"type": "uint256"
+			}
+		],
+		"name": "unlockTokens",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "assetID",
+				"type": "uint256"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "totalSupply",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "tokenPrice",
+						"type": "uint256"
+					},
+					{
+						"internalType": "enum AssetTokenizationPlatform.AssetCategory",
+						"name": "category",
+						"type": "uint8"
+					},
+					{
+						"internalType": "string",
+						"name": "description",
+						"type": "string"
+					},
+					{
+						"internalType": "string[]",
+						"name": "images",
+						"type": "string[]"
+					},
+					{
+						"internalType": "string[]",
+						"name": "supportingDocuments",
+						"type": "string[]"
+					}
+				],
+				"internalType": "struct AssetTokenizationPlatform.AssetUpdateData",
+				"name": "data",
+				"type": "tuple"
+			}
+		],
+		"name": "updateAsset",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "userManagement",
+		"outputs": [
+			{
+				"internalType": "contract UserManagement",
 				"name": "",
 				"type": "address"
 			}
 		],
 		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "assetId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "enum AssetTokenizationPlatform.VerificationStatus",
+				"name": "status",
+				"type": "uint8"
+			}
+		],
+		"name": "verifyAsset",
+		"outputs": [],
+		"stateMutability": "nonpayable",
 		"type": "function"
 	}
 ];

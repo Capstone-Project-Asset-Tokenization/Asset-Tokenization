@@ -36,10 +36,9 @@ contract UserManagement {
             isRegistered: true,
             isBanned: false,
             promotedBy: address(0),
-            userAddress:msg.sender
+            userAddress: msg.sender
         });
         usersAddressList.push(msg.sender);
-        
     }
 
     function registerUser() external {
@@ -57,15 +56,21 @@ contract UserManagement {
             isRegistered: true,
             isBanned: false,
             promotedBy: msg.sender,
-            userAddress:msg.sender
-
+            userAddress: msg.sender
         });
         emit UserPromoted(userAddress, msg.sender);
     }
 
-    function getUser(
-        address userAddress
-    ) external view returns (bool, bool, bool,address) {
+    function getUser(address userAddress)
+        external
+        view
+        returns (
+            bool,
+            bool,
+            bool,
+            address
+        )
+    {
         return (
             users[userAddress].isAdmin,
             users[userAddress].isRegistered,
@@ -74,13 +79,15 @@ contract UserManagement {
         );
     }
 
-    function getAllUserAddresses() external  view returns (address[] memory) {
-        address[] memory filteredUsersAddressList= new address[](usersAddressList.length);
+    function getAllUserAddresses() external view returns (address[] memory) {
+        address[] memory filteredUsersAddressList = new address[](
+            usersAddressList.length
+        );
         uint256 count = 0;
         for (uint256 i = 0; i < usersAddressList.length; i++) {
             if (!users[usersAddressList[i]].isBanned) {
                 filteredUsersAddressList[count] = usersAddressList[i];
-                count=count+1;
+                count = count + 1;
             }
         }
         return filteredUsersAddressList;
@@ -89,18 +96,20 @@ contract UserManagement {
     function banUser(address userAddress) external onlyAdmin {
         users[userAddress].isBanned = true;
     }
-    
+
     function unbanUser(address userAddress) external onlyAdmin {
         users[userAddress].isBanned = false;
     }
 
-
-    function getAdminsWithPromoterDetails() external view returns (User[] memory, User[] memory) {
-       
+    function getAdminsWithPromoterDetails()
+        external
+        view
+        returns (User[] memory, User[] memory)
+    {
         uint256 count = 0;
         for (uint256 i = 0; i < usersAddressList.length; i++) {
             if (users[usersAddressList[i]].isAdmin) {
-                count=count+1;
+                count = count + 1;
             }
         }
         User[] memory admins = new User[](count);
@@ -110,7 +119,7 @@ contract UserManagement {
             if (users[usersAddressList[i]].isAdmin) {
                 admins[count] = users[usersAddressList[i]];
                 promoters[count] = users[users[usersAddressList[i]].promotedBy];
-                count=count+1;
+                count = count + 1;
             }
         }
         return (admins, promoters);
@@ -120,7 +129,7 @@ contract UserManagement {
         uint256 count = 0;
         for (uint256 i = 0; i < usersAddressList.length; i++) {
             if (users[usersAddressList[i]].isBanned) {
-                count=count+1;
+                count = count + 1;
             }
         }
         User[] memory bannedUsers = new User[](count);
@@ -128,7 +137,7 @@ contract UserManagement {
         for (uint256 i = 0; i < usersAddressList.length; i++) {
             if (users[usersAddressList[i]].isBanned) {
                 bannedUsers[count] = users[usersAddressList[i]];
-                count=count+1;
+                count = count + 1;
             }
         }
         return bannedUsers;
@@ -140,7 +149,7 @@ contract UserManagement {
         for (uint256 i = 0; i < usersAddressList.length; i++) {
             if (users[usersAddressList[i]].isRegistered) {
                 registeredUsers[count] = users[usersAddressList[i]];
-                count=count+1;
+                count = count + 1;
             }
         }
         return registeredUsers;
@@ -150,3 +159,4 @@ contract UserManagement {
         users[userAddress].isAdmin = false;
     }
 }
+

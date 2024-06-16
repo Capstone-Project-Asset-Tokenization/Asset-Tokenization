@@ -50,6 +50,16 @@ const Navbar = () => {
       protected: false,
     },
     {
+      name: "My Transactions",
+      link: "/my-transactions",
+      protected: true,
+    },
+    {
+      name: "All Transactions",
+      link: "/all-transactions",
+      protected: true,
+    },
+    {
       name: "Profile",
       link: "/profile",
       protected: true,
@@ -74,7 +84,8 @@ const Navbar = () => {
           (item) =>
             item.name !== "Register Asset" &&
             item.name !== "Login" &&
-            item.name !== "Sign Up"
+            item.name !== "Sign Up" &&
+            item.name !== "My Transactions"
         );
         setNavbarItems(temp);
       } else {
@@ -83,7 +94,8 @@ const Navbar = () => {
             item.name !== "Login" &&
             item.name !== "Sign Up" &&
             item.name !== "Verify Asset" &&
-            item.name !== "User Management"
+            item.name !== "User Management" &&
+            item.name !== "All Transactions"
         );
         setNavbarItems(temp);
       }

@@ -532,7 +532,7 @@ const UserProfile = ({
             </div>
           )}
           {isModalOpen && (
-            <AssetDetail asset={selectedAsset} onClose={closeModal} />
+            <AssetDetail asset={selectedAsset} owner={true} onClose={closeModal} />
           )}
           {!tabChange && userAssets?.length === 0 && <p className="flex items-center text-gray-400 flex-col justify-center h-[40vh]">You currently have no assets.</p>}
         </div>
