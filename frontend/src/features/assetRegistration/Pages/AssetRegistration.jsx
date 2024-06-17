@@ -360,15 +360,12 @@ const AssetRegistration = () => {
   //   setTags(tags.filter((tag) => tag !== tagToDelete));
   // };
 
-  if (loading) {
-    return <SpinLoader />;
-  }
   return (
     <>
       <div className="container mx-auto px-4">
         <div className="w-full mx-auto py-16">
           <form onSubmit={handleSubmit} className="text-white rounded">
-            <h1 className="block text-white font-bold mb-8 text-3xl">
+            <h1 className="block text-white font-bold text-3xl">
               Create New Asset
             </h1>
             {success && (
@@ -379,6 +376,7 @@ const AssetRegistration = () => {
                 />
               </div>
             )}
+
             {error && (
               <div className="mt-4 flex items-center justify-end">
                 <Toaster message={error} type={"error"} />
@@ -397,6 +395,7 @@ const AssetRegistration = () => {
                 <Toaster message="Uploading Files..." type={"info"} />
               </div>
             )}
+
             <div className="flex md:space-x-16 justify-between md:flex-row flex-col">
               <div className="w-full">
                 <div className="mb-4">
@@ -408,7 +407,7 @@ const AssetRegistration = () => {
                   </label>
                   <input
                     id="assetName"
-                    className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                    className="bg-[#303030] w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                     type="text"
                     placeholder="Enter Asset Name"
                     value={assetName}
@@ -425,7 +424,7 @@ const AssetRegistration = () => {
                   </label>
                   <textarea
                     id="description"
-                    className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                    className="bg-[#303030] w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                     rows="4"
                     placeholder="Write Description"
                     value={description}
@@ -442,7 +441,7 @@ const AssetRegistration = () => {
                     </label>
                     <input
                       id="price"
-                      className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                      className="bg-[#303030] w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                       type="number"
                       placeholder="Set Price In ETH"
                       value={tokenPrice}
@@ -474,7 +473,7 @@ const AssetRegistration = () => {
                       <input
                         disabled
                         id="tokenOne"
-                        className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                        className="bg-[#303030] disabled:text-gray-500 w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                         type="number"
                         placeholder="Set number of tokens"
                         defaultValue={1}
@@ -482,7 +481,7 @@ const AssetRegistration = () => {
                     ) : (
                       <input
                         id="token"
-                        className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                        className="bg-[#303030] w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                         type="number"
                         placeholder="Set number of tokens"
                         value={totalSupply}
@@ -573,7 +572,7 @@ const AssetRegistration = () => {
                   </label>
                   <select
                     id="category"
-                    className="bg-[#303030] rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                    className="bg-[#303030] rounded w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                     value={category}
                     onChange={(e) => {
                       const newCategory = e.target.value;
@@ -598,7 +597,7 @@ const AssetRegistration = () => {
                   </label>
                   <div
                     onClick={triggerAssetImageInput}
-                    className="cursor-pointer bg-[#303030] w-full py-2 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
+                    className="cursor-pointer bg-[#303030] w-full py-6 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
                   >
                     <div className="flex flex-col items-center justify-center h-32 ">
                       <IoRocketOutline className="text-4xl text-gray-400" />
@@ -633,7 +632,7 @@ const AssetRegistration = () => {
                   </label>
                   <div
                     onClick={triggerSupportingFileInput}
-                    className="cursor-pointer bg-[#303030] w-full py-2 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
+                    className="cursor-pointer bg-[#303030] w-full py-6 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
                   >
                     <div className="flex flex-col items-center justify-center h-32 ">
                       <IoRocketOutline className="text-4xl text-gray-400" />
@@ -664,10 +663,10 @@ const AssetRegistration = () => {
 
             <div className="flex items-center justify-end w-full">
               <button
-                className="bg-primary-main hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                className="bg-primary-main w-56 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="submit"
               >
-                Create
+                {loading ? <SpinLoader /> : "Create"}
               </button>
             </div>
           </form>

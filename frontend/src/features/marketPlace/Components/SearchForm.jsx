@@ -81,7 +81,7 @@ const SearchForm = ({ onSearch }) => {
         />
         <button
           type="submit"
-          className="bg-primary-main px-20 hover:bg-primary-dark text-white p-3 rounded-lg"
+          className="bg-primary-main px-16 hover:bg-primary-dark text-white p-3 rounded-lg"
         >
           Apply
         </button>

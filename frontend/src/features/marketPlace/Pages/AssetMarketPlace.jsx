@@ -179,7 +179,7 @@ const Marketplace = () => {
           </div>
         </div>
       )}
-      <div className="bg-[#303030] w-full p-6 px-20 space-x-6 flex items-center justify-center">
+      <div className="bg-[#303030] w-full p-6 px-16 space-x-6 flex items-center justify-center">
         {!loading &&
           !fetchingUsers &&
           displayedAssets.map((asset, index) => (
