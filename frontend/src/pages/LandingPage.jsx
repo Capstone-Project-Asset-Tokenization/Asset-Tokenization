@@ -48,7 +48,7 @@ const LandingPage = () => {
             src="../src/assets/Home.png"
             alt="clip image"
           />
-          <div className="bg-background-secondary px-10 py-4 my-3 rounded-b-2xl ">
+          <div className="bg-background-primary px-10 py-4 my-3 rounded-b-2xl ">
             <h5 className="text-xl font-bold">Tokenize your assets</h5>
             <p>on our platfrom</p>
           </div>

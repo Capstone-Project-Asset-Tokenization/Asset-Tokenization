@@ -365,7 +365,7 @@ const AssetRegistration = () => {
       <div className="container mx-auto px-4">
         <div className="w-full mx-auto py-16">
           <form onSubmit={handleSubmit} className="text-white rounded">
-            <h1 className="block text-white font-bold text-3xl">
+            <h1 className="block text-white font-bold text-3xl mb-8">
               Create New Asset
             </h1>
             {success && (
