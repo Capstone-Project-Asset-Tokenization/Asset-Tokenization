@@ -409,9 +409,6 @@ const EditAssetDetails = () => {
     document.body.removeChild(link);
   };
 
-  if (loading) {
-    return <SpinLoader />;
-  }
   if (error !== null && error.includes("Asset does not exist")) {
     return (
       <div className="container mx-auto px-4 min-h-screen flex items-center justify-center ">
@@ -432,9 +429,7 @@ const EditAssetDetails = () => {
               />
             </svg>
           </div>
-          <h1 className="text-center text-3xl font-bold text-red-800 mb-3">
-            Oops! Asset Not Found
-          </h1>
+
           <p className="text-center text-gray-600 mb-8">
             The asset you are looking for might have been removed, had its name
             changed, or is temporarily unavailable.
@@ -482,7 +477,7 @@ const EditAssetDetails = () => {
         <div className="w-full mx-auto py-16">
           <form onSubmit={handleSubmit} className="text-white rounded">
             <h1 className="block text-white font-bold mb-8 text-3xl">
-              Edit {assetName} asset details
+              Edit {assetName}
             </h1>
             {success && (
               <div className="mt-4 flex items-center justify-end">
@@ -521,7 +516,7 @@ const EditAssetDetails = () => {
                   </label>
                   <input
                     id="assetName"
-                    className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                    className="bg-[#303030] w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                     type="text"
                     placeholder="Enter Asset Name"
                     value={assetName}
@@ -538,7 +533,7 @@ const EditAssetDetails = () => {
                   </label>
                   <textarea
                     id="description"
-                    className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                    className="bg-[#303030] w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                     rows="4"
                     placeholder="Write Description"
                     value={description}
@@ -555,7 +550,7 @@ const EditAssetDetails = () => {
                     </label>
                     <input
                       id="price"
-                      className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                      className="bg-[#303030] w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                       type="number"
                       placeholder="Set Price In ETH"
                       value={tokenPrice}
@@ -587,7 +582,7 @@ const EditAssetDetails = () => {
                       <input
                         disabled
                         id="tokenOne"
-                        className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                        className="bg-[#303030] w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                         type="number"
                         placeholder="Set Number of Tokens"
                         value={1}
@@ -595,7 +590,7 @@ const EditAssetDetails = () => {
                     ) : (
                       <input
                         id="token"
-                        className="bg-[#303030] w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                        className="bg-[#303030] w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                         type="number"
                         placeholder="Set Number of Tokens"
                         value={totalSupply}
@@ -618,7 +613,7 @@ const EditAssetDetails = () => {
                   </label>
                   <select
                     id="category"
-                    className="bg-[#303030] rounded w-full py-2 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
+                    className="bg-[#303030] rounded w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                     value={category}
                     onChange={(e) => {
                       const newCategory = e.target.value;
@@ -643,7 +638,7 @@ const EditAssetDetails = () => {
                   </label>
                   <div
                     onClick={triggerAssetImageInput}
-                    className="cursor-pointer bg-[#303030] w-full py-2 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
+                    className="cursor-pointer bg-[#303030] w-full py-4 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
                   >
                     <div className="flex flex-col items-center justify-center h-32 ">
                       <IoRocketOutline className="text-4xl text-gray-400" />
@@ -679,7 +674,7 @@ const EditAssetDetails = () => {
                   </label>
                   <div
                     onClick={triggerSupportingFileInput}
-                    className="cursor-pointer bg-[#303030] w-full py-2 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
+                    className="cursor-pointer bg-[#303030] w-full py-4 px-3 text-gray-400 leading-tight focus:outline-none focus:shadow-outline"
                   >
                     <div className="flex flex-col items-center justify-center h-32 ">
                       <IoRocketOutline className="text-4xl text-gray-400" />
@@ -711,10 +706,10 @@ const EditAssetDetails = () => {
 
             <div className="flex items-center justify-end w-full">
               <button
-                className="bg-primary-main hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                className="bg-primary-main w-72 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                 type="submit"
               >
-                Update Asset Details
+                {loading ? <SpinLoader /> : "Update Asset Details"}
               </button>
             </div>
           </form>
