@@ -75,7 +75,7 @@ export default function ConnectWallet({
   };
 
   return (
-    <div className="md:flex justify-between space-x-5 px-20">
+    <div className="md:flex justify-between space-x-5 px-16">
       <div className="basis-1/2 justify-center items-center">
         <img
           className="mx-auto"

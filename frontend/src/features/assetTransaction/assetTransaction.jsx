@@ -42,7 +42,7 @@ const AssetTransactionsTable = () => {
 
     if (loading) {
         return (
-            <div>
+            <div className='flex justify-center items-center h-[60vh]'>
                 <SpinLoader />
             </div>
         );

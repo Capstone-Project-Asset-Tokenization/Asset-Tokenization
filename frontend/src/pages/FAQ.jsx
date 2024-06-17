@@ -91,7 +91,7 @@ const FAQ = () => {
   };
 
   return (
-    <div className="px-20 shadow-lg rounded-lg my-8">
+    <div className="px-16 shadow-lg rounded-lg my-8">
       {Object.keys(faqData).map((sectionKey) => (
         <div key={sectionKey}>
           <button

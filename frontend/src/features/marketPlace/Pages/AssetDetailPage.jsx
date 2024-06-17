@@ -83,8 +83,7 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
       setError("Error locking token, please try again!");
       setLoading(false);
     }
-
-  }
+  };
 
   const handleUnlock = async () => {
     try {
@@ -102,9 +101,7 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
       setError("Error unlocking token, please try again!");
       setLoading(false);
     }
-  }
-
-
+  };
 
   const handleBuyToken = async () => {
     try {
@@ -124,14 +121,27 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
         "ether"
       );
       // Ensure the transfer method is correctly called
-      console.log('asset', asset, 'asset.ID', Number(asset.id), 'address', address, 'tokenCount', tokenCount, 'paymentAmount', paymentAmount.toString(), 'token price', asset.tokenPrice);
+      console.log(
+        "asset",
+        asset,
+        "asset.ID",
+        Number(asset.id),
+        "address",
+        address,
+        "tokenCount",
+        tokenCount,
+        "paymentAmount",
+        paymentAmount.toString(),
+        "token price",
+        asset.tokenPrice
+      );
       const tx = await contractWithSigner.transfer(
         Number(asset.id),
         address,
         Number(tokenCount),
         // 3,
         {
-          value: (Number(tokenCount) * Number(asset.tokenPrice)),
+          value: Number(tokenCount) * Number(asset.tokenPrice),
         }
       );
       if (!tx) throw new Error("Transaction failed");
@@ -286,8 +296,8 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
 
         <div className="flex flex-col gap-6">
           <div>
-            <div className="flex justify-between items-center border-b border-neutral-800 px-20 py-6 mx-6">
-              <h1 className="text-3xl font-medium">{asset.name}</h1>
+            <div className="flex justify-between items-center border-b border-neutral-800 px-16 py-6 mx-6">
+              <h1 className="text-3xl font-medium uppercase">{asset.name}</h1>
               <div className="flex justify-between space-x-2 items-center">
                 <h3 className="text-neutral-500">Created By</h3>
                 <div className="flex items-center">
@@ -307,7 +317,7 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
               </div>
             </div>
 
-            <div className="border-b border-neutral-800 px-20 py-6 mx-6">
+            <div className="border-b border-neutral-800 px-16 py-3 mx-6">
               <p className="text-xl pb-4 opacity-50 flex justify-between ">
                 <span className="font-medium pr-4">Price</span>
                 <span className="font-bold">
@@ -336,12 +346,12 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
             </div>
           </div>
 
-          <div className="border-b border-neutral-800 px-20 pb-6 mx-6">
+          <div className="border-b border-neutral-800 px-16 pb-6 mx-6">
             <h3 className="font-bold text-xl opacity-60 mb-3">Description</h3>
-            <p className="">{asset.description}</p>
+            <p className="text-neutral-400">{asset.description}</p>
           </div>
-          {!isMyAsset && (
-            <div className="px-20 mx-6 flex justify-between items-center">
+          {isMyAsset && (
+            <div className="px-16 mx-6 flex justify-between border-b border-neutral-800">
               <div>
                 <h3 className="font-bold text-xl opacity-50  mb-3">
                   Supporting Documents
@@ -371,7 +381,7 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
                 <h3 className="font-bold text-xl opacity-50  mb-3">
                   Supporting Images
                 </h3>
-                <div className="flex flex-col gap-4">
+                <div className="flex flex-col space-y-2">
                   {asset.images.map((doc, index) => (
                     <div key={index} className="flex items-center">
                       <p className=" mr-4 text-neutral-400">
@@ -394,50 +404,61 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
               </div>
             </div>
           )}
-          <div>
-            <h3 className="font-bold opacity-50 mb-3">Category</h3>
-            <span className="bg-gray-100 text-gray-800 text-xs font-medium px-2.5 py-2 rounded">
-              {categoryMapping[asset.category]}
-            </span>
-          </div>
-
-          <div className="flex flex-col">
-            {asset.assetLocked ? (
-              <div className="flex items-center gap-2">
-                <span className="opacity-50 font-mono font-thin">Locked</span>
-                <span className="text-red-500">Yes</span>
-              </div>
-            ) : (
-              <div className="flex items-center gap-2">
-                <span className="opacity-50 font-mono font-thin">Locked</span>
-                <span className="text-green-500">No</span>
-              </div>
-            )}
-            <div className="h-5"></div>
+          <div className="px-16 mx-6 flex justify-between items-center ">
             <div>
-              {/* create button based on locked status */}
-              {asset.assetLocked ? (
-                <button
-                  className="bg-primary-main text-white px-4 py-2 rounded"
-                  onClick={() => {
-                    handleUnlock();
-                  }}
-                >
-                  Unlock Asset
-                </button>
-              ) : (
-                <button
-                  className="bg-primary-main text-white px-4 py-2 rounded"
-                  onClick={() => {
-                    handleLockAsset();
-                  }}
-                >
-                  Lock Asset
-                </button>
-              )}
+              <h3 className="font-bold opacity-50 mb-3">Category</h3>
+              <span className=" bg-neutral-900 bg-opacity-30 text-neutral-200 font-medium px-2.5 py-2 rounded">
+                {categoryMapping[asset.category]}
+              </span>
             </div>
 
+            <div className="flex flex-row space-x-4">
+              {asset.assetLocked ? (
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold opacity-50 ">Status</h3>
+                  <span className="opacity-50 font-mono font-thin text-red-500">
+                    Locked
+                  </span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold opacity-50 ">Status</h3>
+                  <span className="font-mono font-thin text-green-500">
+                    Unlocked
+                  </span>
+                </div>
+              )}
+
+              <div>
+                {/* create button based on locked status */}
+                {isMyAsset && (
+                  <>
+                    {" "}
+                    {asset.assetLocked ? (
+                      <button
+                        className="bg-primary-main text-white px-4 py-2 rounded"
+                        onClick={() => {
+                          handleUnlock();
+                        }}
+                      >
+                        Unlock Asset
+                      </button>
+                    ) : (
+                      <button
+                        className="bg-primary-main text-white px-4 py-2 rounded"
+                        onClick={() => {
+                          handleLockAsset();
+                        }}
+                      >
+                        Lock Asset
+                      </button>
+                    )}
+                  </>
+                )}
+              </div>
+            </div>
           </div>
+
           {!isMyAsset && !user.roles.includes("ADMIN") && (
             <button
               onClick={handleOpenBuyModal}

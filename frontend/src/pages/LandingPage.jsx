@@ -8,7 +8,7 @@ import { useSelector } from "react-redux";
 const LandingPage = () => {
   const authState = useSelector((state) => state.auth);
   return (
-    <div className=" px-6 sm:px-20">
+    <div className=" px-6 sm:px-16">
       <div className="md:flex justify-between items-center ">
         <div className="basis-1/2 ml-8">
           <h1 className="text-4xl sm:text-6xl font-bold leading-16 mb-10 tracking-wide">
