@@ -78,7 +78,19 @@ const Navbar = () => {
 
   useEffect(() => {
     const authData = JSON.parse(localStorage.getItem("authData"));
+
     if (authState.isAuthenticated) {
+      if (authState.user?.isBanned) {
+        let temp = initialUrls.filter(
+          (item) =>
+            item.name !== "Login" &&
+            item.name !== "Sign Up" &&
+            item.name !== "Verify Asset" &&
+            item.name !== "User Management" &&
+            item.name !== "All Transactions"
+        );
+        setNavbarItems(temp);
+      }
       if (authData.roles.includes("ADMIN")) {
         let temp = initialUrls.filter(
           (item) =>

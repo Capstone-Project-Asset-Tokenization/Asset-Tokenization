@@ -77,6 +77,31 @@ function AssetVerification() {
     );
   }, [assets, users]);
 
+  let approveHandler = async (id) => {
+    let [assetContract, assetContractWithSigner] =
+      await getAssetContractInstance();
+
+    try {
+      let response = await assetContractWithSigner.verifyAsset(id, 1);
+      console.log("asset verification response", response);
+    } catch (error) {
+      console.log("asset verification error", error);
+      setError(error.message.split('"')[1]);
+    }
+  };
+
+  const rejectHandler = async (id) => {
+    const [assetContract, assetContractWithSigner] =
+      await getAssetContractInstance();
+    try {
+      const response = await assetContractWithSigner.verifyAsset(id, 2);
+      console.log("asset verification response", response);
+    } catch (error) {
+      console.log("asset verification error", error);
+      setError(error.message.split('"')[1]);
+    }
+  };
+
   const handleSearch = (e) => {
     const filteredData = fullAssetsData.filter((asset) => {
       const name = asset.name.toLowerCase();

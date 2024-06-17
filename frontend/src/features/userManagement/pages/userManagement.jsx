@@ -110,12 +110,86 @@ function UserManagement() {
     }
   };
 
+  let promoteHandler = async (userWallet) => {
+    let [userContract, userContractWithSigner] =
+      await getUserContractInstance();
+    try {
+      setLoading(true);
+      let response = await userContractWithSigner.promoteToAdmin(userWallet);
+      console.log("admin promote response", response);
+      updateRole({ walletAddress: userWallet, newRole: "ADMIN" });
+      fetchUsers(selectedUserStatus);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("admin promote error", error);
+      setError(error.message.split('"')[1]);
+    }
+  };
+
+  let dePromoteHandler = async (userWallet) => {
+    let [userContract, userContractWithSigner] =
+      await getUserContractInstance();
+
+    try {
+      setLoading(true);
+      let response = await userContractWithSigner.depromoteAdmin(userWallet);
+      console.log("admin depromote response", response);
+      updateRole({ walletAddress: userWallet, newRole: "USER" });
+      // navigate("/asset-verification");
+      fetchUsers(selectedUserStatus);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("admin depromote error", error);
+      setError(error.message.split('"')[1]);
+    }
+  };
+
+  let banHandler = async (userWallet) => {
+    let [userContract, userContractWithSigner] =
+      await getUserContractInstance();
+
+    try {
+      setLoading(true);
+      let response = await userContractWithSigner.banUser(userWallet);
+      console.log("user ban response", response);
+      banUser({ userWallet: userWallet });
+      // navigate("/asset-verification");
+      fetchUsers(selectedUserStatus);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("user ban error", error);
+      setError(error.message.split('"')[1]);
+    }
+  };
+
+  let unbanHandler = async (userWallet) => {
+    let [userContract, userContractWithSigner] =
+      await getUserContractInstance();
+    try {
+      setLoading(true);
+      let response = await userContractWithSigner.unbanUser(userWallet);
+      console.log("user unban response", response);
+      unbanUser({ userWallet: userWallet });
+      // navigate("/asset-verification");
+      fetchUsers(selectedUserStatus);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+      console.log("user unban error", error);
+      setError(error.message.split('"')[1]);
+    }
+  };
+
   useEffect(() => {
     fetchUsers(selectedUserStatus);
   }, [selectedUserStatus]);
 
   useEffect(() => {
     if (users) {
+      console.log(users, "users++++++=");
       const updatedUsers = usersDetail.map((usr, index) => ({
         ...usr,
         userMetaData: users ? users[index] : "",

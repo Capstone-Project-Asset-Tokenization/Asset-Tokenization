@@ -2,7 +2,7 @@ import React from "react";
 // import "animate.css";
 import { IoRocketOutline } from "react-icons/io5";
 import LandingCard from "../components/landing/LandingCard";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
 const LandingPage = () => {
@@ -11,6 +11,20 @@ const LandingPage = () => {
     <div className=" px-6 sm:px-16">
       <div className="md:flex justify-between items-center ">
         <div className="basis-1/2 ml-8">
+          {authState.user?.isBanned && (
+            <div className="bg-red-500 text-white p-4 rounded-lg mb-4">
+              <p>
+                You are banned from using this platform. Please contact customer
+                support.
+              </p>
+              <Link
+                className="bg-white text-red-500 font-bold py-2 px-4 rounded mt-2 inline-block"
+                to="/FAQ"
+              >
+                Contact Support
+              </Link>
+            </div>
+          )}
           <h1 className="text-4xl sm:text-6xl font-bold leading-16 mb-10 tracking-wide">
             Asset <br /> Tokenization <br />
             Platform

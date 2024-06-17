@@ -443,7 +443,7 @@ const AssetRegistration = () => {
                       id="price"
                       className="bg-[#303030] w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                       type="number"
-                      placeholder="Set Price In WEI"
+                      placeholder="Set Price In Wei"
                       value={tokenPrice}
                       onChange={(e) => {
                         if (

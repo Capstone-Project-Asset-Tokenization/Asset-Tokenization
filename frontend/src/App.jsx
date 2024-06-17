@@ -134,7 +134,12 @@ function App() {
 const PrivateRoute = ({ children }) => {
   const auth = useSelector((state) => state.auth);
   const isVerified = auth.user?.isVerified;
+  const isBanned = auth.user?.isBanned;
 
+  if (isBanned === true) {
+    console.log("is banned!!");
+    return <Navigate to="/" />;
+  }
   if (!auth.isAuthenticated) {
     return <Navigate to="/signin" />;
   }

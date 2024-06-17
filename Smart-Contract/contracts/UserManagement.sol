@@ -51,13 +51,9 @@ contract UserManagement {
     }
 
     function promoteToAdmin(address userAddress) external onlyAdmin {
-        users[userAddress] = User({
-            isAdmin: true,
-            isRegistered: true,
-            isBanned: false,
-            promotedBy: msg.sender,
-            userAddress: msg.sender
-        });
+        require(users[userAddress].isRegistered, "User is not registered");
+        users[userAddress].isAdmin = true;
+        users[userAddress].promotedBy = msg.sender;
         emit UserPromoted(userAddress, msg.sender);
     }
 
