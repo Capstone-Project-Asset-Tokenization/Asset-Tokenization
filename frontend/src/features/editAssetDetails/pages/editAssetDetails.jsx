@@ -552,7 +552,7 @@ const EditAssetDetails = () => {
                       id="price"
                       className="bg-[#303030] w-full py-4 px-3 text-white leading-tight focus:outline-none focus:shadow-outline"
                       type="number"
-                      placeholder="Set Price In ETH"
+                      placeholder="Set Price In WEI"
                       value={tokenPrice}
                       onChange={(e) => {
                         if (

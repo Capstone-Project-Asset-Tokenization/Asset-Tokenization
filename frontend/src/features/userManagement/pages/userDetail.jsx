@@ -68,7 +68,7 @@ function UserDetail() {
       <div className='flex flex-col h-screen justify-around mx-20 bg-red'>
         <div>
           <h1 className='text-6xl'>{asset.name}</h1>
-          <p className='text-secondary-main text-xl'>{parseInt(asset.tokenPrice)} ETH per Token</p>
+          <p className='text-secondary-main text-xl'>{parseInt(asset.tokenPrice)} WEI per Token</p>
         </div>
 
         <div>

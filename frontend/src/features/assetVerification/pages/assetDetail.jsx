@@ -62,7 +62,7 @@ function AssetDetail() {
               {asset.name}
             </h1>
             <p className="text-2xl text-gray-600 mb-6">
-              {parseInt(asset.tokenPrice)} ETH per Token
+              {parseInt(asset.tokenPrice)} WEI per Token
             </p>
             <div className="mb-8">
               <h3 className="text-lg font-semibold  text-gray-300  mb-3">

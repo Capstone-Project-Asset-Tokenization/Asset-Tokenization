@@ -60,20 +60,20 @@ const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
           <div>
             <span className="font-medium ">Price</span>
             <p className=" pt-1">
-              {asset.tokenPrice.toLocaleString()} ETH
+              {asset.tokenPrice.toLocaleString()} WEI
             </p>
           </div>
         </div>
         <div>
           {asset.assetLocked ? (
-            <div className="flex items-center gap-2">
-              <span className="opacity-50 font-mono font-thin">Locked</span>
-              <span className="text-red-500">Yes</span>
+            <div className="flex items-center ">
+              <span className=" text-red-500">Locked</span>
+            
             </div>
           ) : (
-            <div className="flex items-center gap-2">
-              <span className="opacity-50 font-mono font-thin">Locked</span>
-              <span className="text-green-500">No</span>
+            <div className="flex items-center ">
+              <span className=" text-green-500 ">Unlocked</span>
+     
             </div>
           )}
         </div>
@@ -82,7 +82,7 @@ const AssetCard = ({ asset, openModal, isMyAsset = false }) => {
           <button
             onClick={() => openModal(asset)}
             state={{ id: asset.ID }}
-            className=" pt-6 cursor-pointer"
+            className=" pt-6 mb-20 cursor-pointer"
           >
             See Details
           </button>

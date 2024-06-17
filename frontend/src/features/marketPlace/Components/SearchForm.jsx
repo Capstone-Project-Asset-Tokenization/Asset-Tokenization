@@ -68,7 +68,7 @@ const SearchForm = ({ onSearch }) => {
           name="minPrice"
           value={formData.minPrice}
           onChange={handleChange}
-          placeholder="Min Price (ETH)"
+          placeholder="Min Price (WEI)"
           className="border border-[#353535] flex-grow outline-none focus:border-neutral-600 bg-transparent placeholder-[#858584] text-white p-2 rounded-lg"
         />
         <input
@@ -76,7 +76,7 @@ const SearchForm = ({ onSearch }) => {
           name="maxPrice"
           value={formData.maxPrice}
           onChange={handleChange}
-          placeholder="Max Price (ETH)"
+          placeholder="Max Price (WEI)"
           className="border border-[#353535] flex-grow outline-none focus:border-neutral-600 bg-transparent placeholder-[#858584] text-white p-2 rounded-lg"
         />
         <button

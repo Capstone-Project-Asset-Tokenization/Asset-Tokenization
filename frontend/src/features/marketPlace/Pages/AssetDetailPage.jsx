@@ -187,7 +187,7 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
               <p className="text-xl opacity-50 ">
                 You are about to buy a token of this asset for{" "}
                 <span className="font-bold">
-                  {Number(asset.tokenPrice)} ETH
+                  {Number(asset.tokenPrice)} WEI
                 </span>
               </p>
               <p className="text-xl mb-5 opacity-50 ">
@@ -213,7 +213,7 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
                 </div>
               )}
               <label className="text-xl opacity-50 ">
-                Total Price : <span className="font-bold">{newPrice} ETH</span>
+                Total Price : <span className="font-bold">{newPrice} WEI</span>
               </label>
               <button
                 onClick={handleBuyConfirmation}
@@ -322,7 +322,7 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
                 <span className="font-medium pr-4">Price</span>
                 <span className="font-bold">
                   {" "}
-                  {parseInt(asset.tokenPrice)} ETH / Token
+                  {parseInt(asset.tokenPrice)} WEI / Token
                 </span>
               </p>
               <p
@@ -343,6 +343,16 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
                   {Number(asset.availableToken)}
                 </span>
               </p>
+              {owner && (
+                <p
+                  className={`text-xl pb-4 opacity-50 flex justify-between ${
+                    Number(asset.totalSupply) <= 10 ? " text-red-500" : ""
+                  }`}
+                >
+                  <span className="pr-4 font-medium">Owned Tokens</span>{" "}
+                  <span className="font-bold">{Number(asset.ownedTokens)}</span>
+                </p>
+              )}
             </div>
           </div>
 
@@ -405,8 +415,8 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
             </div>
           )}
           <div className="px-16 mx-6 flex justify-between items-center ">
-            <div>
-              <h3 className="font-bold opacity-50 mb-3">Category</h3>
+            <div className="flex justify-between items-center space-x-2">
+              <h3 className="font-bold opacity-50">Category</h3>
               <span className=" bg-neutral-900 bg-opacity-30 text-neutral-200 font-medium px-2.5 py-2 rounded">
                 {categoryMapping[asset.category]}
               </span>

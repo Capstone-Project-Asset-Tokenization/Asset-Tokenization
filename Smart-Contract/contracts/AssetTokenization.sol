@@ -202,7 +202,7 @@ contract AssetTokenizationPlatform {
         string[] memory supportingDocuments
     ) external onlyRegisteredUser {
         uint8 decimals = 0;
-        string memory symbol = "ETH";
+        string memory symbol = "WEI";
 
         assets[assetCount] = Asset({
             ID: assetCount,
