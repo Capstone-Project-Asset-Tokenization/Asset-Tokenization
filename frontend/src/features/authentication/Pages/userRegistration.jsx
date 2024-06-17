@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import signUpImage from "../../../assets/sign_in_image.png";
+import signUpImage from "../../../assets/login_image.png";
 import { useRegisterMutation } from "../../../stores/auth/authAPI";
 import { useNavigate } from "react-router-dom";
 import ConnectWallet from "./ConnectWalet";
@@ -99,7 +99,7 @@ const Registration = () => {
     handleBlockChainRegistration();
   }, [backendRegistrationSucess]);
   return (
-    <div className="">
+    <div>
       <ol className="lg:flex items-center w-full space-y-4 space-x-9 lg:space-y-0">
         <li className=" flex-1">
           <div
@@ -141,7 +141,7 @@ const Registration = () => {
               </h2>
               <p className="font-sans text-neutral-400 mb-6">
                 Welcome! Enter your details and start creating, collecting and
-                selling NFTs.
+                selling assets.
               </p>
               <Formik
                 initialValues={
@@ -166,7 +166,7 @@ const Registration = () => {
                         type="text"
                         name="firstName"
                         placeholder="First Name"
-                        className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                        className="bg-[#292929] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
                       />
                       <ErrorMessage
                         name="firstName"
@@ -179,7 +179,7 @@ const Registration = () => {
                         type="text"
                         name="lastName"
                         placeholder="Last Name"
-                        className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                        className="bg-[#292929] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
                       />
                       <ErrorMessage
                         name="lastName"
@@ -193,7 +193,7 @@ const Registration = () => {
                         type="email"
                         name="email"
                         placeholder="Email Address"
-                        className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                        className="bg-[#292929] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
                       />
                       <ErrorMessage
                         name="email"
@@ -207,7 +207,7 @@ const Registration = () => {
                         type="password"
                         name="password"
                         placeholder="Password"
-                        className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                        className="bg-[#292929] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
                       />
                       <ErrorMessage
                         name="password"
@@ -221,7 +221,7 @@ const Registration = () => {
                         type="password"
                         name="confirmPassword"
                         placeholder="Confirm Password"
-                        className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                        className="bg-[#292929] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
                       />
                       <ErrorMessage
                         name="confirmPassword"
@@ -235,7 +235,7 @@ const Registration = () => {
                         type="text"
                         name="nationalID"
                         placeholder="Legal ID No"
-                        className="bg-[#313131] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
+                        className="bg-[#292929] hover:bg-[#303030] border-0 outline-none active:bg-[#343434] p-2 px-3 rounded w-full"
                       />
                       <ErrorMessage
                         name="nationalID"
@@ -247,7 +247,7 @@ const Registration = () => {
                     <button
                       type="submit"
                       disabled={backendRegistrationLoading}
-                      className="w-full bg-primary-main hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                      className="w-full mt-4 bg-primary-dark hover:bg-primary-main text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
                       {backendRegistrationLoading ? "Registering..." : "Next"}
                     </button>

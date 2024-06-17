@@ -2,7 +2,7 @@ import React from "react";
 
 const LandingCard = ({ title, description }) => {
   return (
-    <div className="basis-1/3 bg-background-secondary text-center rounded-lg px-8 py-6">
+    <div className="basis-1/3 bg-background-primary text-center rounded-lg px-8 py-6">
       <img
         src="\src\assets\icon.png"
         alt="Card Image"

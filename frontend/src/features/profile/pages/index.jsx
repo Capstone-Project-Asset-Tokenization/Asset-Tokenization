@@ -407,7 +407,7 @@ const UserProfile = ({
           <img
             src="https://avatar.iran.liara.run/public/boy?username=Ash"
             alt={`${userData?.firstName} ${userData?.lastName}`}
-            className="h-60 w-30 rounded-full object-cover border-2 border-gray-300"
+            className="h-60 w-60 rounded-full object-cover border-2 border-gray-300"
           />
           {!isEditing && (
             <div
