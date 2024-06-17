@@ -47,33 +47,33 @@ const AdminAssetTransactionsTable = () => {
     }
 
     return (
-        <div className='max-w-5xl mx-auto p-4 bg-neutral-800 text-white m-4'>
+        <div className='mx-20 p-4 bg-neutral-800 text-white m-4 '>
             <h1 className='text-xl font-bold mb-8'>Transaction History</h1>
             <div className='overflow-x-auto'>
                 <table className='min-w-full leading-normal'>
                     <thead>
                         <tr className='text-left'>
-                        <th className='px-5 py-3 border-b border-gray-800 text-xs font-semibold text-gray-400 uppercase tracking-wider'>Asset ID</th>
-                        <th className='px-5 py-3 border-b border-gray-800 text-xs font-semibold text-gray-400 uppercase tracking-wider'>From</th>
-                        <th className='px-5 py-3 border-b border-gray-800 text-xs font-semibold text-gray-400 uppercase tracking-wider'>To</th>
-                        <th className='px-5 py-3 border-b border-gray-800 text-xs font-semibold text-gray-400 uppercase tracking-wider'>Token Amount</th>
-                        <th className='px-5 py-3 border-b border-gray-800 text-xs font-semibold text-gray-400 uppercase tracking-wider'>Timestamp</th>
+                        <th className='px-5 py-3 border-b border-neutral-800 text-xs font-semibold text-neutral-400 uppercase tracking-wider'>Asset ID</th>
+                        <th className='px-5 py-3 border-b border-neutral-800 text-xs font-semibold text-neutral-400 uppercase tracking-wider'>From</th>
+                        <th className='px-5 py-3 border-b border-neutral-800 text-xs font-semibold text-neutral-400 uppercase tracking-wider'>To</th>
+                        <th className='px-5 py-3 border-b border-neutral-800 text-xs font-semibold text-neutral-400 uppercase tracking-wider'>Token Amount</th>
+                        <th className='px-5 py-3 border-b border-neutral-800 text-xs font-semibold text-neutral-400 uppercase tracking-wider'>Timestamp</th>
                         </tr>
                     </thead>
                     <tbody>
                         {transactions.length > 0 ? (
                         transactions.map((tx, index) => (
                             <tr key={index}>
-                                <td className='px-5 py-5 border-b border-gray-800 bg-black text-sm'>{Number(tx.assetId)}</td>
-                                <td className='px-5 py-5 border-b border-gray-800 bg-black text-sm'>{tx.from}</td>
-                                <td className='px-5 py-5 border-b border-gray-800 bg-black text-sm'>{tx.to}</td>
-                                <td className='px-5 py-5 border-b border-gray-800 bg-black text-sm'>{Number(tx.amount)} Tokens</td>
-                                <td className='px-5 py-5 border-b border-gray-800 bg-black text-sm'>{new Date(Number(tx.timestamp) * 1000).toLocaleString()}</td>
+                                <td className='px-5 py-5 border-b border-neutral-800 bg-black text-sm'>{Number(tx.assetId)}</td>
+                                <td className='px-5 py-5 border-b border-neutral-800 bg-black text-sm'>{tx.from}</td>
+                                <td className='px-5 py-5 border-b border-neutral-800 bg-black text-sm'>{tx.to}</td>
+                                <td className='px-5 py-5 border-b border-neutral-800 bg-black text-sm'>{Number(tx.amount)} Tokens</td>
+                                <td className='px-5 py-5 border-b border-neutral-800 bg-black text-sm'>{new Date(Number(tx.timestamp) * 1000).toLocaleString()}</td>
                             </tr>
                         ))
                         ) : (
                         <tr>
-                            <td colSpan="5" className='text-center py-5 border-b border-gray-800 bg-neutral-800 text-sm'>No Transaction History</td>
+                            <td colSpan="5" className='text-center py-5 border-b border-neutral-800 bg-neutral-800 text-sm'>No Transaction History</td>
                         </tr>
                         )}
                     </tbody>
