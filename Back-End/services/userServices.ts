@@ -25,7 +25,7 @@ export default class UserServie {
 
     if (user.phoneNumber)
       existingUser = await this.userRepository.getUserByPhoneNumber(
-        (user.phoneNumber as string) ?? ""
+        user.phoneNumber
       );
 
     if (existingUser) {
@@ -62,7 +62,7 @@ export default class UserServie {
       throw new NotFoundError("There is no user with this email");
     }
 
-    const token = generateToken({ _id: user._id as string, email: user.email, roles: user.roles, walletAddress: user.walletAddress });
+    const token = generateToken({ ...user });
     sendResetMail(email, token);
     return token;
   }
@@ -99,6 +99,7 @@ export default class UserServie {
 
 
   async getUserByEmail(email: string) {
+    console.log(email, "email")
     let user = await this.userRepository.getUserByEmail(email);
     if (!user) {
       throw new NotFoundError("There is no user with this email");
@@ -106,8 +107,9 @@ export default class UserServie {
     return user;
   }
   async login(email: string, password: string, requestVerification: boolean) {
+    console.log(email, "email in login");
     let user = await this.userRepository.getUserByEmail(email);
-
+    console.log(user, "user-----");
     if (!user) {
       throw new NotFoundError("There is no user with this email");
     }
@@ -129,7 +131,7 @@ export default class UserServie {
     }
 
     return generateToken({
-      _id: user._id as string,
+      _id: user._id,
       email: user.email,
       roles: user.roles,
       walletAddress: user.walletAddress,

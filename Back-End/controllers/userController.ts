@@ -30,6 +30,7 @@ export default class UserController {
   login = catchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
       let { email, password, requestVerification } = req.body;
+      console.log(email, password, requestVerification, "in controller");
       let token = await this.userService.login(
         email,
         password,
