@@ -431,7 +431,7 @@ const AssetDetail = ({ asset, onClose, owner = false }) => {
 
               <div>
                 {/* create button based on locked status */}
-                {isMyAsset && (
+                {owner && (
                   <>
                     {" "}
                     {asset.assetLocked ? (
